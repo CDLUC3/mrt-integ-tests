@@ -1,3 +1,4 @@
 vendor/
 lib/
 deploy.zip
+.byebug_history
