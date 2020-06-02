@@ -1,6 +1,6 @@
-require 'spec/spec_helper'
+require 'spec_helper.rb'
 
-RSpec.describe ':demo' do
+RSpec.describe ':demo', type: :feature do
 
   Capybara.app_host = 'http://en.wikipedia.org'
   Capybara.run_server = false # don't start Rack
@@ -12,7 +12,9 @@ RSpec.describe ':demo' do
   end
 
   it 'value2' do
-    visit '/wiki/Baltimore_Ravens'
+    #session = Capybara::Session.new(:selenium_chrome_headless)
+    session = Capybara::Session.new(:selenium)
+    session.visit 'http://en.wikipedia.org/wiki/Ruby_(programming_language)'
     foo = 'bar2'
     expect(foo).to eq('bar2')
   end
