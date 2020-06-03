@@ -2,3 +2,4 @@ vendor/
 lib/
 deploy.zip
 .byebug_history
+config/test_config.yml

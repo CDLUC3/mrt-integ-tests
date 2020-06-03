@@ -1,0 +1,7 @@
+stage: &stage
+  url: https://merritt-stage.cdlib.org
+production: &production
+  url: https://merritt.cdlib.org
+
+default:
+  *stage
