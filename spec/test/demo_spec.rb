@@ -8,6 +8,7 @@ def load_config(name)
 
   conf     = YAML.load_file(path)
 end
+sleep 1
 
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
@@ -18,7 +19,25 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     Capybara.app_host = @test_config['url']
     Capybara.run_server = false # don't start Rack
 
-    # @session = Capybara::Session.new(:selenium)
+    if ENV['CHROME_URL']
+      Capybara.register_driver :selenium_chrome_headless do |app|
+        args = [
+          '--no-default-browser-check',
+          '--start-maximized',
+          '--headless',
+          '--disable-dev-shm-usage',
+          '--whitelisted-ips'
+        ]
+        caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {"args" => args})
+
+        Capybara::Selenium::Driver.new(
+          app,
+          browser: :remote,
+          desired_capabilities: caps,
+          url: "http://chrome:4444/wd/hub"
+        )
+      end
+    end
     @session = Capybara::Session.new(:selenium_chrome_headless)
   end
 

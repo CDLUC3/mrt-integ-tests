@@ -1,3 +1,5 @@
+.git/
+docker-compose.yml
 vendor/
 lib/
 .byebug_history
