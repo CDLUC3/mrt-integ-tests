@@ -9,3 +9,10 @@ production: &production
 
 default:
   *stage
+  authenticated:
+  - user: user1
+    password: password1
+    collection: collection1
+  - user: user2
+    password: password2
+    collection: collection2
