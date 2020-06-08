@@ -1,29 +1,29 @@
 ## Web Accessibility
-- Access home page
-- iterate over collections/users
-  - Unsuccessful login
-  - Login
-  - Collection
-    - View collection page 
-    - View collection feed
-    - View object
-      - Download object
-      - Presign object
-    - View version
-      - Download version
-      - Presign version
-      - Download file
-      - Presign file (find a collection using each(
-        - S3
-        - Minio
-        - Wasabi
-        - Pairtree
-- Add content
-  - Add object
-    - Through UI
-    - Through UI API
-    - Through Sword
-      - Read through OAI
-  - Add version
-  - Add manifest (types)
+- [x] Access home page
+- [ ] iterate over collections/users
+  - [ ] Unsuccessful login
+  - [ ] Login
+  - [ ] Collection
+    - [x] View collection page 
+    - [ ] View collection feed
+    - [x] View object
+      - [ ] Download object
+      - [ ] Presign object
+    - [x] View version
+      - [ ] Download version
+      - [ ] Presign version
+      - [ ] Download file
+      - [ ] Presign file (find a collection using each(
+        - [x] S3
+        - [x] Minio
+        - [ ] Wasabi
+        - [ ] Pairtree
+- [ ] Add content
+  - [ ] Add object
+    - [ ] Through UI
+    - [ ] Through UI API
+    - [ ] Through Sword
+      - [ ] Read through OAI
+  - [ ] Add version
+  - [ ] Add manifest (types)
   
