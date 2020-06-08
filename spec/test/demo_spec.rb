@@ -41,6 +41,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     @session.click_link(text)
     @session.click_link("Version 1")
     text = @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[2]/th[1]/a").text
+    # the following does not work if there is a space in the filename
     @session.click_link(text)
     expect(@session.current_url).to match(get_config('file_redirect_match'))
   end

@@ -8,7 +8,7 @@ production: &production
   file_redirect_match: '.*\.s3.us-west-2.amazonaws.com/.*'
 
 default:
-  *stage
+  <<: *stage
   authenticated:
   - user: user1
     password: password1
