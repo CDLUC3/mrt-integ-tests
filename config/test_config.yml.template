@@ -1,7 +1,11 @@
 stage: &stage
   url: https://merritt-stage.cdlib.org
+  guest_coll: cdl_dashdev
+  file_redirect_match: '.*\.s3.us-west-2.amazonaws.com/.*'
 production: &production
   url: https://merritt.cdlib.org
+  guest_coll: cdl_dashdev
+  file_redirect_match: '.*\.s3.us-west-2.amazonaws.com/.*'
 
 default:
   *stage
