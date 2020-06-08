@@ -8,11 +8,15 @@ stage: &stage
   guest_collections:
   - coll: cdl_dashdev
     <<: *AWS
+  non_guest_collections:
+  - coll: other_collection
 production: &production
   url: https://merritt.cdlib.org
   guest_collections:
   - coll: cdl_uc3
     <<: *AWS
+  non_guest_collections:
+  - coll: other_collection
 
 default:
   <<: *stage

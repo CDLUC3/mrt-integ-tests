@@ -51,4 +51,21 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
   end
 
+  it 'Guest collections - no collection access' do
+    @session.visit '/'
+    @session.within "header" do
+      @session.find_link('Login')
+      @session.click_link('Login')
+    end
+    @session.find_button('Guest')
+    @session.click_button('Guest')
+
+    get_config('non_guest_collections').each do |coll|
+      # print("#{coll['coll']}\n")
+      @session.visit "/m/#{coll['coll']}"
+      expect(@session.title).to eq("Unauthorized (401)")
+    end
+
+  end
+
 end
