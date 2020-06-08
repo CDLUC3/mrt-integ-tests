@@ -27,7 +27,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     @session.click_button('Guest')
   end
 
-  it 'Open ark page' do
+  it 'Open guest collections - file presigned download' do
     @session.visit '/'
     @session.within "header" do
       @session.find_link('Login')
@@ -36,14 +36,19 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     @session.find_button('Guest')
     @session.click_button('Guest')
 
-    @session.visit "/m/#{get_config('guest_coll')}"
-    text = @session.find(:xpath, '//table/tbody/tr[1]/td[1]/a').text
-    @session.click_link(text)
-    @session.click_link("Version 1")
-    text = @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[2]/th[1]/a").text
-    # the following does not work if there is a space in the filename
-    @session.click_link(text)
-    expect(@session.current_url).to match(get_config('file_redirect_match'))
+    get_config('guest_collections').each do |coll|
+      # print("#{coll['coll']}\n")
+      @session.visit "/m/#{coll['coll']}"
+      text = @session.find(:xpath, '//table/tbody/tr[1]/td[1]/a').text
+      @session.click_link(text)
+      @session.click_link("Version 1")
+      text = @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[2]/th[1]/a").text
+      # the following does not work if there is a space in the filename
+      @session.click_link(text)
+      # print("#{@session.current_url}\n")
+      expect(@session.current_url).to match(coll['file_redirect_match'])
+    end
+
   end
 
 end
