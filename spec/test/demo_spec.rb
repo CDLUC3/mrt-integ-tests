@@ -63,6 +63,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     get_config('non_guest_collections').each do |coll|
       # print("#{coll['coll']}\n")
       @session.visit "/m/#{coll['coll']}"
+      print(@session.title)
       expect(@session.title).to eq("Unauthorized (401)")
     end
 

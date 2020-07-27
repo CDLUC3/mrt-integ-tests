@@ -20,10 +20,16 @@
 
 ```
 docker-compose build
+docker-compose up -d
 ```
 
 ### Docker Test Execution
 
 ```
-docker-compose run mrt-integ-tests
+docker-compose run --rm mrt-integ-tests
+```
+
+### Cleanup
+```
+docker-compose down
 ```
