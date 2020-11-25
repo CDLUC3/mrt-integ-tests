@@ -3,12 +3,16 @@ require 'webdrivers/chromedriver'
 
 sleep 1
 
+class Prefix
+  @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M') 
+  def self.localid_prefix
+    @@localid_prefix
+  end
+end
+
+puts Prefix.localid_prefix
 
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
-  attr_reader :localid_prefix
-  before(:all) do
-    @localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M') 
-  end
 
   def all_collections
     coll = [] 
@@ -143,30 +147,28 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         sleep 5
       end
 
-      it "Add README.md file" do
-        add_file('README.md', localid_prefix, 'md')
-      end
+      @encfiles = {
+        md: 'README.md',
+        space: 'README 1.md',
+        plus: 'README+1.md',
+        percent: 'README %AF.md',
+        accent: 'README cliché.md',
+        pipe: 'README|pipe.md',
+        slash: 'README/slash.md',
+        backslash: 'README\slash.md',
+        backslash_u: 'README\uslash.md',
+        japanese_char: 'こんにちは.md',
+        hebrew_char: 'שלום'
+      }
 
-      it "Add README 1.md file" do
-        add_file('README 1.md', localid_prefix, 'space')
+      @encfiles.each do |file_key, file|
+        describe ":ingest_#{file_key}" do
+          it "ingest file #{file}" do
+            add_file(file, Prefix.localid_prefix, file_key)
+          end
+        end
       end
-
-      it "Add README+1.md file" do
-        add_file('README+1.md', localid_prefix, 'plus')
-      end
-
-      it "Add README %AF.md file" do
-        add_file('README %AF.md', localid_prefix, 'percent')
-      end
-
-      it "Add README cliché.md file" do
-        add_file('README cliché.md', localid_prefix, 'accent')
-      end
-
-      it "sleep 30 to allow ingests to process..." do
-        sleep 30
-      end
-
+  
       def check_file(fname, prefix, seq)
         localid = "#{prefix}_#{seq}"
         title = localid
@@ -185,28 +187,17 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
         @session.find_link(fname)
         @session.click_link(fname)
-        expect(@session.status).to eq(200)
+        expect(@session.body.length).not_to eq(0)
       end
 
-      it "Check README.md file" do
-        check_file('README.md', localid_prefix, 'md')
+      @encfiles.each do |file_key, file|
+        describe ":retrieve #{Prefix.localid_prefix}_#{file_key}" do
+          it "retrieve file #{file}" do
+            check_file(file, Prefix.localid_prefix, file_key)
+          end
+        end
       end
 
-      it "Check README 1.md file" do
-        check_file('README 1.md', localid_prefix, 'space')
-      end
-
-      it "Check README+1.md file" do
-        check_file('README+1.md', localid_prefix, 'plus')
-      end
-
-      it "Check README %AF.md file" do
-        check_file('README %AF.md', localid_prefix, 'percent')
-      end
-
-      it "Check README cliché.md file" do
-        check_file('README cliché.md', localid_prefix, 'accent')
-      end
     end
   end
 
