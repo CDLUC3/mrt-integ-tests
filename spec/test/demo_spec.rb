@@ -4,10 +4,37 @@ require 'webdrivers/chromedriver'
 sleep 1
 
 class Prefix
-  @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M') 
+  @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M')
+  @@encfiles = {
+    md: 'README.md',
+    space: 'README 1.md',
+    plus: 'README+1.md',
+    percent: 'README %AF.md',
+    accent: 'README cliché.md',
+    pipe: 'README|pipe.md',
+    slash: 'README/slash.md',
+    backslash: 'README\slash.md',
+    backslash_u: 'README\uslash.md',
+    japanese_char: 'こんにちは.md',
+    hebrew_char: 'שלום'
+  }
+
+  @@encfiles2 = {
+    md: 'README.md'
+  }
+
   def self.localid_prefix
     @@localid_prefix
   end
+
+  def self.encfiles
+    @@encfiles
+  end
+
+  def self.sleep_time
+    45 / @@encfiles.size
+  end
+
 end
 
 puts Prefix.localid_prefix
@@ -144,24 +171,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h1") do
           expect(@session.text).to have_content("Submission Received")
         end
-        sleep 5
+        stime = Prefix.sleep_time
+        puts "\t -- sleep #{stime} (to allow ingests to complete)"
+        sleep stime
       end
 
-      @encfiles = {
-        md: 'README.md',
-        space: 'README 1.md',
-        plus: 'README+1.md',
-        percent: 'README %AF.md',
-        accent: 'README cliché.md',
-        pipe: 'README|pipe.md',
-        slash: 'README/slash.md',
-        backslash: 'README\slash.md',
-        backslash_u: 'README\uslash.md',
-        japanese_char: 'こんにちは.md',
-        hebrew_char: 'שלום'
-      }
-
-      @encfiles.each do |file_key, file|
+      Prefix.encfiles.each do |file_key, file|
         describe ":ingest_#{file_key}" do
           it "ingest file #{file}" do
             add_file(file, Prefix.localid_prefix, file_key)
@@ -169,7 +184,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         end
       end
   
-      def check_file(fname, prefix, seq)
+      def check_file_obj_page(fname, prefix, seq)
         localid = "#{prefix}_#{seq}"
         title = localid
 
@@ -184,18 +199,42 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h2.object-title") do
           expect(@session.text).to have_content(title)
         end
-
-        @session.find_link(fname)
-        @session.click_link(fname)
-        expect(@session.body.length).not_to eq(0)
       end
 
-      @encfiles.each do |file_key, file|
+      Prefix.encfiles.each do |file_key, file|
         describe ":retrieve #{Prefix.localid_prefix}_#{file_key}" do
-          it "retrieve file #{file}" do
-            check_file(file, Prefix.localid_prefix, file_key)
+          it "retrieve file from obj page: #{file}" do
+            check_file_obj_page(file, Prefix.localid_prefix, file_key)
+            @session.find_link(file)
+            @session.click_link(file)
+            expect(@session.body.length).not_to eq(0)
           end
-        end
+
+          it "retrieve file from ver page: #{file}" do
+            check_file_obj_page(file, Prefix.localid_prefix, file_key)
+            @session.find_link('Version 1')
+            @session.click_link('Version 1')
+            @session.find_link(file)
+            @session.click_link(file)
+            expect(@session.body.length).not_to eq(0)
+          end
+ 
+          it "download object" do
+            check_file_obj_page(file, Prefix.localid_prefix, file_key)
+            @session.find_button('Download object')
+            @session.click_button('Download object')
+
+            @session.find('div.ui-dialog')
+            @session.within('.ui-dialog-title') do
+              expect(@session.text).to have_content('Preparing Object for Download')
+            end
+            sleep 30
+            @session.within('.ui-dialog-title') do
+              expect(@session.text).to have_content('Object is ready for Download')
+            end
+            @session.find('a.obj_download').click
+          end
+         end
       end
 
     end
