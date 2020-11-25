@@ -199,6 +199,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h2.object-title") do
           expect(@session.text).to have_content(title)
         end
+        @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
       end
 
       Prefix.encfiles.each do |file_key, file|
@@ -220,7 +221,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           end
  
           it "download object" do
-            check_file_obj_page(file, Prefix.localid_prefix, file_key)
+            ark = check_file_obj_page(file, Prefix.localid_prefix, file_key)
             @session.find_button('Download object')
             @session.click_button('Download object')
 
@@ -233,6 +234,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               expect(@session.text).to have_content('Object is ready for Download')
             end
             @session.find('a.obj_download').click
+            cmd = "unzip -l #{ark}.zip|grep producer"
+            expect(%x[ #{cmd} ]).to have_content(file)
+            File.delete("#{ark}.zip")
           end
          end
       end
