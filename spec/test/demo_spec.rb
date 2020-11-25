@@ -235,8 +235,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             end
             @session.find('a.obj_download').click
             cmd = "unzip -l #{ark}.zip|grep producer"
-            expect(%x[ #{cmd} ]).to have_content(file)
+            listing = %x[ #{cmd} ]
             File.delete("#{ark}.zip")
+            expect(listing).to have_content(file)
           end
          end
       end
