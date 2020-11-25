@@ -3,6 +3,29 @@ constants:
     file_redirect_match: '.*\.s3.us-west-2.amazonaws.com/.*'
   - &MINIO
     file_redirect_match: 'https://cdl.s3.sdsc.edu/.*'
+  - &MINIO_LOCAL
+    file_redirect_match: 'http://(localhost|uc3-mrtdocker.*-dev.cdlib.org):8088/.*'
+docker: &docker
+  login:
+  - user: merritt-test
+    password: password
+local: &local
+  url: 'http://localhost:8089'
+  guest_collections:
+  - coll: cdl_dryaddev
+    <<: *MINIO_LOCAL
+  non_guest_collections:
+  - coll: merritt_demo
+  << : *docker
+development: &development
+  url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
+  guest_collections:
+  - coll: cdl_dryaddev
+    <<: *MINIO_LOCAL
+  non_guest_collections:
+  - coll: merritt_demo
+    <<: *MINIO_LOCAL
+  << : *docker
 stage: &stage
   url: https://merritt-stage.cdlib.org
   guest_collections:
@@ -19,11 +42,4 @@ production: &production
   - coll: other_collection
 
 default:
-  <<: *stage
-  authenticated:
-  - user: user1
-    password: password1
-    collection: collection1
-  - user: user2
-    password: password2
-    collection: collection2
+  <<: *development

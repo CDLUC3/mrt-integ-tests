@@ -27,8 +27,5 @@ services:
   chrome:
     container_name: chrome
     image: selenium/standalone-chrome
-    ports:
-    - published: 4444
-      target: 4444
     networks:
       mynet:
