@@ -12,12 +12,13 @@ class Prefix
     percent: 'README %AF.md',
     accent: 'README cliché.md',
     pipe: 'README|pipe.md',
-    slash: 'README/slash.md',
-    backslash: 'README\backslash.md',
-    backslash_u: 'README\ubackslashU.md',
+    #slash: 'README/slash.md',
+    #backslash: 'README\backslash.md',
+    #backslash_u: 'README\ubackslashU.md',
     japanese_char: 'こんにちは.md',
     hebrew_char: 'שלום',
-    arabic_char: 'مرحبا'
+    arabic_char: 'مرحبا',
+    emoji: 'file☠☡☢☣.txt'
   }
 
   @@encfiles2 = {
@@ -254,7 +255,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
                 expect(@session.text).to have_content('Object is ready for Download')
               end
               @session.find('a.obj_download').click
-              cmd = "unzip -l #{ark}.zip|grep producer"
+              cmd = "bsdtar tf #{ark}.zip|grep producer"
               listing = %x[ #{cmd} ]
               File.delete("#{ark}.zip")
               expect(listing).to have_content(file)
