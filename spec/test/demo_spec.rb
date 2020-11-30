@@ -13,10 +13,11 @@ class Prefix
     accent: 'README cliché.md',
     pipe: 'README|pipe.md',
     slash: 'README/slash.md',
-    backslash: 'README\slash.md',
-    backslash_u: 'README\uslash.md',
+    backslash: 'README\backslash.md',
+    backslash_u: 'README\ubackslashU.md',
     japanese_char: 'こんにちは.md',
-    hebrew_char: 'שלום'
+    hebrew_char: 'שלום',
+    arabic_char: 'مرحبا'
   }
 
   @@encfiles2 = {
@@ -154,9 +155,23 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         File.join(path)
       end
 
-      def add_file(fname, prefix, seq)
+      def upload_regular_file(fname, prefix, seq)
         path = create_filename(fname)
         f = create_file(path)
+        add_file(f, prefix, seq)
+      end
+
+      def upload_zip_file(fname, prefix, seq)
+        path = create_filename(fname)
+        f = create_file(path)
+        cmd = "zip -f upload.zip #{fname}"
+        %x[ #{cmd} ]
+        File.delete(f)
+        f = File.join("upload.zip")
+        add_file(f, prefix, seq)
+      end
+
+      def add_file(f, prefix, seq)
         localid = "#{prefix}_#{seq}"
         title = localid
 
@@ -179,7 +194,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       Prefix.encfiles.each do |file_key, file|
         describe ":ingest_#{file_key}" do
           it "ingest file #{file}" do
-            add_file(file, Prefix.localid_prefix, file_key)
+            upload_regular_file(file, Prefix.localid_prefix, file_key)
+          end
+
+          it "ingest zip file conaining #{file}" do
+            upload_regular_file(file, Prefix.localid_prefix, "#{file_key}_z")
           end
         end
       end
@@ -202,46 +221,47 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
       end
 
-      Prefix.encfiles.each do |file_key, file|
-        describe ":retrieve #{Prefix.localid_prefix}_#{file_key}" do
-          it "retrieve file from obj page: #{file}" do
-            check_file_obj_page(file, Prefix.localid_prefix, file_key)
-            @session.find_link(file)
-            @session.click_link(file)
-            expect(@session.body.length).not_to eq(0)
-          end
-
-          it "retrieve file from ver page: #{file}" do
-            check_file_obj_page(file, Prefix.localid_prefix, file_key)
-            @session.find_link('Version 1')
-            @session.click_link('Version 1')
-            @session.find_link(file)
-            @session.click_link(file)
-            expect(@session.body.length).not_to eq(0)
-          end
- 
-          it "download object" do
-            ark = check_file_obj_page(file, Prefix.localid_prefix, file_key)
-            @session.find_button('Download object')
-            @session.click_button('Download object')
-
-            @session.find('div.ui-dialog')
-            @session.within('.ui-dialog-title') do
-              expect(@session.text).to have_content('Preparing Object for Download')
+      Prefix.encfiles.each do |fk, file|
+        [fk, "#{fk}_z"].each do |file_key| 
+          describe ":retrieve #{Prefix.localid_prefix}_#{file_key}" do
+            it "retrieve file from obj page: #{file}" do
+              check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              @session.find_link(file)
+              @session.click_link(file)
+              expect(@session.body.length).not_to eq(0)
             end
-            sleep 30
-            @session.within('.ui-dialog-title') do
-              expect(@session.text).to have_content('Object is ready for Download')
+  
+            it "retrieve file from ver page: #{file}" do
+              check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              @session.find_link('Version 1')
+              @session.click_link('Version 1')
+              @session.find_link(file)
+              @session.click_link(file)
+              expect(@session.body.length).not_to eq(0)
             end
-            @session.find('a.obj_download').click
-            cmd = "unzip -l #{ark}.zip|grep producer"
-            listing = %x[ #{cmd} ]
-            File.delete("#{ark}.zip")
-            expect(listing).to have_content(file)
-          end
-         end
+   
+            it "download object" do
+              ark = check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              @session.find_button('Download object')
+              @session.click_button('Download object')
+  
+              @session.find('div.ui-dialog')
+              @session.within('.ui-dialog-title') do
+                expect(@session.text).to have_content('Preparing Object for Download')
+              end
+              sleep 30
+              @session.within('.ui-dialog-title') do
+                expect(@session.text).to have_content('Object is ready for Download')
+              end
+              @session.find('a.obj_download').click
+              cmd = "unzip -l #{ark}.zip|grep producer"
+              listing = %x[ #{cmd} ]
+              File.delete("#{ark}.zip")
+              expect(listing).to have_content(file)
+            end
+           end
+        end
       end
-
     end
   end
 
