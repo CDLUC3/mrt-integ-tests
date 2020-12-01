@@ -5,40 +5,32 @@ sleep 1
 
 class Prefix
   @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M')
-  @@encfiles = {
-    md: 'README.md',
-    space: 'README 1.md',
-    plus: 'README+1.md',
-    percent: 'README %AF.md',
-    accent: 'README cliché.md', #Copied from a web page, not utf-8 representation
-    pipe: 'README|pipe.md',
-    #slash: 'README/slash.md',
-    #backslash: 'README\backslash.md',
-    #backslash_u: 'README\ubackslashU.md',
-    japanese_char: 'こんにちは.md',
-    hebrew_char: 'שלום',
-    arabic_char: 'مرحبا',
-    emoji: 'file☠☡☢☣.txt'
-  }
-
-  @@encfiles2 = {
-    md: 'README.md'
-  }
-
-  @@encfiles3 = {
-    md: 'README cliché.md'
-  }
 
   def self.localid_prefix
     @@localid_prefix
   end
 
   def self.encfiles
-    @@encfiles
+    temp = {
+      md: 'README cliché.md'
+    }
+    # return temp
+    {
+      md: 'README.md',
+      space: 'README 1.md',
+      plus: 'README+1.md',
+      percent: 'README %AF.md',
+      accent: 'README cliché.md', #Copied from a web page, not utf-8 representation
+      pipe: 'README|pipe.md',
+      japanese_char: 'こんにちは.md',
+      hebrew_char: 'שלום',
+      arabic_char: 'مرحبا',
+      emoji: 'file☠☡☢☣.txt'  
+    }
   end
 
   def self.sleep_time
-    45 / @@encfiles.size
+    45 / encfiles.size
   end
 
 end
@@ -46,6 +38,17 @@ end
 puts Prefix.localid_prefix
 
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
+  def get_object_count
+    @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
+  end
+
+  def get_first_ark
+    @session.find(:xpath, "//table[@class='main']/tbody/tr[1]/th[@class='ark-header']/a").text
+  end
+
+  def get_first_user_file
+    @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[1]/th[1]/a").text
+  end
 
   def all_collections
     coll = [] 
@@ -91,16 +94,18 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
       get_config('guest_collections').each do |coll|
         @session.visit "/m/#{coll['coll']}"
-        text = @session.find(:xpath, "//table[@class='main']/tbody/tr[1]/th[@class='ark-header']/a").text
-        @session.click_link(text)
-
-        # Ensure that the guest collection has download access
-        @session.click_link("Version 1")
-        text = @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[1]/th[1]/a").text
-        # the following does not work if there is a space in the filename
-        @session.click_link(text)
-        # print("#{@session.current_url}\n")
-        expect(@session.current_url).to match(coll['file_redirect_match'])
+        if get_object_count > 0
+          text = get_first_ark
+          @session.click_link(text)
+  
+          # Ensure that the guest collection has download access
+          @session.click_link("Version 1")
+          text = get_first_user_file
+          # the following does not work if there is a space in the filename
+          @session.click_link(text)
+          # print("#{@session.current_url}\n")
+          expect(@session.current_url).to match(coll['file_redirect_match'])
+        end
       end
   
     end
@@ -134,16 +139,18 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     it 'Authenticated - file presigned download' do
       all_collections.each do |coll|
         @session.visit "/m/#{coll['coll']}"
-        text = @session.find(:xpath, "//table[@class='main']/tbody/tr[1]/th[@class='ark-header']/a").text
-        @session.click_link(text)
-
-        @session.click_link("Version 1")
-        text = @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[1]/th[1]/a").text
-
-        # the following does not work if there is a space in the filename
-        @session.click_link(text)
-        # print("#{@session.current_url}\n")
-        expect(@session.current_url).to match(coll['file_redirect_match'])
+        if get_object_count > 0
+          text = get_first_ark
+          @session.click_link(text)
+  
+          @session.click_link("Version 1")
+          text = get_first_user_file
+  
+          # the following does not work if there is a space in the filename
+          @session.click_link(text)
+          # print("#{@session.current_url}\n")
+          expect(@session.current_url).to match(coll['file_redirect_match'])
+        end
       end
     end
 
@@ -218,7 +225,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h1") do
           expect(@session.text).to have_content("Search Results")
         end
-        text = @session.find(:xpath, "//table[@class='main']/tbody/tr[1]/th[@class='ark-header']/a").text
+        expect(get_object_count).to eq(1)
+        text = get_first_ark
         @session.click_link(text)
         @session.within("section h2.object-title") do
           expect(@session.text).to have_content(title)
