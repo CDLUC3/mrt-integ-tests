@@ -10,7 +10,7 @@ class Prefix
     space: 'README 1.md',
     plus: 'README+1.md',
     percent: 'README %AF.md',
-    accent: 'README cliché.md',
+    accent: 'README cliché.md', #Copied from a web page, not utf-8 representation
     pipe: 'README|pipe.md',
     #slash: 'README/slash.md',
     #backslash: 'README\backslash.md',
@@ -23,6 +23,10 @@ class Prefix
 
   @@encfiles2 = {
     md: 'README.md'
+  }
+
+  @@encfiles3 = {
+    md: 'README cliché.md'
   }
 
   def self.localid_prefix
@@ -258,9 +262,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               cmd = "bsdtar tf #{ark}.zip|grep producer"
               listing = %x[ #{cmd} ]
               File.delete("#{ark}.zip")
-              expect(listing).to have_content(file)
+              expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
             end
-           end
+          end
         end
       end
     end
