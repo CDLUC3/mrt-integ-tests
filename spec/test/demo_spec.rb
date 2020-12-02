@@ -25,7 +25,10 @@ class Prefix
       japanese_char: 'こんにちは.md',
       hebrew_char: 'שלום',
       arabic_char: 'مرحبا',
-      emoji: 'file☠☡☢☣.txt'  
+      emoji: 'file☠☡☢☣.txt',
+      double_dot: 'file..name..with..dots.txt',
+      amper: 'file & name.txt',
+      math: '∑a ≤ b.txt'
     }
   end
 
@@ -170,7 +173,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       def upload_regular_file(fname, prefix, seq)
         path = create_filename(fname)
         f = create_file(path)
-        add_file(f, prefix, seq)
+        add_file(f, fname, prefix, seq)
       end
 
       def upload_zip_file(fname, prefix, seq)
@@ -180,12 +183,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         %x[ #{cmd} ]
         File.delete(f)
         f = File.join("upload.zip")
-        add_file(f, prefix, seq)
+        add_file(f, fname, prefix, seq)
       end
 
-      def add_file(f, prefix, seq)
+      def add_file(f, fname, prefix, seq)
         localid = "#{prefix}_#{seq}"
-        title = localid
+        title = "#{localid} #{fname}"
 
         @session.visit "/m/merritt_demo"
         @session.click_link('Add object')
@@ -217,7 +220,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   
       def check_file_obj_page(fname, prefix, seq)
         localid = "#{prefix}_#{seq}"
-        title = localid
+        title = "#{localid} #{fname}"
 
         @session.visit "/m/merritt_demo"
         @session.fill_in('terms', with: localid)
