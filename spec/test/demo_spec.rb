@@ -41,7 +41,7 @@ class Prefix
   end
 
   def self.sleep_time
-    45 / encfiles.size
+    25
   end
 
 end
