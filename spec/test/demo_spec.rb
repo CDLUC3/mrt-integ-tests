@@ -16,12 +16,14 @@ class Prefix
     @@config_file
   end
 
+  # if set to 0, then all cases will be run
+  def self.max_cases 
+    0
+  end
+
   def self.encfiles
-    temp = {
-      encode2: CGI.unescape('javoi%C5%A1_et_al_data.xls')
-    }
-    # return temp
-    {
+    max = max_cases
+    cases = {
       md: 'README.md',
       space: 'README 1.md',
       plus: 'README+1.md',
@@ -38,10 +40,26 @@ class Prefix
       encode1: CGI.unescape('javois%CC%8C_et_al_data.xls'),
       encode2: CGI.unescape('javoi%C5%A1_et_al_data.xls')
     }
+    return cases if max == 0
+    rcases = {}
+    cases.each do |fk, file|
+      rcases[fk] = file 
+      return rcases if rcases.size >= max
+    end 
+    rcases
   end
 
-  def self.sleep_time
-    25
+  def self.sleep_time_ingest
+    60
+  end
+
+  def self.sleep_time_download
+    30
+  end
+
+  def self.variations(key)
+    # return [key]
+    return [ key, "#{key}_v" ]
   end
 
 end
@@ -166,7 +184,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe "ingest files" do 
+    describe "ingest and download files" do 
       def create_filename(n)
         "/tmp/#{n}"
       end
@@ -210,22 +228,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h1") do
           expect(@session.text).to have_content("Submission Received")
         end
-        stime = Prefix.sleep_time
+        stime = Prefix.sleep_time_ingest
         puts "\t -- sleep #{stime} (to allow ingests to complete)"
         sleep stime
       end
 
-      Prefix.encfiles.each do |file_key, file|
-        describe ":ingest_#{file_key}" do
-          it "ingest file #{file}" do
-            upload_regular_file(file, Prefix.localid_prefix, file_key)
-          end
-
-          it "ingest zip file conaining #{file}" do
-            upload_regular_file(file, Prefix.localid_prefix, "#{file_key}_z")
-          end
-        end
-      end
   
       def check_file_obj_page(fname, prefix, seq)
         localid = "#{prefix}_#{seq}"
@@ -247,8 +254,16 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       Prefix.encfiles.each do |fk, file|
-        [fk, "#{fk}_z"].each do |file_key| 
-          describe ":retrieve #{Prefix.localid_prefix}_#{file_key}" do
+        Prefix.variations(fk).each do |file_key| 
+          describe "#{Prefix.localid_prefix}_#{file_key}: #{file}" do
+            it "ingest file #{file}" do
+              if file_key.end_with?('_z')
+                upload_zip_file(file, Prefix.localid_prefix, file_key)
+              else
+                upload_regular_file(file, Prefix.localid_prefix, file_key)                
+              end
+            end
+
             it "retrieve file from obj page: #{file}" do
               check_file_obj_page(file, Prefix.localid_prefix, file_key)
               @session.find_link(file)
@@ -274,7 +289,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               @session.within('.ui-dialog-title') do
                 expect(@session.text).to have_content('Preparing Object for Download')
               end
-              sleep 30
+
+              stime = Prefix.sleep_time_download
+              puts "\t -- sleep #{stime} (to allow download to complete)"
+              sleep stime
+
               @session.within('.ui-dialog-title') do
                 expect(@session.text).to have_content('Object is ready for Download')
               end
