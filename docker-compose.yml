@@ -5,6 +5,8 @@
 version: '3.7'
 networks:
   mynet:
+volumes:
+  downloads:
 services:
   mrt-integ-tests:
     container_name: mrt-integ-tests
@@ -16,6 +18,7 @@ services:
     - type: bind
       source: ./config/test_config.yml
       target: /config/test_config.yml
+    - downloads:/tmp
     environment:
       CHROME_URL: http://chrome:4444/wd/hub
     stdin_open: true
@@ -29,3 +32,6 @@ services:
     image: selenium/standalone-chrome
     networks:
       mynet:
+    volumes:
+    - /dev/shm:/dev/shm
+    - downloads:/tmp

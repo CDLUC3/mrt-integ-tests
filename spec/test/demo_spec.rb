@@ -1,18 +1,24 @@
 require 'spec_helper.rb'
 require 'webdrivers/chromedriver'
+require 'cgi'
 
 sleep 1
 
 class Prefix
   @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M')
+  @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml')
 
   def self.localid_prefix
     @@localid_prefix
   end
 
+  def self.config_file
+    @@config_file
+  end
+
   def self.encfiles
     temp = {
-      md: 'README cliché.md'
+      encode2: CGI.unescape('javoi%C5%A1_et_al_data.xls')
     }
     # return temp
     {
@@ -28,7 +34,9 @@ class Prefix
       emoji: 'file☠☡☢☣.txt',
       double_dot: 'file..name..with..dots.txt',
       amper: 'file & name.txt',
-      math: '∑a ≤ b.txt'
+      math: '∑a ≤ b.txt',
+      encode1: CGI.unescape('javois%CC%8C_et_al_data.xls'),
+      encode2: CGI.unescape('javoi%C5%A1_et_al_data.xls')
     }
   end
 
@@ -65,7 +73,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   end
 
   before(:each) do
-    @session = create_web_session
+    @session = create_web_session(Prefix.config_file)
+    Dir.chdir "/tmp"
   end
 
   it 'Load Merritt UI home page' do
