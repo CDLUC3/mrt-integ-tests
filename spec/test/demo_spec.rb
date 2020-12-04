@@ -50,16 +50,16 @@ class Prefix
   end
 
   def self.sleep_time_ingest
-    60
+    80
   end
 
   def self.sleep_time_download
-    30
+    40
   end
 
   def self.variations(key)
     # return [key]
-    return [ key, "#{key}_v" ]
+    return [ key, "#{key}_z" ]
   end
 
 end
@@ -93,6 +93,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   before(:each) do
     @session = create_web_session(Prefix.config_file)
     Dir.chdir "/tmp"
+  end
+
+  after(:each) do
+    end_web_session(@session)
   end
 
   it 'Load Merritt UI home page' do
@@ -205,12 +209,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
       def upload_zip_file(fname, prefix, seq)
         path = create_filename(fname)
+        zippath = '/tmp/upload.zip'
         f = create_file(path)
-        cmd = "zip -f upload.zip #{fname}"
+        cmd = "zip #{zippath} '#{path}'"
         %x[ #{cmd} ]
         File.delete(f)
-        f = File.join("upload.zip")
-        add_file(f, fname, prefix, seq)
+        add_file(zippath, fname, prefix, seq)
       end
 
       def add_file(f, fname, prefix, seq)
@@ -285,6 +289,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               @session.find_button('Download object')
               @session.click_button('Download object')
   
+              sleep 2
+
               @session.find('div.ui-dialog')
               @session.within('.ui-dialog-title') do
                 expect(@session.text).to have_content('Preparing Object for Download')

@@ -56,3 +56,7 @@ def create_web_session(config_file)
   @session = Capybara::Session.new(:selenium_chrome_headless)
   #@session = Capybara::Session.new(:selenium_chrome)
 end
+
+def end_web_session(session)
+  session.reset!
+end
