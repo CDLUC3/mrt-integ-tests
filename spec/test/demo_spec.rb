@@ -54,7 +54,7 @@ class Prefix
   end
 
   def self.sleep_time_download
-    40
+    60
   end
 
   def self.variations(key)
