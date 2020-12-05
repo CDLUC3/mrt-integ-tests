@@ -54,7 +54,7 @@ class Prefix
   end
 
   def self.sleep_time_download
-    60
+    30
   end
 
   def self.variations(key)
@@ -303,6 +303,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               @session.within('.ui-dialog-title') do
                 expect(@session.text).to have_content('Object is ready for Download')
               end
+
+              sleep 10
+
               @session.find('a.obj_download').click
               cmd = "bsdtar tf #{ark}.zip|grep producer"
               listing = %x[ #{cmd} ]
