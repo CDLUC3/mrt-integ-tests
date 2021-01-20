@@ -56,7 +56,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     it 'Open guest collections - file presigned download' do
 
-      get_config('guest_collections').each do |coll|
+      guest_collections.each do |coll|
         @session.visit "/m/#{coll['coll']}"
         if get_object_count > 0
           text = get_first_ark
@@ -75,9 +75,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   
     it 'Guest collections - no collection access' do
-      skip 'no restricted coll (in docker ldap)' 
+      skip 'no restricted coll (in docker ldap)' if true
 
-      get_config('non_guest_collections').each do |coll|
+      non_guest_collections.each do |coll|
         @session.visit "/m/#{coll['coll']}"
         print(@session.title)
         expect(@session.title).to eq("Unauthorized (401)")
@@ -95,8 +95,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.click_link('Login')
       end
   
-      @session.fill_in('login', with: get_config('login')[0]['user'])
-      @session.fill_in('password', with: get_config('login')[0]['password'])
+      @session.fill_in('login', with: login_user)
+      @session.fill_in('password', with: login_password)
       @session.find('#submit_login').click
     end
 
@@ -187,63 +187,55 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
       end
 
-      encoding_usecases.each do |fk, file|
-        encoding_variations(fk).each do |file_key| 
-          describe "#{TestObjectPrefix.localid_prefix}_#{file_key}: #{file}" do
-            it "ingest file #{file}" do
-              if file_key.end_with?('_z')
-                upload_zip_file(file, TestObjectPrefix.localid_prefix, file_key)
-              else
-                upload_regular_file(file, TestObjectPrefix.localid_prefix, file_key)                
-              end
-            end
-
-            it "retrieve file from obj page: #{file}" do
-              check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
-              @session.find_link(file)
-              @session.click_link(file)
-              expect(@session.body.length).not_to eq(0)
-            end
-  
-            it "retrieve file from ver page: #{file}" do
-              check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
-              @session.find_link('Version 1')
-              @session.click_link('Version 1')
-              @session.find_link(file)
-              @session.click_link(file)
-              expect(@session.body.length).not_to eq(0)
-            end
-   
-            it "download object" do
-              ark = check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
-              @session.find_button('Download object')
-              @session.click_button('Download object')
-  
-              sleep 2
-
-              @session.find('div.ui-dialog')
-              @session.within('.ui-dialog-title') do
-                expect(@session.text).to have_content('Preparing Object for Download')
-              end
-
-              stime = sleep_time_assemble
-              puts "\t -- sleep #{stime} (to allow assembly to complete)"
-              sleep stime
-
-              @session.within('.ui-dialog-title') do
-                expect(@session.text).to have_content('Object is ready for Download')
-              end
-
-              sleep sleep_time_download
-
-              @session.find('a.obj_download').click
-              cmd = "bsdtar tf #{ark}.zip|grep producer"
-              listing = %x[ #{cmd} ]
-              File.delete("#{ark}.zip")
-              expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
-            end
-          end
+      def ingest_workflow(file, file_key)
+        if file_key.end_with?('_z')
+          upload_zip_file(file, TestObjectPrefix.localid_prefix, file_key)
+        else
+          upload_regular_file(file, TestObjectPrefix.localid_prefix, file_key)                
         end
+
+        check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
+        @session.find_link(file)
+        @session.click_link(file)
+        expect(@session.body.length).not_to eq(0)
+
+        check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
+        @session.find_link('Version 1')
+        @session.click_link('Version 1')
+        @session.find_link(file)
+        @session.click_link(file)
+        expect(@session.body.length).not_to eq(0)
+
+        ark = check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
+        @session.find_button('Download object')
+        @session.click_button('Download object')
+
+        sleep 2
+
+        @session.find('div.ui-dialog')
+        @session.within('.ui-dialog-title') do
+          expect(@session.text).to have_content('Preparing Object for Download')
+        end
+
+        stime = sleep_time_assemble
+        puts "\t -- sleep #{stime} (to allow assembly to complete)"
+        sleep stime
+
+        @session.within('.ui-dialog-title') do
+          expect(@session.text).to have_content('Object is ready for Download')
+        end
+
+        sleep sleep_time_download
+
+        @session.find('a.obj_download').click
+        cmd = "bsdtar tf #{ark}.zip|grep producer"
+        listing = %x[ #{cmd} ]
+        File.delete("#{ark}.zip")
+        expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
+      end
+
+      it 'Ingest Text File' do
+        ingest_workflow("test_file.txt", "text")
       end
     end
   end

@@ -1,7 +1,6 @@
 require 'colorize'
 require 'capybara/dsl'
 require 'capybara/rspec'
-require 'byebug'
 
 RSpec.configure do |config|
   config.color = true
@@ -22,15 +21,15 @@ def get_config(key)
 end
 
 def sleep_time_ingest
-  @test_config.fetch('sleep-times', {}).fetch('ingest', 10)
+  @test_config.fetch('sleep-times', {}).fetch('ingest', 10).to_i
 end
 
 def sleep_time_assemble
-  @test_config.fetch('sleep-times', {}).fetch('assemble', 10)
+  @test_config.fetch('sleep-times', {}).fetch('assemble', 10).to_i
 end
 
 def sleep_time_download
-  @test_config.fetch('sleep-times', {}).fetch('download', 10)
+  @test_config.fetch('sleep-times', {}).fetch('download', 10).to_i
 end
 
 def encoding_usecases
@@ -46,7 +45,7 @@ def guest_collections
 end
 
 def non_guest_actions
-  @test_config.fetch('non_guest_actions', {collections: []})
+  @test_config.fetch('non_guest_actions', {})
 end
 
 def non_guest_collections
@@ -54,16 +53,16 @@ def non_guest_collections
 end
 
 def all_collections
-  coll = [] 
-  guest_collections.each do |c|
-    coll.append(c)
-  end
-  non_guest_collections.each do |c|
-    coll.append(c)
-  end
-  coll
+  guest_collections + non_guest_collections
 end
 
+def login_user
+  non_guest_actions.fetch('login', {}).fetch('user', '')
+end
+
+def login_password
+  non_guest_actions.fetch('login', {}).fetch('password', '')
+end
 
 def encoding_variations(fk)
     # return [key]

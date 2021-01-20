@@ -9,9 +9,9 @@ constants:
     file_redirect_match: 'http://(localhost|uc3-mrtdocker.*-dev.cdlib.org):8088/.*'
 globals: &globals
   sleep-times:
-    - ingest: 80   # run full ingest (ingest, store, inventory)
-    - assemble: 30 # object assembly ready
-    - download: 10 # assembly zip download
+    ingest: 80   # run full ingest (ingest, store, inventory)
+    assemble: 30 # object assembly ready
+    download: 10 # assembly zip download
   encoding-tests:
     - md: 'README.md'
     - space: 'README 1.md'
@@ -35,9 +35,8 @@ docker: &docker
     - coll: cdl_dryaddev
       <<: *MINIO_LOCAL
   non_guest_actions:
-  - session: 'default user'
     login:
-    - user: merritt-test
+      user: merritt-test
       password: password
     collections:
     - coll: merritt_demo
@@ -61,9 +60,8 @@ stage: &stage
     - coll: ucb_ist_research_hub_doi
       <<: *MINIO
   non_guest_actions:
-  - session: 'default user'
     login:
-    - user: {!SSM: integ-tests/for-stage/user}
+      user: {!SSM: integ-tests/for-stage/user}
       password: {!SSM: integ-tests/for-stage/user}
     collections:
     - coll: merritt_demo
@@ -81,7 +79,7 @@ production: &production
       <<: *AWS
   non_guest_actions:
     login:
-    - user: {!SSM: integ-tests/for-prod/user}
+      user: {!SSM: integ-tests/for-prod/user}
       password: {!SSM: integ-tests/for-prod/user}
     collections:
     - coll: merritt_demo
@@ -89,3 +87,4 @@ production: &production
       submit: true
 default:
   <<: *development
+
