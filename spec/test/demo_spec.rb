@@ -1,70 +1,11 @@
 require 'spec_helper.rb'
 require 'webdrivers/chromedriver'
 require 'cgi'
+require_relative '../lib/test_prefix'
 
 sleep 1
 
-class Prefix
-  @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M')
-  @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml')
-
-  def self.localid_prefix
-    @@localid_prefix
-  end
-
-  def self.config_file
-    @@config_file
-  end
-
-  # if set to 0, then all cases will be run
-  def self.max_cases 
-    0
-  end
-
-  def self.encfiles
-    max = max_cases
-    cases = {
-      md: 'README.md',
-      space: 'README 1.md',
-      plus: 'README+1.md',
-      percent: 'README %AF.md',
-      accent: 'README cliché.md', #Copied from a web page, not utf-8 representation
-      pipe: 'README|pipe.md',
-      japanese_char: 'こんにちは.md',
-      hebrew_char: 'שלום',
-      arabic_char: 'مرحبا',
-      emoji: 'file☠☡☢☣.txt',
-      double_dot: 'file..name..with..dots.txt',
-      amper: 'file & name.txt',
-      math: '∑a ≤ b.txt',
-      encode1: CGI.unescape('javois%CC%8C_et_al_data.xls'),
-      encode2: CGI.unescape('javoi%C5%A1_et_al_data.xls')
-    }
-    return cases if max == 0
-    rcases = {}
-    cases.each do |fk, file|
-      rcases[fk] = file 
-      return rcases if rcases.size >= max
-    end 
-    rcases
-  end
-
-  def self.sleep_time_ingest
-    80
-  end
-
-  def self.sleep_time_download
-    30
-  end
-
-  def self.variations(key)
-    # return [key]
-    return [ key, "#{key}_z" ]
-  end
-
-end
-
-puts Prefix.localid_prefix
+puts TestObjectPrefix.localid_prefix
 
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   def get_object_count
@@ -91,7 +32,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   end
 
   before(:each) do
-    @session = create_web_session(Prefix.config_file)
+    @session = create_web_session(TestObjectPrefix.config_file)
     Dir.chdir "/tmp"
   end
 
@@ -232,7 +173,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.within("section h1") do
           expect(@session.text).to have_content("Submission Received")
         end
-        stime = Prefix.sleep_time_ingest
+        stime = sleep_time_ingest
         puts "\t -- sleep #{stime} (to allow ingests to complete)"
         sleep stime
       end
@@ -257,26 +198,26 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
       end
 
-      Prefix.encfiles.each do |fk, file|
-        Prefix.variations(fk).each do |file_key| 
-          describe "#{Prefix.localid_prefix}_#{file_key}: #{file}" do
+      encoding_usecases.each do |fk, file|
+        encoding_variations(fk).each do |file_key| 
+          describe "#{TestObjectPrefix.localid_prefix}_#{file_key}: #{file}" do
             it "ingest file #{file}" do
               if file_key.end_with?('_z')
-                upload_zip_file(file, Prefix.localid_prefix, file_key)
+                upload_zip_file(file, TestObjectPrefix.localid_prefix, file_key)
               else
-                upload_regular_file(file, Prefix.localid_prefix, file_key)                
+                upload_regular_file(file, TestObjectPrefix.localid_prefix, file_key)                
               end
             end
 
             it "retrieve file from obj page: #{file}" do
-              check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
               @session.find_link(file)
               @session.click_link(file)
               expect(@session.body.length).not_to eq(0)
             end
   
             it "retrieve file from ver page: #{file}" do
-              check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
               @session.find_link('Version 1')
               @session.click_link('Version 1')
               @session.find_link(file)
@@ -285,7 +226,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             end
    
             it "download object" do
-              ark = check_file_obj_page(file, Prefix.localid_prefix, file_key)
+              ark = check_file_obj_page(file, TestObjectPrefix.localid_prefix, file_key)
               @session.find_button('Download object')
               @session.click_button('Download object')
   
@@ -296,15 +237,15 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
                 expect(@session.text).to have_content('Preparing Object for Download')
               end
 
-              stime = Prefix.sleep_time_download
-              puts "\t -- sleep #{stime} (to allow download to complete)"
+              stime = sleep_time_assemble
+              puts "\t -- sleep #{stime} (to allow assembly to complete)"
               sleep stime
 
               @session.within('.ui-dialog-title') do
                 expect(@session.text).to have_content('Object is ready for Download')
               end
 
-              sleep 10
+              sleep sleep_time_download
 
               @session.find('a.obj_download').click
               cmd = "bsdtar tf #{ark}.zip|grep producer"

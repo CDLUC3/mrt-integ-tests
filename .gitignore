@@ -1,5 +1,4 @@
 vendor/
 lib/
 .byebug_history
-config/test_config.yml
 .DS_Store

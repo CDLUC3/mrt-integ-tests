@@ -21,6 +21,27 @@ def get_config(key)
   @test_config[key]
 end
 
+def sleep_time_ingest
+  @test_config.fetch('sleep-times', {}).fetch('ingest', 10)
+end
+
+def sleep_time_assemble
+  @test_config.fetch('sleep-times', {}).fetch('assemble', 10)
+end
+
+def sleep_time_download
+  @test_config.fetch('sleep-times', {}).fetch('download', 10)
+end
+
+def encoding_usecases
+  @test_config.fetch('encfiles', {})
+end
+
+def encoding_variations(fk)
+    # return [key]
+    return [ key, "#{key}_z" ]
+end
+
 def create_web_session(config_file)
   @test_config = load_config(config_file)['default']
 
