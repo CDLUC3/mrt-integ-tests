@@ -31,8 +31,9 @@ globals: &globals
 docker: &docker
   <<: *globals
   guest_actions:
-  - coll: cdl_dryaddev
-    <<: *MINIO_LOCAL
+    collections:
+    - coll: cdl_dryaddev
+      <<: *MINIO_LOCAL
   non_guest_actions:
   - session: 'default user'
     login:
@@ -54,10 +55,11 @@ stage: &stage
   <<: *globals
   url: https://merritt-stage.cdlib.org
   guest_actions:
-  - coll: cdl_dashdev
-    <<: *AWS
-  - coll: ucb_ist_research_hub_doi
-    <<: *MINIO
+    collections:
+    - coll: cdl_dashdev
+      <<: *AWS
+    - coll: ucb_ist_research_hub_doi
+      <<: *MINIO
   non_guest_actions:
   - session: 'default user'
     login:
@@ -74,8 +76,9 @@ production: &production
   <<: *globals
   url: https://merritt.cdlib.org
   guest_actions:
-  - coll: cdl_uc3
-    <<: *AWS
+    collections:
+    - coll: cdl_uc3
+      <<: *AWS
   non_guest_actions:
     login:
     - user: {!SSM: integ-tests/for-prod/user}

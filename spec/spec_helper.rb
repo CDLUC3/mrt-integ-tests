@@ -37,6 +37,34 @@ def encoding_usecases
   @test_config.fetch('encfiles', {})
 end
 
+def guest_actions
+  @test_config.fetch('guest_actions', {})
+end
+
+def guest_collections
+  guest_actions.fetch('collections', [])
+end
+
+def non_guest_actions
+  @test_config.fetch('non_guest_actions', {collections: []})
+end
+
+def non_guest_collections
+  non_guest_actions.fetch('collections', [])
+end
+
+def all_collections
+  coll = [] 
+  guest_collections.each do |c|
+    coll.append(c)
+  end
+  non_guest_collections.each do |c|
+    coll.append(c)
+  end
+  coll
+end
+
+
 def encoding_variations(fk)
     # return [key]
     return [ key, "#{key}_z" ]

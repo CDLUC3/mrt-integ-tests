@@ -20,17 +20,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     @session.find(:xpath, "//table[@class='properties'][2]/tbody/tr[1]/th[1]/a").text
   end
 
-  def all_collections
-    coll = [] 
-    get_config('guest_collections').each do |c|
-      coll.append(c)
-    end
-    get_config('non_guest_collections').each do |c|
-      coll.append(c)
-    end
-    coll
-  end
-
   before(:each) do
     @session = create_web_session(TestObjectPrefix.config_file)
     Dir.chdir "/tmp"
