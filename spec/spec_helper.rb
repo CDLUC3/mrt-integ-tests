@@ -106,7 +106,7 @@ def authenticated_login
   @session.fill_in('login', with: login_user)
   @session.fill_in('password', with: login_password)
   @session.find('#submit_login').click
-  msg = @session.find("span.login-message").txt
+  msg = @session.find("span.login-message").text
   puts "  ==> #{msg}"
 end
 
@@ -129,7 +129,9 @@ end
 def visit_first_file
   text = get_first_user_file
   # the following does not work if there is a space in the filename
-  @session.click_link(text)
+  @session.within("table.properties:nth-of-type(2)") do
+    @session.click_link(text)
+  end
 end
 
 def visit_text_file(coll)

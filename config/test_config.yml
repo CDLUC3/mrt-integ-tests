@@ -79,15 +79,17 @@ production: &production
   url: https://merritt.cdlib.org
   guest_actions:
     collections:
-    - coll: cdl_uc3
+    - coll: ucb_open_context
       <<: *AWS
+    collections-no-access:
+    - coll: cdl_uc3
   non_guest_actions:
     login:
       user: "{!SSM: integ-tests/for-prod/user}"
       password: "{!SSM: integ-tests/for-prod/password}"
     collections:
     - coll: merritt_demo
-      <<: *MINIO
+      <<: *AWS
       submit: true
 default:
   <<: *development

@@ -93,20 +93,13 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Authenticated - file presigned download' do
-      all_collections.each do |coll|
+      non_guest_collections.each do |coll|
         visit_collection(coll)
         if get_object_count > 0
-          text = get_first_ark
-          @session.click_link(text)
-  
-          @session.click_link("Version 1")
-          text = get_first_user_file
-  
-          # the following does not work if there is a space in the filename
-          @session.click_link(text)
-          # print("#{@session.current_url}\n")
-          expect(@session.current_url).to match(coll['file_redirect_match'])
-        end
+          visit_first_object
+          visit_first_version
+          visit_text_file(coll)
+          end
       end
     end
 
@@ -161,7 +154,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end    
 
       it "Start download object for recently ingested object" do
-        check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
         ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
         @session.find_button('Download object')
         @session.click_button('Download object')
@@ -185,7 +177,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         cmd = "bsdtar tf #{ark}.zip|grep producer"
         listing = %x[ #{cmd} ]
         File.delete("#{ark}.zip")
-        expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
+        expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
       end    
     end
   end
