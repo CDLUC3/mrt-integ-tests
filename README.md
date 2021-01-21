@@ -19,14 +19,13 @@
 ## Docker Setup
 
 ```
-docker-compose build
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 ### Docker Test Execution
 
 ```
-docker-compose run --rm mrt-integ-tests
+docker-compose run --rm -e INTEG_TEST_ENV=stage mrt-integ-tests
 ```
 
 ### Cleanup

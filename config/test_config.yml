@@ -4,7 +4,7 @@ constants:
   - &MINIO
     file_redirect_match: 'https://cdl.s3.sdsc.edu/.*'
   - &WASABI
-    file_redirect_match: 'https://cdl.s3.sdsc.edu/.*'
+    file_redirect_match: 'https://s3.us-east-2.wasabisys.com/.*'
   - &MINIO_LOCAL
     file_redirect_match: 'http://(localhost|uc3-mrtdocker.*-dev.cdlib.org):8088/.*'
 globals: &globals
@@ -34,6 +34,8 @@ docker: &docker
     collections:
     - coll: cdl_dryaddev
       <<: *MINIO_LOCAL
+    #collections-no-access:
+    #- coll: ucla_digital_lib
   non_guest_actions:
     login:
       user: merritt-test
@@ -59,10 +61,12 @@ stage: &stage
       <<: *AWS
     - coll: ucb_ist_research_hub_doi
       <<: *MINIO
+    collections-no-access:
+    - coll: ucla_digital_lib
   non_guest_actions:
     login:
-      user: {!SSM: integ-tests/for-stage/user}
-      password: {!SSM: integ-tests/for-stage/user}
+      user: "{!SSM: integ-tests/for-stage/user}"
+      password: "{!SSM: integ-tests/for-stage/password}"
     collections:
     - coll: merritt_demo
       <<: *MINIO
@@ -79,8 +83,8 @@ production: &production
       <<: *AWS
   non_guest_actions:
     login:
-      user: {!SSM: integ-tests/for-prod/user}
-      password: {!SSM: integ-tests/for-prod/user}
+      user: "{!SSM: integ-tests/for-prod/user}"
+      password: "{!SSM: integ-tests/for-prod/password}"
     collections:
     - coll: merritt_demo
       <<: *MINIO
