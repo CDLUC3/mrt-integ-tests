@@ -1,0 +1,96 @@
+constants:
+  - &AWS
+    file_redirect_match: '.*\.s3.us-west-2.amazonaws.com/.*'
+  - &MINIO
+    file_redirect_match: 'https://cdl.s3.sdsc.edu/.*'
+  - &WASABI
+    file_redirect_match: 'https://s3.us-east-2.wasabisys.com/.*'
+  - &MINIO_LOCAL
+    file_redirect_match: 'http://(localhost|uc3-mrtdocker.*-dev.cdlib.org):8088/.*'
+globals: &globals
+  sleep-times:
+    ingest: 80   # run full ingest (ingest, store, inventory)
+    assemble: 30 # object assembly ready
+    download: 10 # assembly zip download
+  encoding-tests:
+    - md: 'README.md'
+    - space: 'README 1.md'
+    - plus: 'README+1.md'
+    - percent: 'README %AF.md'
+    - accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
+    - pipe: 'README|pipe.md'
+    - japanese_char: 'こんにちは.md'
+    - hebrew_char: 'שלום'
+    - arabic_char: 'مرحبا'
+    - emoji: 'file☠☡☢☣.txt'
+    - double_dot: 'file..name..with..dots.txt'
+    - amper: 'file & name.txt'
+    - math: '∑a ≤ b.txt'
+    - encode1: "javoiš_et_al_data.xls" #CGI.unescape('javois%CC%8C_et_al_data.xls'),
+    - encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
+docker: &docker
+  <<: *globals
+  guest_actions:
+    collections:
+    - coll: cdl_dryaddev
+      <<: *MINIO_LOCAL
+    #collections-no-access:
+    #- coll: ucla_digital_lib
+  non_guest_actions:
+    login:
+      user: merritt-test
+      password: password
+    collections:
+    - coll: merritt_demo
+      <<: *MINIO_LOCAL
+      submit: true
+local: &local
+  <<: *globals
+  url: 'http://localhost:8089'
+  << : *docker
+development: &development
+  <<: *globals
+  url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
+  << : *docker
+stage: &stage
+  <<: *globals
+  url: https://merritt-stage.cdlib.org
+  guest_actions:
+    collections:
+    - coll: cdl_dashdev
+      <<: *AWS
+    - coll: ucb_ist_research_hub_doi
+      <<: *MINIO
+    collections-no-access:
+    - coll: ucla_digital_lib
+  non_guest_actions:
+    login:
+      user: "{!SSM: integ-tests/for-stage/user}"
+      password: "{!SSM: integ-tests/for-stage/password}"
+    collections:
+    - coll: merritt_demo
+      <<: *MINIO
+      submit: true
+    - coll: cdl_wasabi
+      <<: *WASABI
+      submit: true
+production: &production
+  <<: *globals
+  url: https://merritt.cdlib.org
+  guest_actions:
+    collections:
+    - coll: ucb_open_context
+      <<: *AWS
+    collections-no-access:
+    - coll: cdl_uc3
+  non_guest_actions:
+    login:
+      user: "{!SSM: integ-tests/for-prod/user}"
+      password: "{!SSM: integ-tests/for-prod/password}"
+    collections:
+    - coll: merritt_demo
+      <<: *AWS
+      submit: true
+default:
+  <<: *development
+
