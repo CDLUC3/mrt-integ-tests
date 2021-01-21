@@ -2,8 +2,6 @@
 
 ## Setup
 
-- Copy `config/test_config.yml.template` to `config/test_config.yml`
-- Customize the credentials and default environment
 - Choose to run the application (1)locally with Ruby or (2)inside docker
 
 ## Local Setup
@@ -24,8 +22,22 @@ docker-compose up -d --build
 
 ### Docker Test Execution
 
+#### Development
+The development environment must be started explicitly.
+```
+docker-compose run --rm -e INTEG_TEST_ENV=development mrt-integ-tests
+```
+
+#### Stage
+This must be run from an environment with SSM enabled
 ```
 docker-compose run --rm -e INTEG_TEST_ENV=stage mrt-integ-tests
+```
+
+#### Production
+This must be run from an environment with SSM enabled
+```
+docker-compose run --rm -e INTEG_TEST_ENV=production mrt-integ-tests
 ```
 
 ### Cleanup
