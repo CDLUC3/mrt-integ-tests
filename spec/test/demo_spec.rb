@@ -125,14 +125,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         end
       end
 
-      it 'Ingest Text File with unique local id' do
-        if @file_key.end_with?('_z')
-          upload_zip_file(@file, TestObjectPrefix.localid_prefix, @file_key)
-        else
-          upload_regular_file(@file, TestObjectPrefix.localid_prefix, @file_key)                
-        end
-      end
-
       it "Search for recently ingested object's local id" do
         check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
       end    

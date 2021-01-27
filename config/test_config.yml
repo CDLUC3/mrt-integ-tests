@@ -11,7 +11,7 @@ globals: &globals
   sleep-times:
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
-    download: 10 # assembly zip download
+    download: 15 # assembly zip download
   encoding-tests:
     - md: 'README.md'
     - space: 'README 1.md'
@@ -44,6 +44,22 @@ docker: &docker
     - coll: merritt_demo
       <<: *MINIO_LOCAL
       submit: true
+docker-devbucket: &docker-devbucket
+  <<: *globals
+  guest_actions:
+    collections:
+    - coll: cdl_dryaddev
+      <<: *MINIO_LOCAL
+    #collections-no-access:
+    #- coll: ucla_digital_lib
+  non_guest_actions:
+    login:
+      user: merritt-test
+      password: password
+    collections:
+    - coll: merritt_demo
+      <<: *AWS
+      submit: true
 local: &local
   <<: *globals
   url: 'http://localhost:8089'
@@ -52,6 +68,10 @@ development: &development
   <<: *globals
   url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
   << : *docker
+development-devdb:
+  <<: *globals
+  url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
+  << : *docker-devbucket
 stage: &stage
   <<: *globals
   url: https://merritt-stage.cdlib.org
