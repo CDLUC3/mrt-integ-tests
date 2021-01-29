@@ -10,13 +10,6 @@ RSpec.configure do |config|
   config.include Capybara::DSL
 end
 
-def load_config(path)
-  raise Exception, "Config file #{path} not found!" unless File.exist?(path)
-  raise Exception, "Config file #{path} is empty!" if File.size(path) == 0
-
-  conf     = YAML.load_file(path)
-end
-
 def get_config(key)
   @test_config[key]
 end
@@ -98,16 +91,19 @@ end
 
 def authenticated_login
   @session.visit '/'
+  
   @session.within "header" do
     @session.find_link('Login')
     @session.click_link('Login')
   end
 
+  puts "Login as #{login_user}"
   @session.fill_in('login', with: login_user)
   @session.fill_in('password', with: login_password)
   @session.find('#submit_login').click
+
+  sleep 1
   msg = @session.find("span.login-message").text
-  puts "  ==> #{msg}"
 end
 
 def visit_collection(coll)
@@ -207,14 +203,14 @@ def check_file_obj_page(fname, prefix, seq)
   @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
 end
 
-def create_web_session(config_file)
-  envname = TestObjectPrefix.integ_test_environment
-  @test_config = Uc3Ssm::ConfigResolver.new({
-    def_value: 'N/A' 
-  }).resolve_file_values({
-    file: config_file, 
-    return_key: envname
-  })
+def test_files
+  [
+    {txt: 'test_filex2.txt'}
+  ]
+end
+
+def create_web_session
+  @test_config = TestObjectPrefix.get_yaml_config
 
   Capybara.app_host = @test_config['url']
   Capybara.run_server = false # don't start Rack

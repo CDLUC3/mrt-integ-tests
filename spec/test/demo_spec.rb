@@ -10,7 +10,7 @@ puts "#{TestObjectPrefix.integ_test_environment}: #{TestObjectPrefix.localid_pre
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
   before(:each) do
-    @session = create_web_session(TestObjectPrefix.config_file)
+    @session = create_web_session
     Dir.chdir "/tmp"
   end
 
@@ -86,7 +86,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
-
   describe 'Authenticated access' do
     before(:each) do
       authenticated_login
@@ -103,75 +102,76 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe "ingest and download files" do 
-      before(:each) do
-        @file = "test_file.txt"
-        @file_key =  "text"
-        skip if non_guest_collections.length == 0
-        coll = non_guest_collections.first
-        visit_collection(coll)
-        sleep 2
-      end
-
-      it 'Confirm add object link' do
-        @session.find_link("Add object")
-      end
-
-      it 'Ingest Text File with unique local id' do
-        if @file_key.end_with?('_z')
-          upload_zip_file(@file, TestObjectPrefix.localid_prefix, @file_key)
-        else
-          upload_regular_file(@file, TestObjectPrefix.localid_prefix, @file_key)                
+    TestObjectPrefix.test_files.each do |fk, file|
+      describe "ingest and download files -- #{fk} -- #{file}" do 
+        before(:each) do
+          @file = file
+          @file_key = fk
+          skip if non_guest_collections.length == 0
+          coll = non_guest_collections.first
+          visit_collection(coll)
+          sleep 2
         end
+
+        it 'Confirm add object link' do
+          @session.find_link("Add object")
+        end
+
+        it 'Ingest Text File with unique local id' do
+          if @file_key.end_with?('_z')
+            upload_zip_file(@file, TestObjectPrefix.localid_prefix, @file_key)
+          else
+            upload_regular_file(@file, TestObjectPrefix.localid_prefix, @file_key)                
+          end
+        end
+
+        it "Search for recently ingested object's local id" do
+          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+        end    
+
+        it "Search for test file on object page" do
+          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          @session.find_link(@file)
+          @session.click_link(@file)
+          expect(@session.body.length).not_to eq(0)
+        end    
+
+        it "Search for test file on object version page" do
+          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          @session.find_link('Version 1')
+          @session.click_link('Version 1')
+          @session.find_link(@file)
+          @session.click_link(@file)
+          expect(@session.body.length).not_to eq(0)
+        end    
+
+        it "Start download object for recently ingested object" do
+          ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          @session.find_button('Download object')
+          @session.click_button('Download object')
+      
+          sleep 2
+      
+          @session.find('div.ui-dialog')
+          @session.within('.ui-dialog-title') do
+            expect(@session.text).to have_content('Preparing Object for Download')
+          end
+      
+          sleep_label(sleep_time_assemble, "to allow assembly to complete")
+      
+          @session.within('.ui-dialog-title') do
+            expect(@session.text).to have_content('Object is ready for Download')
+          end
+      
+          sleep_label(sleep_time_download, "to allow download to complete")
+      
+          @session.find('a.obj_download').click
+          cmd = "bsdtar tf #{ark}.zip|grep producer"
+          listing = %x[ #{cmd} ]
+          File.delete("#{ark}.zip")
+          expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
+        end    
       end
-
-      it "Search for recently ingested object's local id" do
-        check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-      end    
-
-      it "Search for test file on object page" do
-        check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-        @session.find_link(@file)
-        @session.click_link(@file)
-        expect(@session.body.length).not_to eq(0)
-      end    
-
-      it "Search for test file on object version page" do
-        check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-        @session.find_link('Version 1')
-        @session.click_link('Version 1')
-        @session.find_link(@file)
-        @session.click_link(@file)
-        expect(@session.body.length).not_to eq(0)
-      end    
-
-      it "Start download object for recently ingested object" do
-        ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-        @session.find_button('Download object')
-        @session.click_button('Download object')
-      
-        sleep 2
-      
-        @session.find('div.ui-dialog')
-        @session.within('.ui-dialog-title') do
-          expect(@session.text).to have_content('Preparing Object for Download')
-        end
-      
-        sleep_label(sleep_time_assemble, "to allow assembly to complete")
-      
-        @session.within('.ui-dialog-title') do
-          expect(@session.text).to have_content('Object is ready for Download')
-        end
-      
-        sleep_label(sleep_time_download, "to allow download to complete")
-      
-        @session.find('a.obj_download').click
-        cmd = "bsdtar tf #{ark}.zip|grep producer"
-        listing = %x[ #{cmd} ]
-        File.delete("#{ark}.zip")
-        expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
-      end    
     end
   end
-
 end

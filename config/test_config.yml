@@ -12,22 +12,31 @@ globals: &globals
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
     download: 15 # assembly zip download
-  encoding-tests:
-    - md: 'README.md'
-    - space: 'README 1.md'
-    - plus: 'README+1.md'
-    - percent: 'README %AF.md'
-    - accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
-    - pipe: 'README|pipe.md'
-    - japanese_char: 'こんにちは.md'
-    - hebrew_char: 'שלום'
-    - arabic_char: 'مرحبا'
-    - emoji: 'file☠☡☢☣.txt'
-    - double_dot: 'file..name..with..dots.txt'
-    - amper: 'file & name.txt'
-    - math: '∑a ≤ b.txt'
-    - encode1: "javoiš_et_al_data.xls" #CGI.unescape('javois%CC%8C_et_al_data.xls'),
-    - encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
+  test-files: 
+    none:
+    default:
+      txt: 'test.txt'
+    test2: 
+      md: 'README.md'
+      space: 'README 1.md'
+      plus: 'README+1.md'
+      question: 'README?1.md'
+    encoding-tests:
+      md: 'README.md'
+      space: 'README 1.md'
+      plus: 'README+1.md'
+      percent: 'README %AF.md'
+      accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
+      pipe: 'README|pipe.md'
+      japanese_char: 'こんにちは.md'
+      hebrew_char: 'שלום'
+      arabic_char: 'مرحبا'
+      emoji: 'file☠☡☢☣.txt'
+      double_dot: 'file..name..with..dots.txt'
+      amper: 'file & name.txt'
+      math: '∑a ≤ b.txt'
+      encode1: "javoiš_et_al_data.xls" #CGI.unescape('javois%CC%8C_et_al_data.xls')
+      encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
 docker: &docker
   <<: *globals
   guest_actions:
@@ -66,15 +75,15 @@ local: &local
   << : *docker
 development: &development
   <<: *globals
-  url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
+  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
   << : *docker
 development-devdb:
   <<: *globals
-  url: 'http://uc3-mrtdocker01x2-dev.cdlib.org:8089'
+  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
   << : *docker-devbucket
 stage: &stage
   <<: *globals
-  url: https://merritt-stage.cdlib.org
+  url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
   guest_actions:
     collections:
     - coll: cdl_dashdev
@@ -96,7 +105,7 @@ stage: &stage
       submit: true
 production: &production
   <<: *globals
-  url: https://merritt.cdlib.org
+  url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt.cdlib.org}"
   guest_actions:
     collections:
     - coll: ucb_open_context
