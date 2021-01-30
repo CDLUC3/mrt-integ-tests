@@ -1,5 +1,4 @@
 vendor/
-lib/
 .byebug_history
 .DS_Store
 .bundle/
