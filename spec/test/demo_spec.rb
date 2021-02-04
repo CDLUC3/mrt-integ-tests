@@ -25,6 +25,17 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
+   describe 'Get version from footer' do
+    it 'Print footer' do
+      @session.visit '/'
+      ver = "Version undefined"
+      if @session.has_css?("span.version-number")
+        ver = @session.find("span.version-number").text
+      end
+      puts("\t==> #{ver}")
+    end
+  end
+
   describe 'Unauthenticated Access' do
     before(:each) do
       guest_login
