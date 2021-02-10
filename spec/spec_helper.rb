@@ -250,7 +250,9 @@ def end_web_session(session)
 end
 
 def check_storage_state
-  @session.visit(@test_config['storage-state'])
+  url = @test_config['storage-state']
+  return if url.empty?
+  @session.visit(url)
   t = @session.find("body pre").text
   j = JSON.parse(t)
   node = j.fetch("sto:storageServiceState", {})

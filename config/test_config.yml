@@ -72,12 +72,14 @@ docker-devbucket: &docker-devbucket
 local: &local
   <<: *globals
   url: 'http://localhost:8089'
-  storage-state: 'http://localhost:8081/store/state?t=json'
+  # The storage state test fails when talking to a minio container vs a live service
+  storage-state: ''
   << : *docker
 development: &development
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
-  storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
+  # The storage state test fails when talking to a minio container vs a live service
+  storage-state: ''
   << : *docker
 development-devdb:
   <<: *globals
