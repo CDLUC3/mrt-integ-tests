@@ -25,7 +25,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
-   describe 'Get version from footer' do
+  describe 'Get version from footer' do
     it 'Print footer' do
       @session.visit '/'
       ver = "Version undefined"
@@ -35,6 +35,13 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       puts("\t==> #{ver}")
     end
   end
+
+  describe 'Check storage service state' do
+    it 'Check for valid storage nodes' do
+      check_storage_state
+    end
+  end
+
 
   describe 'Unauthenticated Access' do
     before(:each) do

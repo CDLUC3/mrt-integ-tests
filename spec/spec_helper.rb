@@ -248,3 +248,14 @@ end
 def end_web_session(session)
   session.reset!
 end
+
+def check_storage_state
+  @session.visit(@test_config['storage-state'])
+  t = @session.find("body pre").text
+  j = JSON.parse(t)
+  node = j.fetch("sto:storageServiceState", {})
+    .fetch("sto:nodeStates", {})
+    .fetch("sto:nodeState", [])
+  puts(node)
+  expect(node.length).to be > 0
+end

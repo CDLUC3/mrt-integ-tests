@@ -72,18 +72,22 @@ docker-devbucket: &docker-devbucket
 local: &local
   <<: *globals
   url: 'http://localhost:8089'
+  storage-state: 'http://localhost:8081/store/state?t=json'
   << : *docker
 development: &development
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
+  storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
   << : *docker
 development-devdb:
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
+  storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
   << : *docker-devbucket
 stage: &stage
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
+  storage-state: "{!SSM: integ-tests/for-stage/storage-state}"
   guest_actions:
     collections:
     - coll: cdl_dashdev
@@ -106,6 +110,7 @@ stage: &stage
 production: &production
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt.cdlib.org}"
+  storage-state: "{!SSM: integ-tests/for-prod/storage-state}"
   guest_actions:
     collections:
     - coll: ucb_open_context
