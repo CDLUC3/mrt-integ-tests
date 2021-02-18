@@ -128,6 +128,13 @@ def visit_first_file
   @session.within("table.properties:nth-of-type(2)") do
     @session.click_link(text)
   end
+  expect(@session.body.length).not_to eq(0)
+  if @session.has_xpath?('h1')
+    @session.within('h1') do
+      puts(@session.text)
+      expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+    end
+  end
 end
 
 def visit_text_file(coll)

@@ -135,7 +135,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           @session.find_link("Add object")
         end
 
-        it 'Ingest Text File with unique local id' do
+        it "Ingest Text File with unique local id: #{@file}" do
           if @file_key.end_with?('_z')
             upload_zip_file(@file, TestObjectPrefix.localid_prefix, @file_key)
           else
@@ -152,6 +152,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           @session.find_link(@file)
           @session.click_link(@file)
           expect(@session.body.length).not_to eq(0)
+          if @session.has_css?('h1')
+            @session.within('h1') do
+              puts(@session.text)
+              expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+            end
+          end
         end    
 
         it "Search for test file on object version page" do
@@ -161,6 +167,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           @session.find_link(@file)
           @session.click_link(@file)
           expect(@session.body.length).not_to eq(0)
+         if @session.has_css?('h1')
+            @session.within('h1') do
+              puts(@session.text)
+              expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+            end
+          end
         end    
 
         it "Start download object for recently ingested object" do
