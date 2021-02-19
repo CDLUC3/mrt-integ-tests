@@ -137,6 +137,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         describe "ingest file with key #{fk}" do 
           it "Ingest #{file}" do
             upload_regular_file(fk)
+            sleep 5
           end
         end
       end

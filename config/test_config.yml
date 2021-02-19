@@ -44,6 +44,12 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests-basic
       ingest-files:
+    basic-ingest:
+      encoding-zip: 
+        <<: *encoding-tests-basic
+      ingest-files:
+        space: 'README 1.md'
+        plus: 'README+1.md'
     encoding-tests:
       encoding-zip: 
         <<: *encoding-tests
