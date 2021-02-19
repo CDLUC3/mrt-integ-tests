@@ -160,16 +160,6 @@ def upload_regular_file(key)
   add_file(f, fname, prefix, key)
 end
 
-def upload_zip_file(fname, prefix, seq)
-  path = create_filename(fname)
-  zippath = '/tmp/upload.zip'
-  f = create_file(path)
-  cmd = "zip #{zippath} '#{path}'"
-  %x[ #{cmd} ]
-  File.delete(f)
-  add_file(zippath, fname, prefix, seq)
-end
-
 def sleep_label(stime, label)
   puts "   --> sleep #{stime} (#{label})"
   sleep stime
@@ -215,6 +205,50 @@ def check_file_obj_page(fname, prefix, seq)
     expect(@session.text).to have_content(title)
   end
   @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
+end
+
+def find_file_on_version_page(file)
+  @session.find_link('Version 1')
+  @session.click_link('Version 1')
+  @session.find_link(file)
+  @session.click_link(file)
+  validate_file_page
+end
+
+def validate_file_page
+  expect(@session.body.length).not_to eq(0)
+  if @session.has_css?('h1')
+    @session.within('h1') do
+      puts(@session.text)
+      expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+    end
+  end
+end
+
+def perform_object_download(zipname)
+  @session.find_button('Download object')
+  @session.click_button('Download object')
+
+  sleep 2
+
+  @session.find('div.ui-dialog')
+  @session.within('.ui-dialog-title') do
+    expect(@session.text).to have_content('Preparing Object for Download')
+  end
+
+  sleep_label(sleep_time_assemble, "to allow assembly to complete")
+
+  @session.within('.ui-dialog-title') do
+    expect(@session.text).to have_content('Object is ready for Download')
+  end
+
+  sleep_label(sleep_time_download, "to allow download to complete")
+
+  @session.find('a.obj_download').click
+  cmd = "bsdtar tf #{zipname}|grep producer"
+  listing = %x[ #{cmd} ]
+  File.delete("#{zipname}")
+  listing
 end
 
 def test_files

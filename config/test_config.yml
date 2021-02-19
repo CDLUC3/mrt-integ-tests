@@ -8,34 +8,53 @@ constants:
   - &MINIO_LOCAL
     file_redirect_match: 'http://(localhost|uc3-mrtdocker.*-dev.cdlib.org):8088/.*'
 globals: &globals
+  # full set of files that will be created in a zip ingest in order to test presigned retrieval of each
+  encoding-tests-basic: &encoding-tests-basic
+    md: 'README.md'
+    space: 'README 1.md'
+    plus: 'README+1.md'
+    percent: 'README %AF.md'
+    accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
+    pipe: 'README|pipe.md'
+  encoding-tests: &encoding-tests
+    << : *encoding-tests-basic
+    japanese_char: 'こんにちは.md'
+    hebrew_char: 'שלום'
+    arabic_char: 'مرحبا'
+    emoji: 'file☠☡☢☣.txt'
+    double_dot: 'file..name..with..dots.txt'
+    amper: 'file & name.txt'
+    math: '∑a ≤ b.txt'
+    encode1: "javoiš_et_al_data.xls" #CGI.unescape('javois%CC%8C_et_al_data.xls')
+    encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
+  four-byte: &four-byte
+    ckj_4byte: '𠜎𠵿.txt'
+    emoji2: 'images🙃emo.md'
   sleep-times:
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
     download: 15 # assembly zip download
+  # each of the keys listed below will contain a set of files to load
+  #   a key is passed with the environment variable INGEST_FILES
   test-files: 
     none:
+      encoding-zip:
+      ingest-files:
     default:
-      txt: 'test.txt'
-    test2: 
-      plus2: 'TDR Acc+H2O.md'
-      emoji: 'file☠☡☢☣.txt'
-      emoji2: 'images🙃emo.md'
+      encoding-zip: 
+        <<: *encoding-tests-basic
+      ingest-files:
     encoding-tests:
-      md: 'README.md'
-      space: 'README 1.md'
-      plus: 'README+1.md'
-      percent: 'README %AF.md'
-      accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
-      pipe: 'README|pipe.md'
-      japanese_char: 'こんにちは.md'
-      hebrew_char: 'שלום'
-      arabic_char: 'مرحبا'
-      emoji: 'file☠☡☢☣.txt'
-      double_dot: 'file..name..with..dots.txt'
-      amper: 'file & name.txt'
-      math: '∑a ≤ b.txt'
-      encode1: "javoiš_et_al_data.xls" #CGI.unescape('javois%CC%8C_et_al_data.xls')
-      encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
+      encoding-zip: 
+        <<: *encoding-tests
+      ingest-files:
+    four-byte-cases: 
+      encoding-zip: 
+        <<: *encoding-tests
+        << : *four-byte
+      ingest-files:
+        plus2: 'TDR Acc+H2O.md'
+        << : *four-byte
 docker: &docker
   <<: *globals
   guest_actions:
