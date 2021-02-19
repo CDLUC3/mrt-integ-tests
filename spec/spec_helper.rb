@@ -97,7 +97,6 @@ def authenticated_login
     @session.click_link('Login')
   end
 
-  puts "Login as #{login_user}"
   @session.fill_in('login', with: login_user)
   @session.fill_in('password', with: login_password)
   @session.find('#submit_login').click
@@ -108,7 +107,6 @@ end
 
 def visit_collection(coll)
   collname = coll['coll']
-  puts "    -- Collection #{collname}"
   @session.visit "/m/#{collname}"
 end
 
@@ -154,10 +152,12 @@ def create_file(path)
   File.join(path)
 end
 
-def upload_regular_file(fname, prefix, seq)
+def upload_regular_file(key)
+  fname = TestObjectPrefix.test_files[key]
+  prefix = TestObjectPrefix.localid_prefix
   path = create_filename(fname)
   f = create_file(path)
-  add_file(f, fname, prefix, seq)
+  add_file(f, fname, prefix, key)
 end
 
 def upload_zip_file(fname, prefix, seq)
@@ -171,13 +171,21 @@ def upload_zip_file(fname, prefix, seq)
 end
 
 def sleep_label(stime, label)
-  puts "\t -- sleep #{stime} (#{label})"
+  puts "   --> sleep #{stime} (#{label})"
   sleep stime
 end
 
+def local_id(prefix, seq)
+  "#{prefix}_#{seq}"
+end
+
+def make_title(localid, fname)
+  "#{localid} #{fname}"
+end
+
 def add_file(f, fname, prefix, seq)
-  localid = "#{prefix}_#{seq}"
-  title = "#{localid} #{fname}"
+  localid = local_id(prefix, seq)
+  title = make_title(localid, fname)
 
   @session.click_link('Add object')
   @session.find("input#file")
@@ -189,12 +197,11 @@ def add_file(f, fname, prefix, seq)
   @session.within("section h1") do
     expect(@session.text).to have_content("Submission Received")
   end
-  sleep_label(sleep_time_ingest, "to allow ingests to complete")
 end
 
 def check_file_obj_page(fname, prefix, seq)
-  localid = "#{prefix}_#{seq}"
-  title = "#{localid} #{fname}"
+  localid = local_id(prefix, seq)
+  title = make_title(localid, fname)
 
   @session.fill_in('terms', with: localid)
   @session.find("input[name='commit']").click

@@ -32,4 +32,8 @@ class TestObjectPrefix
       return {} if files.nil?
       files
     end
+
+    def self.sleep_time_ingest_global
+      files = @@config.fetch('sleep-times', {}).fetch('ingest', 10).to_i
+    end
   end
