@@ -18,7 +18,8 @@ globals: &globals
       txt: 'test.txt'
     test2: 
       plus2: 'TDR Acc+H2O.md'
-      emoji: 'images🙃emo.jpeg'
+      emoji: 'file☠☡☢☣.txt'
+      emoji2: 'images🙃emo.md'
     encoding-tests:
       md: 'README.md'
       space: 'README 1.md'
