@@ -59,6 +59,11 @@ globals: &globals
         <<: *encoding-tests
         << : *four-byte
       ingest-files:
+    four-byte-ingest: 
+      encoding-zip: 
+        <<: *encoding-tests
+        << : *four-byte
+      ingest-files:
         plus2: 'TDR Acc+H2O.md'
         << : *four-byte
 docker: &docker
