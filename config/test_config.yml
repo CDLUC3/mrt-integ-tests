@@ -17,11 +17,8 @@ globals: &globals
     default:
       txt: 'test.txt'
     test2: 
-      md: 'README.md'
-      space: 'README 1.md'
-      plus: 'README+1.md'
       plus2: 'TDR Acc+H2O.md'
-      question: 'README?1.md'
+      emoji: 'images🙃emo.jpeg'
     encoding-tests:
       md: 'README.md'
       space: 'README 1.md'
