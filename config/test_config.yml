@@ -12,7 +12,7 @@ globals: &globals
   encoding-tests-basic: &encoding-tests-basic
     md: 'README.md'
     space: 'README 1.md'
-    plus: 'README+1.md'
+    plus: 'README+2.md'
     percent: 'README %AF.md'
     accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
     pipe: 'README|pipe.md'
@@ -44,6 +44,13 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests-basic
       ingest-files:
+    plus:
+      encoding-zip: 
+        space: 'README 1.md'
+        plus: 'README+2.md'
+      ingest-files:
+        space: 'README 1.md'
+        plus: 'README+2.md'
     basic-ingest:
       encoding-zip: 
         <<: *encoding-tests-basic
