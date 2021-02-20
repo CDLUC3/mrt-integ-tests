@@ -120,88 +120,108 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    TestObjectPrefix.test_files.each do |fk, file|
-      describe "ingest and download files -- #{fk} -- #{file}" do 
+    describe 'ingest files' do 
+      before(:each) do
+        skip if non_guest_collections.length == 0
+        coll = non_guest_collections.first
+        visit_collection(coll)
+        sleep 2
+        @session.find_link("Add object")
+      end
+
+      after(:all) do
+        sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
+      end
+
+      TestObjectPrefix.test_files.each do |fk, file|
+        describe "ingest file with key #{fk}" do 
+          it "Ingest #{file}" do
+            upload_regular_file(fk)
+            sleep 5
+          end
+        end
+      end
+
+      if TestObjectPrefix.do_encoding_test
+        it "Ingest zip file with encoding use cases" do
+          zippath = "/tmp/#{TestObjectPrefix.encoding_zip}"
+        
+          TestObjectPrefix.encoding_zip_files.each do |fk, file|
+            path = create_filename(file)
+            f = create_file(path)
+            cmd = "zip -j #{zippath} '#{file}'"
+            %x[ #{cmd} ]
+            File.delete(f)
+          end
+  
+          add_file(zippath, TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix, TestObjectPrefix.encoding_label)
+        end
+      end
+    end
+
+    describe 'browse objects/files' do
+      if TestObjectPrefix.do_encoding_test
+
         before(:each) do
-          @file = file
-          @file_key = fk
           skip if non_guest_collections.length == 0
           coll = non_guest_collections.first
           visit_collection(coll)
           sleep 2
+          @ark = check_file_obj_page(TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix, TestObjectPrefix.encoding_label)
         end
 
-        it 'Confirm add object link' do
-          @session.find_link("Add object")
-        end
-
-        it "Ingest Text File with unique local id: #{@file}" do
-          if @file_key.end_with?('_z')
-            upload_zip_file(@file, TestObjectPrefix.localid_prefix, @file_key)
-          else
-            upload_regular_file(@file, TestObjectPrefix.localid_prefix, @file_key)                
+        TestObjectPrefix.encoding_zip_files.each do |fk, file|
+          describe "search for file on version page: #{file}" do   
+            it "Test file link from version page: #{file}" do
+              find_file_on_version_page(file)
+            end    
           end
         end
 
-        it "Search for recently ingested object's local id" do
-          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-        end    
-
-        it "Search for test file on object page" do
-          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-          @session.find_link(@file)
-          @session.click_link(@file)
-          expect(@session.body.length).not_to eq(0)
-          if @session.has_css?('h1')
-            @session.within('h1') do
-              puts(@session.text)
-              expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
-            end
+        it "Test object download" do
+          listing = perform_object_download("#{@ark}.zip")
+          TestObjectPrefix.encoding_zip_files.each do |fk, file|
+            expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
           end
-        end    
-
-        it "Search for test file on object version page" do
-          check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-          @session.find_link('Version 1')
-          @session.click_link('Version 1')
-          @session.find_link(@file)
-          @session.click_link(@file)
-          expect(@session.body.length).not_to eq(0)
-         if @session.has_css?('h1')
-            @session.within('h1') do
-              puts(@session.text)
-              expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
-            end
-          end
-        end    
-
-        it "Start download object for recently ingested object" do
-          ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-          @session.find_button('Download object')
-          @session.click_button('Download object')
-      
-          sleep 2
-      
-          @session.find('div.ui-dialog')
-          @session.within('.ui-dialog-title') do
-            expect(@session.text).to have_content('Preparing Object for Download')
-          end
-      
-          sleep_label(sleep_time_assemble, "to allow assembly to complete")
-      
-          @session.within('.ui-dialog-title') do
-            expect(@session.text).to have_content('Object is ready for Download')
-          end
-      
-          sleep_label(sleep_time_download, "to allow download to complete")
-      
-          @session.find('a.obj_download').click
-          cmd = "bsdtar tf #{ark}.zip|grep producer"
-          listing = %x[ #{cmd} ]
-          File.delete("#{ark}.zip")
-          expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
         end    
       end
+
+      TestObjectPrefix.test_files.each do |fk, file|
+        describe "search for object with #{local_id(TestObjectPrefix.localid_prefix, fk)}" do 
+  
+          before(:each) do
+            @file = file
+            @file_key = fk
+            skip if non_guest_collections.length == 0
+            coll = non_guest_collections.first
+            visit_collection(coll)
+            sleep 2
+          end
+
+          it "Search for recently ingested object's local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          end    
+  
+          it "Search for test file on object page: #{file}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            @session.find_link(@file)
+            @session.click_link(@file)
+            validate_file_page
+          end    
+  
+          it "Search for test file on object version page: #{file}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            find_file_on_version_page(@file)
+          end    
+  
+          it "Start download object for recently ingested object: #{fk}" do
+            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            listing = perform_object_download("#{ark}.zip")
+            expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
+          end    
+        end
+      end
     end
+
   end
 end

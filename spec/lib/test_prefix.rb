@@ -29,7 +29,38 @@ class TestObjectPrefix
       key = ENV.fetch('INGEST_FILES', 'default')
       files = @@config.fetch('test-files', {})
               .fetch(key, {})
+              .fetch('ingest-files', {})
       return {} if files.nil?
       files
     end
+
+    def self.do_encoding_test
+      !self.encoding_zip_files.empty?
+    end
+
+    def self.has_ingest
+      self.do_encoding_test || self.test_files.empty? == false
+    end
+
+    def self.encoding_zip_files
+      key = ENV.fetch('INGEST_FILES', 'default')
+      files = @@config.fetch('test-files', {})
+        .fetch(key, {})
+        .fetch('encoding-zip', {})
+      return {} if files.nil?
+      files
+    end
+
+    def self.sleep_time_ingest_global
+      files = @@config.fetch('sleep-times', {}).fetch('ingest', 10).to_i
+    end
+
+    def self.encoding_zip
+      "encoding.zip"
+    end
+
+    def self.encoding_label
+      "combo"
+    end
+
   end
