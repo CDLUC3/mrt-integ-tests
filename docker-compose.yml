@@ -21,7 +21,7 @@ services:
     - downloads:/tmp
     environment:
       CHROME_URL: http://chrome:4444/wd/hub
-      SSM_ROOT_PATH: ${SSM_ROOT_PATH}
+      SSM_ROOT_PATH: ${SSM_ROOT_PATH:-/uc3/mrt/dev/}
     stdin_open: true
     tty: true
     networks:
