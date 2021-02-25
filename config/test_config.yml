@@ -107,19 +107,19 @@ docker-devbucket: &docker-devbucket
       submit: true
 local: &local
   <<: *globals
-  url: 'http://localhost:8089'
+  url: 'http://localhost:8086'
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
   << : *docker
 development: &development
   <<: *globals
-  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
+  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
   << : *docker
 development-devdb:
   <<: *globals
-  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8089}"
+  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
   storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
   << : *docker-devbucket
 stage: &stage
