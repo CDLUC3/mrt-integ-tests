@@ -75,6 +75,8 @@ docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=encoding-tests m
 _This must be run from an environment with SSM enabled._
 
 Run tests ingesting a single file (this is the default test).
+
+_If the ingest queue has been paused, run the tests without ingesting files._
 ```
 docker-compose run --rm -e INTEG_TEST_ENV=production mrt-integ-tests
 ```
