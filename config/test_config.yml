@@ -68,10 +68,7 @@ globals: &globals
       ingest-files:
     four-byte-ingest: 
       encoding-zip: 
-        <<: *encoding-tests
-        << : *four-byte
       ingest-files:
-        plus2: 'TDR Acc+H2O.md'
         << : *four-byte
 docker: &docker
   <<: *globals
@@ -154,7 +151,7 @@ production: &production
     - coll: ucb_open_context
       <<: *AWS
     collections-no-access:
-    - coll: cdl_uc3
+    - coll: merritt_demo
   non_guest_actions:
     login:
       user: "{!SSM: integ-tests/for-prod/user}"
