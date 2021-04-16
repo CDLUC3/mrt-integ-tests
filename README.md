@@ -1,4 +1,5 @@
 # Integration tests
+![](https://github.com/CDLUC3/mrt-doc/raw/master/diagrams/integ-tests.mmd.svg)
 
 ## Setup
 
