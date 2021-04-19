@@ -1,4 +1,7 @@
-# Integration tests
+# Merritt Integration Test Driver
+
+This library is part of the [Merritt Preservation System](https://github.com/CDLUC3/mrt-doc).
+
 ![](https://github.com/CDLUC3/mrt-doc/raw/master/diagrams/integ-tests.mmd.svg)
 
 ## Setup
