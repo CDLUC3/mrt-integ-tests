@@ -213,7 +213,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end    
-  
+
+          it "Retrieve file #{file} by URL construction" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            puts("/api/presign-file/#{@ark}/0/producer/#{file}")
+          end    
+
           it "Start download object for recently ingested object: #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")
