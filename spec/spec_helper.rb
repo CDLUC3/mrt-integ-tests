@@ -161,7 +161,7 @@ def upload_regular_file(key)
 end
 
 def sleep_label(stime, label)
-  puts "   --> sleep #{stime} (#{label})"
+  puts( "\tSleep #{stime} (#{label})")
   sleep stime
 end
 
@@ -194,7 +194,7 @@ def check_file_obj_page(fname, prefix, seq)
   title = make_title(localid, fname)
 
   @session.fill_in('terms', with: localid)
-  @session.find("input[name='commit']").click
+  @session.find("section.lookup input[name='commit']").click
   @session.within("section h1") do
     expect(@session.text).to have_content("Search Results")
   end
@@ -236,13 +236,13 @@ def perform_object_download(zipname)
     expect(@session.text).to have_content('Preparing Object for Download')
   end
 
-  sleep_label(sleep_time_assemble, "to allow assembly to complete")
+  sleep_label(sleep_time_assemble, "to allow assembly of #{zipname} to complete")
 
   @session.within('.ui-dialog-title') do
     expect(@session.text).to have_content('Object is ready for Download')
   end
 
-  sleep_label(sleep_time_download, "to allow download to complete")
+  sleep_label(sleep_time_download, "to allow download of #{zipname} to complete")
 
   @session.find('a.obj_download').click
   cmd = "bsdtar tf #{zipname}|grep producer"

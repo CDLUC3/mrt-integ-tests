@@ -32,7 +32,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       if @session.has_css?("span.version-number")
         ver = @session.find("span.version-number").text
       end
-      puts("\t==> #{ver}")
+      puts("\tVersion: #{ver}")
     end
   end
 
@@ -122,7 +122,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'ingest files' do 
       before(:each) do
-        skip if non_guest_collections.length == 0
+        skip("PREFIX supplied - this substitutes for the ingest") unless ENV.fetch('PREFIX', '').empty?
+        skip("No non-guest collections supplied") if non_guest_collections.length == 0
         coll = non_guest_collections.first
         visit_collection(coll)
         sleep 2
@@ -130,7 +131,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       after(:all) do
-        sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
+        if ENV.fetch('PREFIX', '').empty?
+          sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
+        end
       end
 
       TestObjectPrefix.test_files.each do |fk, file|
@@ -163,7 +166,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       if TestObjectPrefix.do_encoding_test
 
         before(:each) do
-          skip if non_guest_collections.length == 0
+          skip("No non-guest collections supplied") if non_guest_collections.length == 0
           coll = non_guest_collections.first
           visit_collection(coll)
           sleep 2
@@ -171,14 +174,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         end
 
         TestObjectPrefix.encoding_zip_files.each do |fk, file|
-          describe "search for file on version page: #{file}" do   
-            it "Test file link from version page: #{file}" do
-              find_file_on_version_page(file)
-            end    
-          end
+          it "Test file link from version page: #{file}" do
+            find_file_on_version_page(file)
+          end    
         end
 
-        it "Test object download" do
+        it "Test object download: #{@ark}" do
           listing = perform_object_download("#{@ark}.zip")
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
             expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
@@ -192,9 +193,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           before(:each) do
             @file = file
             @file_key = fk
-            skip if non_guest_collections.length == 0
+            skip("No non-guest collections supplied") if non_guest_collections.length == 0
             coll = non_guest_collections.first
-            visit_collection(coll)
             sleep 2
           end
 
@@ -216,7 +216,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
           it "Retrieve file #{file} by URL construction" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-            puts("/api/presign-file/#{@ark}/0/producer/#{file}")
+            puts("\t/api/presign-file/#{@ark}/0/producer/#{file}")
           end    
 
           it "Start download object for recently ingested object: #{fk}" do
