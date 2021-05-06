@@ -177,6 +177,26 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           it "Test file link from version page: #{file}" do
             find_file_on_version_page(file)
           end    
+
+          it "Test file link encoding from version page: #{file}" do
+            ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
+
+            @session.find_link('Version 1')
+            @session.click_link('Version 1')
+            pageurl = @session.find_link(file)[:href].gsub(/^.*\/api/, 'api')
+            puts("\t\t#{pageurl}")
+
+            # url = "api/presign-file/#{ark}/1/producer/#{file}"
+            # puts("\t\t#{url}")
+            encark  = ERB::Util.url_encode(ark)
+            encfile = ERB::Util.url_encode("producer/#{file}")
+            url = "api/presign-file/#{encark}/1/#{encfile}"
+            denurl = "api/presign-file/#{ERB::Util.url_encode(encark)}/1/#{ERB::Util.url_encode(encfile)}"
+            puts("\t\t#{denurl}")
+            puts("\t\t#{url}")
+            @session.visit url
+            expect(@session.text).to eq("test")
+          end
         end
 
         it "Test object download: #{@ark}" do
@@ -216,7 +236,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
           it "Retrieve file #{file} by URL construction" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
-            puts("\t/api/presign-file/#{@ark}/0/producer/#{file}")
           end    
 
           it "Start download object for recently ingested object: #{fk}" do

@@ -3,3 +3,4 @@ vendor/
 .DS_Store
 .bundle/
 testing.notes
+testing.notes.md

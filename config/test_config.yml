@@ -14,6 +14,7 @@ globals: &globals
     space: 'README 1.md'
     plus: 'README+2.md'
     percent: 'README %AF.md'
+    percent2: 'Test50%majrule.txt'
     accent: 'README cliché.md' #Copied from a web page, not utf-8 representation
     pipe: 'README|pipe.md'
   encoding-tests: &encoding-tests
@@ -57,6 +58,13 @@ globals: &globals
       ingest-files:
         space: 'README 1.md'
         plus: 'README+1.md'
+    may2021:
+      encoding-zip: 
+        <<: *encoding-tests
+        <<: *four-byte
+      ingest-files:
+        space: 'README 1.md'
+        plus: 'README+1.md'
     encoding-tests:
       encoding-zip: 
         <<: *encoding-tests
@@ -64,7 +72,7 @@ globals: &globals
     four-byte-cases: 
       encoding-zip: 
         <<: *encoding-tests
-        << : *four-byte
+        <<: *four-byte
       ingest-files:
     four-byte-ingest: 
       encoding-zip: 
