@@ -141,7 +141,7 @@ def visit_text_file(coll)
 end
 
 def create_filename(n)
-  "/tmp/#{n}"
+  "/tmp/uploads/#{n}"
 end
 
 def create_file(path)
@@ -183,10 +183,10 @@ def add_file(f, fname, prefix, seq)
   @session.fill_in('title', with: title)
   @session.fill_in('local_id', with: localid)
   @session.find_button('Submit').click
-  File.delete(f)
   @session.within("section h1") do
     expect(@session.text).to have_content("Submission Received")
   end
+  File.delete(f)
 end
 
 def check_file_obj_page(fname, prefix, seq)
@@ -275,7 +275,7 @@ def create_web_session
       caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {
         "args" => args,
         "prefs" => {
-          'download.default_directory' => '/tmp',
+          'download.default_directory' => '/tmp/downloads',
           'download.directory_upgrade' => true,
           'download.prompt_for_download' => false
         }

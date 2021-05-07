@@ -11,7 +11,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
   before(:each) do
     @session = create_web_session
-    Dir.chdir "/tmp"
+    %x[ mkdir -p /tmp/uploads ]
+    Dir.chdir "/tmp/uploads"
   end
 
   after(:each) do
@@ -140,14 +141,14 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         describe "ingest file with key #{fk}" do 
           it "Ingest #{file}" do
             upload_regular_file(fk)
-            sleep 5
+            sleep 10
           end
         end
       end
 
       if TestObjectPrefix.do_encoding_test
         it "Ingest zip file with encoding use cases" do
-          zippath = "/tmp/#{TestObjectPrefix.encoding_zip}"
+          zippath = "/tmp/uploads/#{TestObjectPrefix.encoding_zip}"
         
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
             path = create_filename(file)
@@ -157,7 +158,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             File.delete(f)
           end
   
+          # do a zip -l to count the number of files in the input
+          sleep 3
           add_file(zippath, TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix, TestObjectPrefix.encoding_label)
+          sleep 10
         end
       end
     end
@@ -178,23 +182,25 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             find_file_on_version_page(file)
           end    
 
-          it "Test file link encoding from version page: #{file}" do
+          it "Test file link single-encoding from version page: #{file}" do
+            # Get raw ark, unencoded
             ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
 
             @session.find_link('Version 1')
             @session.click_link('Version 1')
+            # Get url used by the Merritt UI
             pageurl = @session.find_link(file)[:href].gsub(/^.*\/api/, 'api')
-            puts("\t\t#{pageurl}")
 
-            # url = "api/presign-file/#{ark}/1/producer/#{file}"
-            # puts("\t\t#{url}")
             encark  = ERB::Util.url_encode(ark)
             encfile = ERB::Util.url_encode("producer/#{file}")
-            url = "api/presign-file/#{encark}/1/#{encfile}"
-            denurl = "api/presign-file/#{ERB::Util.url_encode(encark)}/1/#{ERB::Util.url_encode(encfile)}"
-            puts("\t\t#{denurl}")
-            puts("\t\t#{url}")
-            @session.visit url
+            single_encoded_url = "api/presign-file/#{encark}/1/#{encfile}"
+
+            # Verify the re-application of the encoding in the Merritt UI
+            double_encoded_nurl = "api/presign-file/#{ERB::Util.url_encode(encark)}/1/#{ERB::Util.url_encode(encfile)}"
+            expect(double_encoded_nurl).to eq(pageurl)
+
+            # Test the effect of sending a single-encoded URL to the Merritt UI
+            @session.visit single_encoded_url
             expect(@session.text).to eq("test")
           end
         end

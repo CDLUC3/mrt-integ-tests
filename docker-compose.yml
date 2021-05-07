@@ -18,7 +18,7 @@ services:
     - type: bind
       source: ./config/test_config.yml
       target: /config/test_config.yml
-    - downloads:/tmp
+    - downloads:/tmp/downloads
     environment:
       CHROME_URL: http://chrome:4444/wd/hub
       SSM_ROOT_PATH: ${SSM_ROOT_PATH:-/uc3/mrt/dev/}
