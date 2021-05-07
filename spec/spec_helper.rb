@@ -226,6 +226,7 @@ def validate_file_page
 end
 
 def perform_object_download(zipname)
+  Dir.chdir "/tmp/downloads"
   @session.find_button('Download object')
   @session.click_button('Download object')
 
@@ -275,7 +276,7 @@ def create_web_session
       caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {
         "args" => args,
         "prefs" => {
-          'download.default_directory' => '/tmp/downloads',
+          'download.default_directory' => '/tmp', 
           'download.directory_upgrade' => true,
           'download.prompt_for_download' => false
         }
