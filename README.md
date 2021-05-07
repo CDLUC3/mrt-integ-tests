@@ -21,7 +21,7 @@ This library is part of the [Merritt Preservation System](https://github.com/CDL
 ## Docker Setup
 
 ```
-docker-compose up -d --build
+docker-compose up -d --build chrome
 ```
 
 ### Docker Test Execution
