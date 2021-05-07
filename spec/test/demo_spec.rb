@@ -182,7 +182,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             find_file_on_version_page(file)
           end    
 
-          it "Test file link single-encoding from version page: #{file}" do
+          # Skip until the Apache issue is resolved
+          skip it "Test file link single-encoding from version page: #{file}" do
             # Get raw ark, unencoded
             ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
 
