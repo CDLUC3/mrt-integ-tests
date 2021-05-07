@@ -11,7 +11,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
   before(:each) do
     @session = create_web_session
-    Dir.chdir "/tmp"
+    %x[ mkdir -p /tmp/uploads ]
+    Dir.chdir "/tmp/uploads"
   end
 
   after(:each) do
@@ -32,7 +33,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       if @session.has_css?("span.version-number")
         ver = @session.find("span.version-number").text
       end
-      puts("\t==> #{ver}")
+      puts("\tVersion: #{ver}")
     end
   end
 
@@ -122,7 +123,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'ingest files' do 
       before(:each) do
-        skip if non_guest_collections.length == 0
+        skip("PREFIX supplied - this substitutes for the ingest") unless ENV.fetch('PREFIX', '').empty?
+        skip("No non-guest collections supplied") if non_guest_collections.length == 0
         coll = non_guest_collections.first
         visit_collection(coll)
         sleep 2
@@ -130,21 +132,23 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       after(:all) do
-        sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
+        if ENV.fetch('PREFIX', '').empty?
+          sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
+        end
       end
 
       TestObjectPrefix.test_files.each do |fk, file|
         describe "ingest file with key #{fk}" do 
           it "Ingest #{file}" do
             upload_regular_file(fk)
-            sleep 5
+            sleep 10
           end
         end
       end
 
       if TestObjectPrefix.do_encoding_test
         it "Ingest zip file with encoding use cases" do
-          zippath = "/tmp/#{TestObjectPrefix.encoding_zip}"
+          zippath = "/tmp/uploads/#{TestObjectPrefix.encoding_zip}"
         
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
             path = create_filename(file)
@@ -154,7 +158,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             File.delete(f)
           end
   
+          # do a zip -l to count the number of files in the input
+          sleep 3
           add_file(zippath, TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix, TestObjectPrefix.encoding_label)
+          sleep 10
         end
       end
     end
@@ -163,7 +170,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       if TestObjectPrefix.do_encoding_test
 
         before(:each) do
-          skip if non_guest_collections.length == 0
+          skip("No non-guest collections supplied") if non_guest_collections.length == 0
           coll = non_guest_collections.first
           visit_collection(coll)
           sleep 2
@@ -171,14 +178,34 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         end
 
         TestObjectPrefix.encoding_zip_files.each do |fk, file|
-          describe "search for file on version page: #{file}" do   
-            it "Test file link from version page: #{file}" do
-              find_file_on_version_page(file)
-            end    
+          it "Test file link from version page: #{file}" do
+            find_file_on_version_page(file)
+          end    
+
+          it "Test file link single-encoding from version page: #{file}" do
+            # Get raw ark, unencoded
+            ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
+
+            @session.find_link('Version 1')
+            @session.click_link('Version 1')
+            # Get url used by the Merritt UI
+            pageurl = @session.find_link(file)[:href].gsub(/^.*\/api/, 'api')
+
+            encark  = ERB::Util.url_encode(ark)
+            encfile = ERB::Util.url_encode("producer/#{file}")
+            single_encoded_url = "api/presign-file/#{encark}/1/#{encfile}"
+
+            # Verify the re-application of the encoding in the Merritt UI
+            double_encoded_nurl = "api/presign-file/#{ERB::Util.url_encode(encark)}/1/#{ERB::Util.url_encode(encfile)}"
+            expect(double_encoded_nurl).to eq(pageurl)
+
+            # Test the effect of sending a single-encoded URL to the Merritt UI
+            @session.visit single_encoded_url
+            expect(@session.text).to eq("test")
           end
         end
 
-        it "Test object download" do
+        it "Test object download: #{@ark}" do
           listing = perform_object_download("#{@ark}.zip")
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
             expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
@@ -192,9 +219,8 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           before(:each) do
             @file = file
             @file_key = fk
-            skip if non_guest_collections.length == 0
+            skip("No non-guest collections supplied") if non_guest_collections.length == 0
             coll = non_guest_collections.first
-            visit_collection(coll)
             sleep 2
           end
 
@@ -213,7 +239,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end    
-  
+
+          it "Retrieve file #{file} by URL construction" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          end    
+
           it "Start download object for recently ingested object: #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")

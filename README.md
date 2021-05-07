@@ -50,6 +50,13 @@ _This test takes a long time to complete -- only run this option if you have a n
 ```
 docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=encoding-tests mrt-integ-tests
 ```
+
+Run tests with full encoding tests re-using content previously ingested (search Merritt for the prefix to use)
+
+```
+docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=encoding-tests -e PREFIX=2021_05_05_1743 mrt-integ-tests
+```
+
 #### Stage
 _This must be run from an environment with SSM enabled._
 

@@ -1,5 +1,5 @@
 class TestObjectPrefix
-    @@localid_prefix = Time.new.strftime('%Y_%m_%d_%H%M')
+    @@localid_prefix = ENV.fetch('PREFIX', Time.new.strftime('%Y_%m_%d_%H%M'))
     @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml')
     @@integenv = ENV.fetch('INTEG_TEST_ENV', 'default')
     @@config = Uc3Ssm::ConfigResolver.new({

@@ -141,7 +141,7 @@ def visit_text_file(coll)
 end
 
 def create_filename(n)
-  "/tmp/#{n}"
+  "/tmp/uploads/#{n}"
 end
 
 def create_file(path)
@@ -161,7 +161,7 @@ def upload_regular_file(key)
 end
 
 def sleep_label(stime, label)
-  puts "   --> sleep #{stime} (#{label})"
+  puts( "\tSleep #{stime} (#{label})")
   sleep stime
 end
 
@@ -183,10 +183,10 @@ def add_file(f, fname, prefix, seq)
   @session.fill_in('title', with: title)
   @session.fill_in('local_id', with: localid)
   @session.find_button('Submit').click
-  File.delete(f)
   @session.within("section h1") do
     expect(@session.text).to have_content("Submission Received")
   end
+  File.delete(f)
 end
 
 def check_file_obj_page(fname, prefix, seq)
@@ -194,7 +194,7 @@ def check_file_obj_page(fname, prefix, seq)
   title = make_title(localid, fname)
 
   @session.fill_in('terms', with: localid)
-  @session.find("input[name='commit']").click
+  @session.find("section.lookup input[name='commit']").click
   @session.within("section h1") do
     expect(@session.text).to have_content("Search Results")
   end
@@ -236,13 +236,13 @@ def perform_object_download(zipname)
     expect(@session.text).to have_content('Preparing Object for Download')
   end
 
-  sleep_label(sleep_time_assemble, "to allow assembly to complete")
+  sleep_label(sleep_time_assemble, "to allow assembly of #{zipname} to complete")
 
   @session.within('.ui-dialog-title') do
     expect(@session.text).to have_content('Object is ready for Download')
   end
 
-  sleep_label(sleep_time_download, "to allow download to complete")
+  sleep_label(sleep_time_download, "to allow download of #{zipname} to complete")
 
   @session.find('a.obj_download').click
   cmd = "bsdtar tf #{zipname}|grep producer"
@@ -275,7 +275,7 @@ def create_web_session
       caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {
         "args" => args,
         "prefs" => {
-          'download.default_directory' => '/tmp',
+          'download.default_directory' => '/tmp/downloads',
           'download.directory_upgrade' => true,
           'download.prompt_for_download' => false
         }
