@@ -2,7 +2,7 @@
 
 This library is part of the [Merritt Preservation System](https://github.com/CDLUC3/mrt-doc).
 
-![](https://github.com/CDLUC3/mrt-doc/raw/master/diagrams/integ-tests.mmd.svg)
+![](https://github.com/CDLUC3/mrt-doc/raw/main/diagrams/integ-tests.mmd.svg)
 
 ## Setup
 
