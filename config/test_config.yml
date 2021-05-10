@@ -66,6 +66,12 @@ globals: &globals
       ingest-files:
         space: 'README 1.md'
         plus: 'README+1.md'
+    may2021-apache:
+      encoding-zip: 
+        mult_quest: 'README??.md'
+        single_quest: 'README?.md'
+        spaces: 'R E A D M E.md'
+        double_quotes: 'READ"ME".md'
     percent:
       encoding-zip: 
          space_space: 'File % .md'
