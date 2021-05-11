@@ -217,10 +217,13 @@ end
 
 def validate_file_page
   expect(@session.body.length).not_to eq(0)
+  expect(@session.title).not_to have_content("Action Controller: Exception caught")
   if @session.has_css?('h1')
     @session.within('h1') do
-      puts(@session.text)
       expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+      expect(@session.text).not_to have_content("Rack::QueryParser::InvalidParameterError")
+      puts("h1 found on file page")
+      puts(@session.text)
     end
   end
 end
