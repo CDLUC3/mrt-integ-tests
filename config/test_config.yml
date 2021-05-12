@@ -63,9 +63,18 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests
         <<: *four-byte
-      ingest-files:
-        space: 'README 1.md'
-        plus: 'README+1.md'
+        space_space: 'File % .md'
+        und_und: 'File%__x.md'
+        file00: 'File%00x.md'
+        file11: 'File%11x.md'
+        fileaa: 'File%aax.md'
+        fileAA: 'File%AAx.md'
+        filehh: 'File%hhx.md'
+        fileHH: 'File%HHx.md'
+        excl_excl: 'File%!!x.md'
+        quest_quest: 'File%??x.md'
+    # This is an attempt to verify the need for the Apache encoding rules already in place in May 2021.
+    # These tests have been inconclusive.
     may2021-apache:
       encoding-zip: 
         mult_quest: 'README??.md'
