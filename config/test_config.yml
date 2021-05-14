@@ -32,6 +32,17 @@ globals: &globals
   four-byte: &four-byte
     ckj_4byte: '𠜎𠵿.txt'
     emoji2: 'images🙃emo.md'
+  percent-cases: &percent-cases
+    space_space: 'File % .md'
+    und_und: 'File%__x.md'
+    file00: 'File%00x.md'
+    file11: 'File%11x.md'
+    fileaa: 'File%aax.md'
+    fileAA: 'File%AAx.md'
+    filehh: 'File%hhx.md'
+    fileHH: 'File%HHx.md'
+    excl_excl: 'File%!!x.md'
+    quest_quest: 'File%??x.md'
   sleep-times:
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
@@ -63,16 +74,7 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests
         <<: *four-byte
-        space_space: 'File % .md'
-        und_und: 'File%__x.md'
-        file00: 'File%00x.md'
-        file11: 'File%11x.md'
-        fileaa: 'File%aax.md'
-        fileAA: 'File%AAx.md'
-        filehh: 'File%hhx.md'
-        fileHH: 'File%HHx.md'
-        excl_excl: 'File%!!x.md'
-        quest_quest: 'File%??x.md'
+        <<: *percent-cases
     # This is an attempt to verify the need for the Apache encoding rules already in place in May 2021.
     # These tests have been inconclusive.
     may2021-apache:
@@ -83,17 +85,9 @@ globals: &globals
         double_quotes: 'READ"ME".md'
     percent:
       encoding-zip: 
-         space_space: 'File % .md'
-         und_und: 'File%__x.md'
-         file00: 'File%00x.md'
-         file11: 'File%11x.md'
-         fileaa: 'File%aax.md'
-         fileAA: 'File%AAx.md'
-         filehh: 'File%hhx.md'
-         fileHH: 'File%HHx.md'
-         excl_excl: 'File%!!x.md'
-         quest_quest: 'File%??x.md'
+        <<: *percent-cases
       ingest-files:
+        <<: *percent-cases
     encoding-tests:
       encoding-zip: 
         <<: *encoding-tests
