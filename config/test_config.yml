@@ -157,6 +157,8 @@ stage: &stage
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
   storage-state: "{!SSM: integ-tests/for-stage/storage-state}"
+  # Enable single encoding tests with stage ALB
+  experimental_tests: true
   guest_actions:
     collections:
     - coll: cdl_dashdev
