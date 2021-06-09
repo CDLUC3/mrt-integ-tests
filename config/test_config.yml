@@ -57,50 +57,17 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests-basic
       ingest-files:
-    plus:
-      encoding-zip: 
-        space: 'README 1.md'
-        plus: 'README+2.md'
-      ingest-files:
-        space: 'README 1.md'
-        plus: 'README+2.md'
     basic-ingest:
       encoding-zip: 
         <<: *encoding-tests-basic
       ingest-files:
         space: 'README 1.md'
         plus: 'README+1.md'
-    may2021:
-      encoding-zip: 
-        <<: *encoding-tests
-        <<: *four-byte
-        <<: *percent-cases
-    # This is an attempt to verify the need for the Apache encoding rules already in place in May 2021.
-    # These tests have been inconclusive.
-    may2021-apache:
-      encoding-zip: 
-        mult_quest: 'README??.md'
-        single_quest: 'README?.md'
-        spaces: 'R E A D M E.md'
-        double_quotes: 'READ"ME".md'
-    percent:
-      encoding-zip: 
-        <<: *percent-cases
-      ingest-files:
-        <<: *percent-cases
     encoding-tests:
       encoding-zip: 
         <<: *encoding-tests
-      ingest-files:
-    four-byte-cases: 
-      encoding-zip: 
-        <<: *encoding-tests
         <<: *four-byte
-      ingest-files:
-    four-byte-ingest: 
-      encoding-zip: 
-      ingest-files:
-        << : *four-byte
+        <<: *percent-cases
 docker: &docker
   <<: *globals
   guest_actions:

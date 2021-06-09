@@ -27,88 +27,21 @@ docker-compose up -d chrome
 
 ### Docker Test Execution
 
-#### Development
-_The development environment must be started explicitly._
-
-Run tests ingesting a single file (this is the default test).
-```
-docker-compose run --rm -e INTEG_TEST_ENV=development mrt-integ-tests
-```
-
-Run tests without ingesting files
-```
-docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none mrt-integ-tests
-```
-
-Run tests without ingesting files **on a preview URL**
-```
-docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests
-```
-
-Run tests with full encoding tests
-
-_This test takes a long time to complete -- only run this option if you have a need to test file name encoding issues._
-```
-docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=encoding-tests mrt-integ-tests
-```
-
-Run tests with full encoding tests re-using content previously ingested (search Merritt for the prefix to use)
-
-```
-docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=encoding-tests -e PREFIX=2021_05_05_1743 mrt-integ-tests
-```
-
-#### Stage
-_This must be run from an environment with SSM enabled._
-
-Run tests ingesting a single file (this is the default test).
-```
-docker-compose run --rm -e INTEG_TEST_ENV=stage mrt-integ-tests
-```
-
-Run tests without ingesting files
-```
-docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none mrt-integ-tests
-```
-
-Run tests without ingesting files **on a preview URL**
-```
-docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests
-```
-
-Run tests with full encoding tests
-
-_This test takes a long time to complete -- only run this option if you have a need to test file name encoding issues._
-```
-docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=encoding-tests mrt-integ-tests
-```
-
-#### Production
-_This must be run from an environment with SSM enabled._
-
-Run tests ingesting a single file (this is the default test).
-
-_If the ingest queue has been paused, run the tests without ingesting files._
-```
-docker-compose run --rm -e INTEG_TEST_ENV=production mrt-integ-tests
-```
-
-Run tests without ingesting files
-```
-docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none mrt-integ-tests
-```
-
-Run tests without ingesting files **on a preview URL**
-```
-docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests
-```
-
-Run tests with full encoding tests
-
-_This test takes a long time to complete -- only run this option if you have a need to test file encoding issues._
-```
-docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=encoding-tests mrt-integ-tests
-```
+| Domain | Scenario | Command |
+| ------ | -------- | ------- |
+| Production | Patching: Simple Ingest (queue __unpaused__)| `docker-compose run --rm -e INTEG_TEST_ENV=production mrt-integ-tests`|
+| Production | Patching: Retrieval only (queue __paused__)| `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none -e PREFIX=2021_06_08_1739 mrt-integ-tests`|
+| Production | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none mrt-integ-tests`|
+| Production | Ingest Full Encoding Tests | `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=encoding-tests mrt-integ-tests`|
+| Production | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none -e PREFIX=2021_06_08_1739 -e PREVIEW_URL='https://...' mrt-integ-tests`|
+| Stage | Patching: Simple Ingest (queue __unpaused__)| `docker-compose run --rm -e INTEG_TEST_ENV=stage mrt-integ-tests`|
+| Stage | Patching: Retrieval only (queue __paused__) | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none -e PREFIX=2021_06_07_1538 mrt-integ-tests`|
+| Stage | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none mrt-integ-tests`|
+| Stage | Ingest Full Encoding Tests | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=encoding-tests mrt-integ-tests`|
+| Stage | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none -e PREFIX=2021_06_07_1538 -e PREVIEW_URL='https://...' mrt-integ-tests`|
+| Development | Simple Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=development mrt-integ-tests`|
+| Development | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none mrt-integ-tests`|
+| Development | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests`|
 
 ### Cleanup
 ```
