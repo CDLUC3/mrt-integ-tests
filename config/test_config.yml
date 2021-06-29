@@ -32,6 +32,11 @@ globals: &globals
   four-byte: &four-byte
     ckj_4byte: '𠜎𠵿.txt'
     emoji2: 'images🙃emo.md'
+  backu: &backu
+    test: 'test.txt'
+    backu_file1: 'file\u1234.txt'
+    backu_file2: '\u9876.txt'
+    backu_file3: 'file\utext.txt'
   percent-cases: &percent-cases
     space_space: 'File % .md'
     und_und: 'File%__x.md'
@@ -68,6 +73,11 @@ globals: &globals
         <<: *encoding-tests
         <<: *four-byte
         <<: *percent-cases
+    backu-ingest:
+      encoding-zip: 
+        <<: *backu
+      ingest-files:
+        <<: *backu
 docker: &docker
   <<: *globals
   guest_actions:
