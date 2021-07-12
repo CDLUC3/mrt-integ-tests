@@ -34,9 +34,11 @@ globals: &globals
     emoji2: 'images🙃emo.md'
   backu: &backu
     test: 'test.txt'
-    backu_file1: 'file\u1234.txt'
-    backu_file2: '\u9876.txt'
+    backu_file1: "file\u1234.txt"
+    backu_file2: "\u9876.txt"
     backu_file3: 'file\utext.txt'
+  diamond: &diamond
+    diamond: "hi\uFFFD.txt"
   percent-cases: &percent-cases
     space_space: 'File % .md'
     und_und: 'File%__x.md'
@@ -78,6 +80,11 @@ globals: &globals
         <<: *backu
       ingest-files:
         <<: *backu
+    diamond-ingest:
+      encoding-zip: 
+        <<: *diamond
+      ingest-files:
+        <<: *diamond
 docker: &docker
   <<: *globals
   guest_actions:
