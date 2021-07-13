@@ -32,6 +32,9 @@ globals: &globals
   four-byte: &four-byte
     ckj_4byte: '𠜎𠵿.txt'
     emoji2: 'images🙃emo.md'
+  # See the following note about escaping unicode in Yaml. 
+  # https://yaml.org/spec/1.2/spec.html#id2708710
+  # The behavior differs between single and double quoted values
   backu: &backu
     test: 'test.txt'
     backu_file1: "file\u1234.txt"
@@ -159,6 +162,28 @@ stage: &stage
     - coll: merritt_demo
       <<: *MINIO
       submit: true
+    - coll: cdl_wasabi
+      <<: *WASABI
+      submit: true
+stage-wasabi: &stage
+  <<: *globals
+  url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
+  storage-state: "{!SSM: integ-tests/for-stage/storage-state}"
+  # Enable single encoding tests with stage ALB
+  experimental_tests: true
+  guest_actions:
+    collections:
+    - coll: cdl_dashdev
+      <<: *AWS
+    - coll: ucb_ist_research_hub_doi
+      <<: *MINIO
+    collections-no-access:
+    - coll: ucla_digital_lib
+  non_guest_actions:
+    login:
+      user: "{!SSM: integ-tests/for-stage/user}"
+      password: "{!SSM: integ-tests/for-stage/password}"
+    collections:
     - coll: cdl_wasabi
       <<: *WASABI
       submit: true

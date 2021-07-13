@@ -37,6 +37,19 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
+  describe 'Enumerate test files' do
+    it 'Print test files' do
+      puts("\tIngest Files:")
+      TestObjectPrefix.test_files.each do |fk, file|
+        puts("\t\t#{'%-15s' % fk}\t#{file}")
+      end
+      puts("Encoding zip:")
+      TestObjectPrefix.encoding_zip_files.each do |fk, file|
+        puts("\t\t#{'%-15s' % fk}\t#{file}")
+      end
+    end
+  end
+
   describe 'Check storage service state' do
     it 'Check for valid storage nodes' do
       check_storage_state
@@ -166,7 +179,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe 'browse objects/files' do
+    describe 'browse objects/files ingested in encoding.zip(combo)' do
       if TestObjectPrefix.do_encoding_test
 
         before(:each) do
@@ -214,7 +227,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           end
         end    
       end
+    end
 
+    describe 'browse objects/files ingested individually' do
       TestObjectPrefix.test_files.each do |fk, file|
         describe "search for object with #{local_id(TestObjectPrefix.localid_prefix, fk)}" do 
   
@@ -223,6 +238,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             @file_key = fk
             skip("No non-guest collections supplied") if non_guest_collections.length == 0
             coll = non_guest_collections.first
+            visit_collection(coll)
             sleep 2
           end
 
