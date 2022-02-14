@@ -6,7 +6,7 @@
 FROM ruby:2.7
 
 RUN apt-get update && \
-    apt-get install -y bsdtar zip
+    apt-get install -y libarchive-tools zip
 
 RUN gem install bundler
 
