@@ -2,7 +2,7 @@
 #   Copyright 2019 Regents of the University of California
 #   All rights reserved
 #*********************************************************************
-version: '3.7'
+version: '3.9'
 networks:
   mynet:
 volumes:
@@ -20,6 +20,7 @@ services:
       target: /config/test_config.yml
     - downloads:/tmp/downloads
     environment:
+      #uncomment the following when running rspec with a non-headless chrome
       CHROME_URL: http://chrome:4444/wd/hub
       SSM_ROOT_PATH: ${SSM_ROOT_PATH:-/uc3/mrt/dev/}
     stdin_open: true
@@ -31,6 +32,9 @@ services:
   chrome:
     container_name: chrome
     image: selenium/standalone-chrome
+    shm_size: '2gb'
+    environment:
+    - JAVA_OPTS=-Dwebdriver.chrome.whitelistedIps= -Dwebdriver.chrome.allowedIps=
     networks:
       mynet:
     volumes:

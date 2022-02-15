@@ -47,3 +47,8 @@ docker-compose up -d chrome
 ```
 docker-compose down
 ```
+
+## Running outside of docker
+- Comment out `CHROME_URL: http://chrome:4444/wd/hub`
+- `bundle install`
+- `INTEG_TEST_ENV=... bundle exec rspec`

@@ -274,12 +274,12 @@ def create_web_session
         '--start-maximized',
         '--headless',
         '--disable-dev-shm-usage',
-        '--whitelisted-ips'
+        "--whitelisted-ips=''"
       ]
       caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {
         "args" => args,
         "prefs" => {
-          'download.default_directory' => '/tmp', 
+          'download.default_directory' => "/tmp", 
           'download.directory_upgrade' => true,
           'download.prompt_for_download' => false
         }
@@ -292,13 +292,15 @@ def create_web_session
         url: ENV['CHROME_URL']
       )
     end
-  end
-  @session = Capybara::Session.new(:selenium_chrome_headless)
-  #@session = Capybara::Session.new(:selenium_chrome)
+    @session = Capybara::Session.new(:selenium_chrome_headless)
+  else
+    @session = Capybara::Session.new(:selenium_chrome)
+end
 end
 
 def end_web_session(session)
   session.reset!
+  session.driver.quit
 end
 
 def check_storage_state
