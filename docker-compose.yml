@@ -31,12 +31,14 @@ services:
     - chrome
   chrome:
     container_name: chrome
-    image: selenium/standalone-chrome
+    image: standalone-chrome-download-folder
+    # build a docker image that will make the downloads folder accessible (permissions) as a volume mount
+    build:
+      context: chrome-driver
+      dockerfile: Dockerfile
     shm_size: '2gb'
-    environment:
-    - JAVA_OPTS=-Dwebdriver.chrome.whitelistedIps= -Dwebdriver.chrome.allowedIps=
     networks:
       mynet:
     volumes:
     - /dev/shm:/dev/shm
-    - downloads:/tmp
+    - downloads:/home/seluser/Downloads

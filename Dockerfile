@@ -20,4 +20,5 @@ COPY . .
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# CMD ["bundle", "exec", "rspec", "/spec/test/demo_spec.rb:224"]
 CMD ["bundle", "exec", "rspec", "/spec/test"]
