@@ -43,11 +43,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       TestObjectPrefix.test_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
       end
-      puts("\Version Files:")
+      puts("  Version Files:")
       TestObjectPrefix.version_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
       end
-      puts("Encoding zip:")
+      puts("  Encoding zip:")
       TestObjectPrefix.encoding_zip_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
       end
