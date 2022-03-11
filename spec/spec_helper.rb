@@ -26,6 +26,10 @@ def sleep_time_download
   @test_config.fetch('sleep-times', {}).fetch('download', 10).to_i
 end
 
+def sleep_time_upload
+  @test_config.fetch('sleep-times', {}).fetch('upload', 10).to_i
+end
+
 def get_object_count
   @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
 end
@@ -158,6 +162,25 @@ def upload_regular_file(key)
   path = create_filename(fname)
   f = create_file(path)
   add_file(f, fname, prefix, key)
+  sleep_label(sleep_time_upload, "to allow upload to complete")
+end
+
+def upload_v1_file(key)
+  fname = TestObjectPrefix.version_files[key]
+  prefix = TestObjectPrefix.localid_prefix
+  path = create_filename(fname)
+  f = create_file(path)
+  add_file(f, fname, prefix, key)
+  sleep_label(sleep_time_upload * 3, "to allow upload to complete")
+end
+
+def update_v2_file(key)
+  fname = "#{TestObjectPrefix.version_files[key]}.v2"
+  prefix = TestObjectPrefix.localid_prefix
+  path = create_filename(fname)
+  f = create_file(path)
+  add_file(f, fname, prefix, key)
+  sleep_label(sleep_time_upload, "to allow upload to complete")
 end
 
 def sleep_label(stime, label)
@@ -254,7 +277,10 @@ def perform_object_download(zipname)
 
   cmd = "bsdtar tf #{zipname}|grep producer"
   listing = %x[ #{cmd} ]
-  File.delete("#{zipname}")
+  begin
+    File.delete("#{zipname}")
+  rescue Errno::ENOENT
+  end
   listing
 end
 

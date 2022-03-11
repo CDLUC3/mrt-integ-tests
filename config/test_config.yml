@@ -57,6 +57,7 @@ globals: &globals
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
     download: 15 # assembly zip download
+    upload: 10 #allow upload to complete
   # each of the keys listed below will contain a set of files to load
   #   a key is passed with the environment variable INGEST_FILES
   test-files: 
@@ -67,6 +68,8 @@ globals: &globals
       encoding-zip: 
         <<: *encoding-tests-basic
       ingest-files:
+      version-files:
+        v1file: 'v1_file.md'
     basic-ingest:
       encoding-zip: 
         <<: *encoding-tests-basic
@@ -90,6 +93,11 @@ globals: &globals
         <<: *diamond
 docker: &docker
   <<: *globals
+  sleep-times:
+    ingest: 80   # run full ingest (ingest, store, inventory)
+    assemble: 60 # object assembly ready
+    download: 30 # assembly zip download
+    upload: 10 # assembly zip download
   guest_actions:
     collections:
     - coll: cdl_dryaddev
