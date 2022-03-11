@@ -269,7 +269,7 @@ def perform_object_download(zipname)
     expect(@session.text).to have_content('Object is ready for Download')
   end
 
-  sleep_label(1, "to allow download link to appear")
+  sleep_label(5, "to allow download link to appear")
 
   @session.find('a.obj_download').click
 
