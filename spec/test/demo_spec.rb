@@ -43,6 +43,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       TestObjectPrefix.test_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
       end
+      puts("\Version Files:")
+      TestObjectPrefix.version_files.each do |fk, file|
+        puts("\t\t#{'%-15s' % fk}\t#{file}")
+      end
       puts("Encoding zip:")
       TestObjectPrefix.encoding_zip_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
@@ -154,7 +158,22 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         describe "ingest file with key #{fk}" do 
           it "Ingest #{file}" do
             upload_regular_file(fk)
-            sleep 10
+          end
+        end
+      end
+
+      TestObjectPrefix.version_files.each do |fk, file|
+        describe "create versioned object with key #{fk}" do 
+          it "Ingest V1 for #{file}" do
+            upload_v1_file(fk)
+          end
+        end
+      end
+
+      TestObjectPrefix.version_files.each do |fk, file|
+        describe "update versioned object with key #{fk}" do 
+          it "Ingest V2 for #{file}" do
+            update_v2_file(fk)
           end
         end
       end
@@ -266,6 +285,51 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")
             expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
+          end    
+        end
+      end
+    end
+
+    describe 'browse versioned ingested individually' do
+      TestObjectPrefix.version_files.each do |fk, file|
+        describe "search for object with #{local_id(TestObjectPrefix.localid_prefix, fk)}" do 
+  
+          before(:each) do
+            @file = file
+            @file_key = fk
+            skip("No non-guest collections supplied") if non_guest_collections.length == 0
+            coll = non_guest_collections.first
+            visit_collection(coll)
+            sleep 2
+          end
+
+          it "Search for recently ingested object's local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          end    
+  
+          it "Search for test file on object page: #{file}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            @session.find_link(@file)
+            @session.click_link(@file)
+            validate_file_page
+          end    
+  
+          it "Search for test file on object version page: #{file}" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            find_file_on_version_page(@file)
+          end    
+
+          it "Retrieve file #{file} by URL construction" do
+            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          end    
+
+          it "Search for V2 test file on object version page: #{file}.v2" do
+            check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
+            find_file_on_version_page(@file)
+          end    
+
+          it "Retrieve V2 file #{file}.v2 by URL construction" do
+            check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
           end    
         end
       end
