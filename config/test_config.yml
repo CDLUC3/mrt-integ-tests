@@ -56,7 +56,7 @@ globals: &globals
   sleep-times:
     ingest: 80   # run full ingest (ingest, store, inventory)
     assemble: 30 # object assembly ready
-    download: 20 # assembly zip download
+    download: 30 # assembly zip download
     upload: 10 #allow upload to complete
   # each of the keys listed below will contain a set of files to load
   #   a key is passed with the environment variable INGEST_FILES
