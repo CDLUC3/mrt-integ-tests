@@ -275,8 +275,13 @@ def perform_object_download(zipname)
 
   sleep_label(sleep_time_download, "to allow download of #{zipname} to complete")
 
+  puts "List contents of /tmp/downloads"
+  puts %x[ ls /tmp/downloads ]
+
   cmd = "bsdtar tf #{zipname}|grep producer"
   listing = %x[ #{cmd} ]
+  puts "Zip file listing"
+  puts listing
   begin
     File.delete("#{zipname}")
   rescue Errno::ENOENT

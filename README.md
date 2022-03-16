@@ -30,15 +30,15 @@ docker-compose up -d chrome
 | Domain | Scenario | Command |
 | ------ | -------- | ------- |
 | Production | Patching: Simple Ingest (queue __unpaused__)| `docker-compose run --rm -e INTEG_TEST_ENV=production mrt-integ-tests`|
-| Production | Patching: Retrieval only (queue __paused__)| `docker-compose run --rm -e INTEG_TEST_ENV=production -e PREFIX=2021_06_08_1739 mrt-integ-tests`|
+| Production | Patching: Retrieval only (queue __paused__)| `docker-compose run --rm -e INTEG_TEST_ENV=production -e PREFIX=2022_03_14_1712 mrt-integ-tests`|
 | Production | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=none mrt-integ-tests`|
 | Production | Ingest Full Encoding Tests | `docker-compose run --rm -e INTEG_TEST_ENV=production -e INGEST_FILES=encoding-tests mrt-integ-tests`|
-| Production | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=production -e PREFIX=2021_06_08_1739 -e PREVIEW_URL='https://...' mrt-integ-tests`|
+| Production | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=production -e PREFIX=2022_03_14_1712 -e PREVIEW_URL='https://...' mrt-integ-tests`|
 | Stage | Patching: Simple Ingest (queue __unpaused__)| `docker-compose run --rm -e INTEG_TEST_ENV=stage mrt-integ-tests`|
-| Stage | Patching: Retrieval only (queue __paused__) | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e PREFIX=2021_06_07_1538 mrt-integ-tests`|
+| Stage | Patching: Retrieval only (queue __paused__) | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e PREFIX=2022_03_16_1520 mrt-integ-tests`|
 | Stage | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=none mrt-integ-tests`|
 | Stage | Ingest Full Encoding Tests | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e INGEST_FILES=encoding-tests mrt-integ-tests`|
-| Stage | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e PREFIX=2021_06_07_1538 -e PREVIEW_URL='https://...' mrt-integ-tests`|
+| Stage | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=stage -e PREFIX=2022_03_16_1520 -e PREVIEW_URL='https://...' mrt-integ-tests`|
 | Development | Simple Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=development mrt-integ-tests`|
 | Development | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none mrt-integ-tests`|
 | Development | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests`|
