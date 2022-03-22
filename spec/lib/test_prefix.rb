@@ -1,14 +1,16 @@
 class TestObjectPrefix
-    @@localid_prefix = ENV.fetch('PREFIX', Time.new.strftime('%Y_%m_%d_%H%M'))
-    @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml')
-    @@integenv = ENV.fetch('INTEG_TEST_ENV', 'default')
-    @@config = Uc3Ssm::ConfigResolver.new({
-      def_value: 'N/A' 
-    }).resolve_file_values({
-      file: @@config_file, 
-      return_key: @@integenv
-    })
-  
+    @@localid_prefix = ENV.fetch('PREFIX', Time.new.strftime('%Y_%m_%d_%H%M')) unless defined? @@localid_prefix
+    @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml') unless defined? @@config_file
+    @@integenv = ENV.fetch('INTEG_TEST_ENV', 'default') unless defined? @@integenv
+    unless defined? @@config
+      @@config = Uc3Ssm::ConfigResolver.new({
+        def_value: 'N/A' 
+      }).resolve_file_values({
+        file: @@config_file, 
+        return_key: @@integenv
+      }) 
+    end
+
     def self.localid_prefix
       @@localid_prefix
     end
