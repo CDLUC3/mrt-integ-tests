@@ -349,12 +349,31 @@ end
 def check_storage_state
   url = @test_config['storage-state']
   return if url.empty?
-  @session.visit(url)
-  t = @session.find("body pre").text
-  j = JSON.parse(t)
-  node = j.fetch("sto:storageServiceState", {})
+
+  nodes = json_request(url).fetch("sto:storageServiceState", {})
     .fetch("sto:nodeStates", {})
     .fetch("sto:nodeState", [])
-  puts(node)
-  expect(node.length).to be > 0
+  expect(nodes.length).to be > 0
+  nodes.each do |n|
+    puts "\t#{n}"
+    nstate = json_request("#{n}?t=json").fetch("nod:nodeState", {}).fetch("nod:testOk", false)
+    puts "\t  Node State OK: #{nstate}"
+    expect(nstate).to be(true)
+  end
 end 
+
+def json_request(url, redirect = true, guest_credentials = false)
+  flags = redirect ? "-sL" : "-s"
+  creds = guest_credentials ? "-u anonymous:guest" : ""
+  json = %x{ curl #{flags} #{creds} #{url} }
+  begin
+    JSON.parse(json)
+  rescue
+    # return empty object to signal unparseable json
+    {}
+  end
+end
+
+def json_rel_request(url, redirect = true, guest_credentials = false) 
+  json_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
+end

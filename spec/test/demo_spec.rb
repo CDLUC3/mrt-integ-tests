@@ -82,7 +82,33 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         visit_first_object
       end
     end
-  
+
+    it 'Browse to object_info page for first object' do
+      guest_collections.each do |coll|
+        visit_collection(coll)
+        next if get_object_count == 0
+        visit_first_object
+
+        ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
+        json = json_rel_request("api/object_info/#{ERB::Util.url_encode(ark)}", false, true)
+        expect(json.fetch("ark", "")).to eq(ark)
+        expect(json.fetch("version_number", 0)).to be > 0
+        expect(json.fetch("total_files", 0)).to be > 0
+      end
+    end
+
+    it 'Browse to object_info page without credentials for first object' do
+      guest_collections.each do |coll|
+        visit_collection(coll)
+        next if get_object_count == 0
+        visit_first_object
+
+        ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
+        json = json_rel_request("api/object_info/#{ERB::Util.url_encode(ark)}", false, false)
+        expect(json.fetch("ark", "")).to eq("")
+      end
+    end
+
     it 'Browse to first version' do
       guest_collections.each do |coll|
         visit_collection(coll)
