@@ -2,6 +2,7 @@ require 'colorize'
 require 'capybara/dsl'
 require 'capybara/rspec'
 require 'uc3-ssm'
+require 'nokogiri'
 
 RSpec.configure do |config|
   config.color = true
@@ -376,4 +377,20 @@ end
 
 def json_rel_request(url, redirect = true, guest_credentials = false) 
   json_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
+end
+
+def xml_request(url, redirect = true, guest_credentials = false)
+  flags = redirect ? "-sL" : "-s"
+  creds = guest_credentials ? "-u anonymous:guest" : ""
+  xml = %x{ curl #{flags} #{creds} #{url} }
+  begin
+    Nokogiri::XML(xml)
+  rescue
+    # return empty object to signal unparseable json
+    Nokogiri::XML("")
+  end
+end
+
+def xml_rel_request(url, redirect = true, guest_credentials = false) 
+  xml_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
 end
