@@ -71,7 +71,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end 
 
       it "Check build info: #{build_info_url(url)}" do
-        skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[\/(mrtstore|mrtaccess|mrtoai|mrtreplic)\/])
+        skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[(mrtstore|mrtaccess|mrtoai|mrtreplic)])
         skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[\/(store|oai|replic)\/])
         tag = check_build_info(build_info_url(url))
         puts "\t\t#{tag}"
@@ -395,5 +395,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
+  end
+
+  describe 'Manual follow up' do
+    it 'Check the "Recent Audit and Replication Issues" report in the Collection Admin Tool to look for audit or replication failures' do
+    end
   end
 end
