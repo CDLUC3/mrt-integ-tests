@@ -60,6 +60,24 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
+  describe 'Check service states' do
+    TestObjectPrefix.state_urls.split(",").each do |url|
+      it "State endpoint returns data: #{url}" do
+        check_service_state(url)
+      end 
+
+      it "State endpoint is active: #{url}" do
+        check_state_active(check_service_state(url))
+      end 
+
+      it "Check build info: #{build_info_url(url)}" do
+        skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[(mrtstore|mrtaccess|mrtoai|mrtreplic)])
+        tag = check_build_info(build_info_url(url))
+        puts "\t\t#{tag}"
+      end 
+    
+    end
+  end
 
   describe 'Unauthenticated Access' do
     before(:each) do

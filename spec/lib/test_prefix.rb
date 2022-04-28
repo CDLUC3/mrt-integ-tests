@@ -74,4 +74,7 @@ class TestObjectPrefix
       "combo"
     end
 
+    def self.state_urls
+      @@config.fetch('state-urls', {}).gsub("localhost", ENV.fetch("HOSTNAME", "localhost"))
+    end
   end

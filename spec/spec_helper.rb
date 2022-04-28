@@ -363,6 +363,48 @@ def check_storage_state
   end
 end 
 
+def check_service_state(url)
+  return if url.empty?
+  state = json_request(url)
+  expect(state.empty?).to be(false)
+  state
+end 
+
+def build_info_url(url)
+  m = url.match(%r[(https?://[^\/]+\/([^\/]+\/)?).*$])
+  return "" unless m 
+  "#{m[1]}static/build.content.txt"
+end 
+
+def check_build_info(url)
+  return if url.empty?
+  text = text_request(url)
+  expect(text.empty?).to be(false)
+  text.split("\n").first
+end 
+
+def check_state_active(state)
+  top = state.keys.first
+  data = state.fetch(top, {})
+  if top == "ing:ingestServiceState"
+    expect(data.fetch("ing:submissionState","")).to eq("thawed")
+  elsif top == "sto:storageServiceState"
+    expect(data.fetch("sto:nodeStates",{}).fetch("sto:nodeState", []).length).to be > 0
+  elsif top == "fix:fixityServiceState"
+    expect(data.fetch("fix:status","")).to eq("running")
+  elsif top == "invsv:invServiceState"
+    expect(data.fetch("invsv:zookeeperStatus","")).to eq("running")
+    expect(data.fetch("invsv:dbStatus","")).to eq("running")
+    expect(data.fetch("invsv:systemStatus","")).to eq("running")
+  elsif top == "oaisv:oAIServiceState"
+    expect(data.fetch("oaisv:baseURL","")).not_to eq("")
+  elsif top == "repsvc:replicationServiceState"
+    expect(data.fetch("repsvc:status","")).to eq("running")
+  elsif top == "sto:storageServiceState"
+  # elsif sword state - sword requires authentication
+  end
+end
+
 def json_request(url, redirect = true, guest_credentials = false)
   flags = redirect ? "-sL" : "-s"
   creds = guest_credentials ? "-u anonymous:guest" : ""
@@ -377,6 +419,13 @@ end
 
 def json_rel_request(url, redirect = true, guest_credentials = false) 
   json_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
+end
+
+def text_request(url)
+  flags = "-s -S -f"
+  text = %x{ curl #{flags} #{url} }
+  return "" if $?.exitstatus != 0
+  text
 end
 
 def xml_request(url, redirect = true, guest_credentials = false)
