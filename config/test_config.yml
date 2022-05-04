@@ -134,6 +134,7 @@ local: &local
   url: 'http://localhost:8086'
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
+  state-urls-lb: ''
   state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker
 development: &development
@@ -142,6 +143,7 @@ development: &development
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
+  state-urls-lb: ''
   state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker
 development-devdb:
@@ -149,12 +151,14 @@ development-devdb:
   experimental_tests: true
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
   storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
+  state-urls-lb: ''
   state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker-devbucket
 stage: &stage
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
   storage-state: "{!SSM: integ-tests/for-stage/storage-state}"
+  state-urls-lb: "{!SSM: integ-tests/for-stage/state-urls-lb}"
   state-urls: "{!SSM: integ-tests/for-stage/state-urls}"
   # Enable single encoding tests with stage ALB
   experimental_tests: true
@@ -205,6 +209,7 @@ production: &production
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt.cdlib.org}"
   storage-state: "{!SSM: integ-tests/for-prod/storage-state}"
   state-urls: "{!SSM: integ-tests/for-prod/state-urls}"
+  state-urls-lb: "{!SSM: integ-tests/for-prod/state-urls-lb}"
   guest_actions:
     collections:
     - coll: ucb_open_context

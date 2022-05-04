@@ -9,6 +9,10 @@ puts "#{TestObjectPrefix.integ_test_environment}: #{TestObjectPrefix.localid_pre
 
 RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
+  before(:all) do
+    @sem_versions = {}
+  end
+
   before(:each) do
     @session = create_web_session
     %x[ mkdir -p /tmp/uploads ]
@@ -71,10 +75,22 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end 
 
       it "Check build info: #{build_info_url(url)}" do
-        skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[(mrtstore|mrtaccess|mrtoai|mrtreplic)])
-        skip("build.content.txt not yet enabled") if build_info_url(url).match(%r[\/(store|oai|replic)\/])
+        skip("build.content.txt not yet enabled") unless has_build_info(url)
+        service = get_service(url)
         tag = check_build_info(build_info_url(url))
+        exp_tag = @sem_versions.fetch(service, "")
         puts "\t\t#{tag}"
+        expect(exp_tag).to eq(tag) unless exp_tag.empty?
+        @sem_versions[service] = tag
+      end 
+    
+    end
+  end
+
+  describe 'Check service states via load balancers' do
+    TestObjectPrefix.state_urls_lb.split(",").each do |url|
+      it "State endpoint returns data: #{url}" do
+        check_service_state(url, true)
       end 
     
     end
@@ -302,6 +318,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         it "Test object download: #{@ark}" do
           listing = perform_object_download("#{@ark}.zip")
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
+            skip("Listing could not be generated") if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
           end
         end    
@@ -344,6 +361,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           it "Start download object for recently ingested object: #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")
+            skip("Listing could not be generated") if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
           end    
         end

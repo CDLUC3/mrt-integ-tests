@@ -363,9 +363,9 @@ def check_storage_state
   end
 end 
 
-def check_service_state(url)
+def check_service_state(url, redirect = false)
   return if url.empty?
-  state = json_request(url)
+  state = json_request(url, redirect)
   expect(state.empty?).to be(false)
   state
 end 
@@ -403,6 +403,29 @@ def check_state_active(state)
   elsif top == "sto:storageServiceState"
   # elsif sword state - sword requires authentication
   end
+end
+
+def get_service(url)
+  return "ingest" if url =~ %r[ingest]
+  return "store" if url =~ %r[store]
+  return "access" if url =~ %r[access]
+  return "inventory" if url =~ %r[mrtinv]
+  return "inventory" if url =~ %r[inventory]
+  return "replic" if url =~ %r[replic]
+  return "audit" if url =~ %r[audit]
+  return "oai" if url =~ %r[oai]
+  return "sword" if url =~ %r[sword]
+  return "ui" if url =~ %r[ui]
+  return ""
+end
+
+def has_build_info(url)
+  service = get_service(url)
+  return false if service == "replic"
+  return false if service == "oai"
+  return false if service == "access"
+  return false if service == "store"
+  true
 end
 
 def json_request(url, redirect = true, guest_credentials = false)

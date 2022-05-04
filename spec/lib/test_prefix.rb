@@ -77,4 +77,8 @@ class TestObjectPrefix
     def self.state_urls
       @@config.fetch('state-urls', {}).gsub("localhost", ENV.fetch("HOSTNAME", "localhost"))
     end
+
+    def self.state_urls_lb
+      @@config.fetch('state-urls-lb', {})
+    end
   end
