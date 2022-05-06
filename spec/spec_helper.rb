@@ -380,7 +380,9 @@ end
 def check_build_info(url)
   return if url.empty?
   if get_service(url) == 'ui'
-    json_request(url).fetch('version', '')
+    text = json_request(url).fetch('version', '')
+    expect(text.empty?).to be(false)
+    text
   else
     text = text_request(url)
     expect(text.empty?).to be(false)
