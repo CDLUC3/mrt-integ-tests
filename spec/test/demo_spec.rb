@@ -176,7 +176,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         xml = xml_request(atom, true, true) 
         expect(xml).not_to be(nil)
         expect(xml.root).not_to be(nil)
-        expect(xml.root.xpath("//atom:entry", {atom:'http://www.w3.org/2005/Atom'}).length).to be > 0
+        expect(xml.root.xpath("//atom:entry", {atom:'http://www.w3.org/2005/Atom'}).length).to be > 0 if @test_config.fetch("expect_atom_content", false)
       end
     end
 

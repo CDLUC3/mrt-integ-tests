@@ -415,17 +415,16 @@ def get_service(url)
   return "audit" if url =~ %r[audit]
   return "oai" if url =~ %r[oai]
   return "sword" if url =~ %r[sword]
-  return "ui" if url =~ %r[ui]
+  return "ui" if url =~ %r[state\.json]
   return ""
 end
 
 def has_build_info(url)
   service = get_service(url)
-  return false if service == "replic"
   return false if service == "oai"
   return false if service == "access"
   return false if service == "store"
-  true
+  return false if service == "ui"
 end
 
 def json_request(url, redirect = true, guest_credentials = false)
@@ -435,6 +434,7 @@ def json_request(url, redirect = true, guest_credentials = false)
   begin
     JSON.parse(json)
   rescue
+    puts json
     # return empty object to signal unparseable json
     {}
   end

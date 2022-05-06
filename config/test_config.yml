@@ -135,7 +135,7 @@ local: &local
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
   state-urls-lb: ''
-  state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
+  state-urls: 'http://localhost:8086/state.json,http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker
 development: &development
   <<: *globals
@@ -144,7 +144,7 @@ development: &development
   # The storage state test fails when talking to a minio container vs a live service
   storage-state: ''
   state-urls-lb: ''
-  state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
+  state-urls: 'http://localhost:8086/state.json,http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker
 development-devdb:
   <<: *globals
@@ -152,7 +152,7 @@ development-devdb:
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
   storage-state: "{!ENV: STORAGE_STATE_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8081/store/state?t=json}"
   state-urls-lb: ''
-  state-urls: 'http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
+  state-urls: 'http://localhost:8086/state.json,http://localhost:8080/ingest/state?t=json,http://localhost:8081/store/state?t=json,http://localhost:8082/inventory/state?t=json,http://localhost:8092/replic/state?t=json,http://localhost:8093/audit/state?t=json'
   << : *docker-devbucket
 stage: &stage
   <<: *globals
@@ -162,6 +162,7 @@ stage: &stage
   state-urls: "{!SSM: integ-tests/for-stage/state-urls}"
   # Enable single encoding tests with stage ALB
   experimental_tests: true
+  expect_atom_content: true
   guest_actions:
     collections:
     - coll: cdl_dashdev
@@ -188,6 +189,7 @@ stage-wasabi: &stage
   state-urls: "{!SSM: integ-tests/for-stage/state-urls}"
   # Enable single encoding tests with stage ALB
   experimental_tests: true
+  expect_atom_content: true
   guest_actions:
     collections:
     - coll: cdl_dashdev
@@ -210,6 +212,7 @@ production: &production
   storage-state: "{!SSM: integ-tests/for-prod/storage-state}"
   state-urls: "{!SSM: integ-tests/for-prod/state-urls}"
   state-urls-lb: "{!SSM: integ-tests/for-prod/state-urls-lb}"
+  expect_atom_content: true
   guest_actions:
     collections:
     - coll: ucb_open_context
