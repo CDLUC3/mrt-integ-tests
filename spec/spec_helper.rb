@@ -371,6 +371,7 @@ def check_service_state(url, redirect = false)
 end 
 
 def build_info_url(url)
+  return url if get_service(url) == 'ui'
   m = url.match(%r[(https?://[^\/]+\/([^\/]+\/)?).*$])
   return "" unless m 
   "#{m[1]}static/build.content.txt"
@@ -378,9 +379,13 @@ end
 
 def check_build_info(url)
   return if url.empty?
-  text = text_request(url)
-  expect(text.empty?).to be(false)
-  text.split("\n").first
+  if get_service(url) == 'ui'
+    json_request(url).fetch('version', '')
+  else
+    text = text_request(url)
+    expect(text.empty?).to be(false)
+    text.split("\n").first
+  end
 end 
 
 def check_state_active(state)
@@ -424,7 +429,7 @@ def has_build_info(url)
   return false if service == "oai"
   return false if service == "access"
   return false if service == "store"
-  return false if service == "ui"
+  true
 end
 
 def json_request(url, redirect = true, guest_credentials = false)
@@ -434,7 +439,6 @@ def json_request(url, redirect = true, guest_credentials = false)
   begin
     JSON.parse(json)
   rescue
-    puts json
     # return empty object to signal unparseable json
     {}
   end
