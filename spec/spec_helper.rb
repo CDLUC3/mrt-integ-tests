@@ -398,7 +398,9 @@ def check_state_active(state)
   elsif top == "sto:storageServiceState"
     expect(data.fetch("sto:nodeStates",{}).fetch("sto:nodeState", []).length).to be > 0
   elsif top == "fix:fixityServiceState"
-    expect(data.fetch("fix:status","")).to eq("running")
+    state = data.fetch("fix:status","")
+    skip("Audit state unknown -- may have no work") if state == 'unknown'
+    expect(state).to eq("running")
   elsif top == "invsv:invServiceState"
     expect(data.fetch("invsv:zookeeperStatus","")).to eq("running")
     expect(data.fetch("invsv:dbStatus","")).to eq("running")
