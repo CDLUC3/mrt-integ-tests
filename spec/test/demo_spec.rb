@@ -389,7 +389,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           end
 
           it "Check audit replic stats for #{fk}" do
-            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
             visit "/state/#{encark}/audit_replic"
@@ -446,7 +446,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           end    
 
           it "Check audit replic stats for #{fk}" do
-            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
             visit "/state/#{encark}/audit_replic"
