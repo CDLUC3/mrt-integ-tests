@@ -67,10 +67,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   describe 'Check service states' do
     TestObjectPrefix.state_urls.split(",").each do |url|
       it "State endpoint returns data: #{url}" do
+        skip("state unsupported") unless has_service_state(url)
         check_service_state(url)
       end 
 
       it "State endpoint is active: #{url}" do
+        skip("state unsupported") unless has_service_state(url)
         check_state_active(check_service_state(url))
       end 
 
@@ -85,11 +87,32 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end 
     
     end
+
+    describe 'View state page - look for audit replic errors' do
+      before(:each) do
+        skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
+        @session.visit '/state'
+      end
+ 
+      it "Check that no audit errors have occurred recently" do
+        expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
+      end
+
+      it "Check that no replic errors have occurred recently" do
+        expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
+      end
+
+      it "Check that no audit is processing" do
+        expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
+      end
+    end
+  
   end
 
   describe 'Check service states via load balancers' do
     TestObjectPrefix.state_urls_lb.split(",").each do |url|
       it "State endpoint returns data: #{url}" do
+        skip("state unsupported") unless has_service_state(url)
         check_service_state(url, true)
       end 
     
@@ -363,7 +386,19 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             listing = perform_object_download("#{ark}.zip")
             skip("Listing could not be generated") if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
-          end    
+          end
+
+          it "Check audit replic stats for #{fk}" do
+            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            encark  = ERB::Util.url_encode(ark)
+            skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
+            visit "/state/#{encark}/audit_replic"
+
+            expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
+            expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
+            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
+            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+          end
         end
       end
     end
@@ -409,14 +444,22 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           it "Retrieve V2 file #{file}.v2 by URL construction" do
             check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
           end    
+
+          it "Check audit replic stats for #{fk}" do
+            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            encark  = ERB::Util.url_encode(ark)
+            skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
+            visit "/state/#{encark}/audit_replic"
+
+            expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
+            expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
+            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
+            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+          end
         end
       end
     end
 
   end
 
-  describe 'Manual follow up' do
-    it 'Check the "Recent Audit and Replication Issues" report in the Collection Admin Tool to look for audit or replication failures' do
-    end
-  end
 end

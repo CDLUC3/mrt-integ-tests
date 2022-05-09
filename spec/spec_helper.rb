@@ -425,7 +425,14 @@ def get_service(url)
   return "oai" if url =~ %r[oai]
   return "sword" if url =~ %r[sword]
   return "ui" if url =~ %r[state\.json]
+  return "ui" if url =~ %r[^merritt(-stage)?\.cdlib\.org]
   return ""
+end
+
+def has_service_state(url)
+  service = get_service(url)
+  return @test_config.fetch("ui_audit_replic", true) if service == "ui"
+  true
 end
 
 def has_build_info(url)
@@ -433,6 +440,8 @@ def has_build_info(url)
   return false if service == "oai"
   return false if service == "access"
   return false if service == "store"
+  return @test_config.fetch("replic_build_info", true) if service == "replic"
+  return @test_config.fetch("ui_audit_replic", true) if service == "ui"
   true
 end
 
