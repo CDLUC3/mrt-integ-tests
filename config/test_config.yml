@@ -31,7 +31,8 @@ globals: &globals
     encode2: "javoiš_et_al_data.xls" #CGI.unescape('javoi%C5%A1_et_al_data.xls')
   four-byte: &four-byte
     ckj_4byte: '𠜎𠵿.txt'
-    emoji2: 'images🙃emo.md'
+    # note that the following filename does not replicate to Wasabi
+    # emoji2: 'images🙃emo.md'
   # See the following note about escaping unicode in Yaml. 
   # https://yaml.org/spec/1.2/spec.html#id2708710
   # The behavior differs between single and double quoted values
