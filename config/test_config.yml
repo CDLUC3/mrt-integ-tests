@@ -163,6 +163,7 @@ stage: &stage
   # Enable single encoding tests with stage ALB
   experimental_tests: true
   expect_atom_content: true
+  check_audits: false
   guest_actions:
     collections:
     - coll: cdl_dashdev
@@ -190,6 +191,7 @@ stage-wasabi: &stage
   # Enable single encoding tests with stage ALB
   experimental_tests: true
   expect_atom_content: true
+  check_audits: false
   guest_actions:
     collections:
     - coll: cdl_dashdev

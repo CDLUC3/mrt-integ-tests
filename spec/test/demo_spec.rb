@@ -95,6 +95,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
  
       it "Check that no audit errors have occurred recently" do
+        skip("Not testing audits in this environment") unless @test_config.fetch("check_audits", true)
         expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
       end
 
@@ -239,7 +240,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'ingest files' do 
       before(:each) do
-        skip("PREFIX supplied - this substitutes for the ingest") unless ENV.fetch('PREFIX', '').empty?
+        skip("PREFIX supplied - this substitutes for the ingest") unless TestObjectPrefix.run_ingest
         skip("No non-guest collections supplied") if non_guest_collections.length == 0
         coll = non_guest_collections.first
         visit_collection(coll)
@@ -248,7 +249,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       after(:all) do
-        if ENV.fetch('PREFIX', '').empty?
+        if TestObjectPrefix.run_ingest
           sleep_label(TestObjectPrefix.sleep_time_ingest_global, "to allow ingests to complete") if TestObjectPrefix.has_ingest
         end
       end
@@ -392,12 +393,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
-            visit "/state/#{encark}/audit_replic"
+            @session.visit "/state/#{encark}/audit_replic"
 
-            expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
+            expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0) if @test_config.fetch("check_audits", true)
             expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
-            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
-            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0 
+            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
           end
         end
       end
@@ -449,12 +450,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
-            visit "/state/#{encark}/audit_replic"
+            @session.visit "/state/#{encark}/audit_replic"
 
             expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
             expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
-            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
-            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+            expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0 if @test_config.fetch("check_audits", true)
+            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
           end
         end
       end

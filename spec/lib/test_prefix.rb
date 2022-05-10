@@ -49,6 +49,10 @@ class TestObjectPrefix
       !self.encoding_zip_files.empty?
     end
 
+    def self.run_ingest
+      ENV.fetch('PREFIX', '').empty?
+    end
+    
     def self.has_ingest
       self.do_encoding_test || self.test_files.empty? == false || self.version_files.empty? == false
     end
