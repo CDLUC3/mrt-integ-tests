@@ -232,6 +232,16 @@ Finished in 8 minutes 31 seconds (files took 4.2 seconds to load)
 95 examples, 0 failures, 6 pending
 ```
 
+Note that 6 tests were PENDING (as of the date this README was updated).  The last pending item is specific to the stage environment.
+```
+    Extract microservice build info (build.content.txt for java microservices): http://url.not.shown/static/build.content.txt (PENDING: Microservice build info endpoint is not yet enabled)
+    Extract microservice build info (build.content.txt for java microservices): http://url.not.shown/static/build.content.txt (PENDING: Microservice build info endpoint is not yet enabled)
+    Extract microservice build info (build.content.txt for java microservices): http://url.not.shown/mrtoai/static/build.content.txt (PENDING: Microservice build info endpoint is not yet enabled)
+    Extract microservice build info (build.content.txt for java microservices): http://url.not.shown/static/build.content.txt (PENDING: Microservice build info endpoint is not yet enabled)
+    Extract microservice build info (build.content.txt for java microservices): http://url.not.shown/static/build.content.txt (PENDING: Microservice build info endpoint is not yet enabled)
+      From the UI state endpoint page, verify that no recent AUDIT errors have occurred (PENDING: Audit counts are not verified within this environment -- stage has known checksum errors)
+```
+
 ## TEST Referencing PREVIOUS INGEST `-e PREFIX=2022_05_11_1020`
 
 _3 additional PENDING Tests_
