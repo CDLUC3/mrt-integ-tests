@@ -23,14 +23,14 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end_web_session(@session)
   end
 
-  it 'View home page - Merritt Landing Page' do
+  it 'Verify that the Merritt UI home page is accessible' do
     @session.visit '/'
     @session.within("section.intro h1") do
       expect(@session.text).to have_content("A trusted, cost-effective digital preservation repository")
     end
   end
 
-  describe 'Get version from footer' do
+  describe 'Verify that a semantic version string is accessible in the Merritt UI footer' do
     it 'Print footer' do
       @session.visit '/'
       ver = "Version undefined"
@@ -42,7 +42,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   end
 
   describe 'Enumerate test files' do
-    it 'Print test files' do
+    it 'Print the test files to be used for ingest and retrieval tests -- based on -e INGEST_FILES' do
       puts("\tIngest Files:")
       TestObjectPrefix.test_files.each do |fk, file|
         puts("\t\t#{'%-15s' % fk}\t#{file}")
@@ -59,25 +59,25 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   end
 
   describe 'Check storage service state' do
-    it 'Check for valid storage nodes' do
+    it 'Invoke the storage state command for each storage node -- this tests the accessibility of each cloud service used by Merritt' do
       check_storage_state
     end
   end
 
   describe 'Check service states' do
     TestObjectPrefix.state_urls.split(",").each do |url|
-      it "State endpoint returns data: #{url}" do
-        skip("state unsupported") unless has_service_state(url)
+      it "Verify that the microservice STATE endpoint returns a successful response: #{url}" do
+        skip("STATE endpoint is not yet supported for this microservice") unless has_service_state(url)
         check_service_state(url)
       end 
 
-      it "State endpoint is active: #{url}" do
-        skip("state unsupported") unless has_service_state(url)
+      it "Using the STATE endpoint response, verify that processing is not frozen for the micorservice: #{url}" do
+        skip("STATE endpoint is not yet supported for this microservice") unless has_service_state(url)
         check_state_active(check_service_state(url))
       end 
 
-      it "Check build info: #{build_info_url(url)}" do
-        skip("build.content.txt not yet enabled") unless has_build_info(url)
+      it "Extract microservice build info (build.content.txt for java microservices): #{build_info_url(url)}" do
+        skip("Microservice build info endpoint is not yet enabled") unless has_build_info(url)
         service = get_service(url)
         tag = check_build_info(build_info_url(url))
         exp_tag = @sem_versions.fetch(service, "")
@@ -90,20 +90,20 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'View state page - look for audit replic errors' do
       before(:each) do
-        skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
+        skip("The UI state endpoint does not yet provide audit and replic count information") unless @test_config.fetch("ui_audit_replic", true)
         @session.visit '/state'
       end
  
-      it "Check that no audit errors have occurred recently" do
-        skip("Not testing audits in this environment") unless @test_config.fetch("check_audits", true)
+      it "From the UI state endpoint page, verify that no recent AUDIT errors have occurred" do
+        skip("Audit counts are not verified within this environment -- stage has known checksum errors") unless @test_config.fetch("check_audits", true)
         expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0)
       end
 
-      it "Check that no replic errors have occurred recently" do
+      it "From the UI state endpoint page, verify that no recent REPLICATION errors have occurred" do
         expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
       end
 
-      it "Check that no audit is processing" do
+      it "From the UI state endpoint page, verify that AUDIT activity is occurring" do
         expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
       end
     end
@@ -112,7 +112,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
   describe 'Check service states via load balancers' do
     TestObjectPrefix.state_urls_lb.split(",").each do |url|
-      it "State endpoint returns data: #{url}" do
+      it "Verify that the STATE endpoint is accessible and successful when invoked from a load balancer: #{url}" do
         skip("state unsupported") unless has_service_state(url)
         check_service_state(url, true)
       end 
@@ -125,16 +125,16 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_login
     end
   
-    it 'Perform Merritt Guest Login' do
+    it 'Verify that the Guest Login button succeeds in the Merritt UI' do
     end
 
-    it 'Open guest collections' do
+    it 'Verify that COLLECTIONS accessible to the Guest Login can be browsed' do
       guest_collections.each do |coll|
         visit_collection(coll)
       end
     end
 
-    it 'Browse to first object' do
+    it 'Verify that OBJECTS accessible to the Guest Login can be browsed' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -142,7 +142,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to object_info page for first object' do
+    it 'Verify that the JSON OBJECT_INFO page for an object accessible to the Guest Login can be retrieved' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -156,7 +156,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to object_info page without credentials for first object' do
+    it 'Verify that the JSON OBJECT_INFO page for an object accessible to the Guest Login CANNOT be retrieved IF the user is not logged in' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -168,7 +168,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to first version' do
+    it 'Verify that a VERSION PAGE for an object accessible to the Guest Login can be browsed' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -177,7 +177,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to first file' do
+    it 'Verify that a FILE for an object accessible to the Guest Login REDIRECTS to a presigned file retrieval' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -189,7 +189,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to atom feed' do
+    it 'Verify that the ATOM FEED for a collection accessible to the Guest Login can be browsed' do
       guest_collections.each do |coll|
         visit_collection(coll)
         atomlink = @session.find("h1 a")
@@ -204,7 +204,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Browse to system text file and validate presigned url' do
+    it 'Verify the CONTENT of a FILE for an object accessible to the Guest Login' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -214,7 +214,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Guest collections - no collection access' do
+    it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
       guest_collections_no_access.each do |coll|
         visit_collection(coll)
         expect(@session.title).to eq("Unauthorized (401)")
@@ -227,7 +227,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       authenticated_login
     end
 
-    it 'Authenticated - file presigned download' do
+    it 'Verify the CONTENT of a FILE for an object in a collection NOT acessible to the GUEST login' do
       non_guest_collections.each do |coll|
         visit_collection(coll)
         if get_object_count > 0
@@ -240,7 +240,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'ingest files' do 
       before(:each) do
-        skip("PREFIX supplied - this substitutes for the ingest") unless TestObjectPrefix.run_ingest
+        skip("PREFIX supplied - rather than ingesting new content, objects from a prior ingest batch will be browsed") unless TestObjectPrefix.run_ingest
         skip("No non-guest collections supplied") if non_guest_collections.length == 0
         coll = non_guest_collections.first
         visit_collection(coll)
@@ -255,31 +255,31 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       TestObjectPrefix.test_files.each do |fk, file|
-        describe "ingest file with key #{fk}" do 
-          it "Ingest #{file}" do
+        describe "Ingest a SINGLE FILE as a new object using the following PREFIX as part of its local_id: #{fk}" do 
+          it "Verify that the following file can be ingested into a collection: #{file}" do
             upload_regular_file(fk)
           end
         end
       end
 
       TestObjectPrefix.version_files.each do |fk, file|
-        describe "create versioned object with key #{fk}" do 
-          it "Ingest V1 for #{file}" do
+        describe "Create VERSION 1 of an object using the following PREFIX as part of its local_id:  #{fk}" do 
+          it "Verify that VERSION 1 can be ingested for the following file: #{file}" do
             upload_v1_file(fk)
           end
         end
       end
 
       TestObjectPrefix.version_files.each do |fk, file|
-        describe "update versioned object with key #{fk}" do 
-          it "Ingest V2 for #{file}" do
+        describe "Create VERSION 2 of an object using the following PREFIX as part of its local_id: #{fk}" do 
+          it "Verify that VERSION 2 can be ingested for the following file: #{file}" do
             update_v2_file(fk)
           end
         end
       end
 
       if TestObjectPrefix.do_encoding_test
-        it "Ingest zip file with encoding use cases" do
+        it "Verify that a ZIP FILE named 'encoding.zip' containing multiple files can be ingested into an object" do
           zippath = "/tmp/uploads/#{TestObjectPrefix.encoding_zip}"
         
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
@@ -298,7 +298,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe 'browse objects/files ingested in encoding.zip(combo)' do
+    describe 'Browse the OBJECT and FILES ingested as a part of ENCODING.ZIP' do
       if TestObjectPrefix.do_encoding_test
 
         before(:each) do
@@ -310,12 +310,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         end
 
         TestObjectPrefix.encoding_zip_files.each do |fk, file|
-          it "Test file link from version page: #{file}" do
+          it "Verify that a FILENAME with the following CHARACTERS can be retrieved from the object: #{file}" do
             find_file_on_version_page(file)
           end    
 
           # Skip until the Apache issue is resolved
-          it "Test file link single-encoding from version page: #{file}" do
+          it "Verify that a SINGLY ENCODED or DOUBLY ENCODED FILENAME with the following CHARACTERS can be retrieved from the object: #{file}" do
             # skip("Encoding issue in progress") unless @test_config.fetch("experimental_tests", false)
             # Get raw ark, unencoded
             ark = @session.find("h1 span.key").text.gsub(/ -.*$/, '')
@@ -339,7 +339,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           end
         end
 
-        it "Test object download: #{@ark}" do
+        it "Verify that the OBJECT CAN BE DOWNLOADED and that it contains ALL the files within ENCODING.ZIP: #{@ark}" do
           listing = perform_object_download("#{@ark}.zip")
           TestObjectPrefix.encoding_zip_files.each do |fk, file|
             skip("Listing could not be generated") if listing.unicode_normalize.empty?
@@ -349,7 +349,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe 'browse objects/files ingested individually' do
+    describe 'Browse Objects ingested from a SINGLE FILE' do
       TestObjectPrefix.test_files.each do |fk, file|
         describe "search for object with #{local_id(TestObjectPrefix.localid_prefix, fk)}" do 
   
@@ -362,34 +362,34 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             sleep 2
           end
 
-          it "Search for recently ingested object's local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
+          it "Verify browsing an OBJECT recently ingested with local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
           end    
   
-          it "Search for test file on object page: #{file}" do
+          it "Verify that a SPECIFIC FILE can be found on an OBJECT PAGE: #{file}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             @session.find_link(@file)
             @session.click_link(@file)
             validate_file_page
           end    
   
-          it "Search for test file on object version page: #{file}" do
+          it "Verify that a SPECIFIC FILE can be found on a VERSION PAGE: #{file}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end    
 
-          it "Retrieve file #{file} by URL construction" do
+          it "Verify that a SPECIFIC FILE can be retrieved by URL construction: #{file}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
           end    
 
-          it "Start download object for recently ingested object: #{fk}" do
+          it "Verify the OBJECT DOWNLOAD for a recently ingested object: #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")
             skip("Listing could not be generated") if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
           end
 
-          it "Check audit replic stats for #{fk}" do
+          it "Verify AUDIT AND REPLIC stats for a recently ingested object: #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
@@ -404,7 +404,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    describe 'browse versioned ingested individually' do
+    describe 'Browse Objects recently INGESTED and UPDATED (VERSIONED)' do
       TestObjectPrefix.version_files.each do |fk, file|
         describe "search for object with #{local_id(TestObjectPrefix.localid_prefix, fk)}" do 
   
@@ -417,36 +417,36 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             sleep 2
           end
 
-          it "Search for recently ingested object's local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
+          it "Verify browse of a RECENTLY INGESTED OBJECT with local id: #{local_id(TestObjectPrefix.localid_prefix, fk)}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
           end    
   
-          it "Search for test file on object page: #{file}" do
+          it "Verify the presence of a TEST FILE on the OBJECT PAGE: #{file}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             @session.find_link(@file)
             @session.click_link(@file)
             validate_file_page
           end    
   
-          it "Search for test file on object version page: #{file}" do
+          it "Verify the presence of a TEST FILE on the VERSION 1 PAGE: #{file}" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end    
 
-          it "Retrieve file #{file} by URL construction" do
+          it "Verify the RETRIEVAL OF VERSION 1 of A TEST FILE #{file} by URL construction" do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
           end    
 
-          it "Search for V2 test file on object version page: #{file}.v2" do
+          it "Verify the presence of a TEST FILE on the VERSION 2 PAGE: #{file}.v2" do
             check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end    
 
-          it "Retrieve V2 file #{file}.v2 by URL construction" do
+          it "Verify the RETRIEVAL OF VERSION 2 of A TEST FILE #{file}.v2 by URL construction" do
             check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
           end    
 
-          it "Check audit replic stats for #{fk}" do
+          it "Verify AUDIT AND REPLIC stats for a recently ingested and updated object #{fk}" do
             ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub(%r[ark_], 'ark:/').gsub(%r[_], '/')
             encark  = ERB::Util.url_encode(ark)
             skip("ui_audit_replic endpoint not supported") unless @test_config.fetch("ui_audit_replic", true)
