@@ -217,7 +217,7 @@ production: &production
   state-urls-lb: "{!SSM: integ-tests/for-prod/state-urls-lb}"
   expect_atom_content: true
   replic_build_info: false
-  ui_audit_replic: false
+  ui_audit_replic: true
   guest_actions:
     collections:
     - coll: ucb_open_context
