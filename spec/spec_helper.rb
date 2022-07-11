@@ -438,8 +438,6 @@ end
 def has_build_info(url)
   service = get_service(url)
   return false if service == "oai"
-  return false if service == "access"
-  return false if service == "store"
   return @test_config.fetch("replic_build_info", true) if service == "replic"
   return @test_config.fetch("ui_audit_replic", true) if service == "ui"
   true
