@@ -398,7 +398,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             expect(@session.find("table.state tbody tr.audits td.error").text.to_i).to eq(0) if @test_config.fetch("check_audits", true)
             expect(@session.find("table.state tbody tr.replics td.error").text.to_i).to eq(0)
             expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0 
-            expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
+            # expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
           end
         end
       end
