@@ -163,7 +163,7 @@ stage: &stage
   state-urls: "{!SSM: integ-tests/for-stage/state-urls}"
   # Enable single encoding tests with stage ALB
   experimental_tests: true
-  expect_atom_content: true
+  expect_atom_content: false
   check_audits: false
   guest_actions:
     collections:
