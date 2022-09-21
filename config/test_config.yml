@@ -216,7 +216,7 @@ production: &production
   state-urls: "{!SSM: integ-tests/for-prod/state-urls}"
   state-urls-lb: "{!SSM: integ-tests/for-prod/state-urls-lb}"
   expect_atom_content: true
-  replic_build_info: false
+  replic_build_info: true
   ui_audit_replic: true
   guest_actions:
     collections:
