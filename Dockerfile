@@ -5,7 +5,7 @@
 
 FROM ruby:2.7
 
-RUN apt-get update && \
+RUN apt-get update -y && \
     apt-get install -y libarchive-tools zip
 
 RUN gem install bundler
