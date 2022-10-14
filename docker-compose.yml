@@ -10,7 +10,7 @@ volumes:
 services:
   mrt-integ-tests:
     container_name: mrt-integ-tests
-    image: cdluc3/mrt-integ-tests
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mrt-integ-tests
     build:
       context: .
       dockerfile: Dockerfile
