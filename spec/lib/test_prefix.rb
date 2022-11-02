@@ -3,12 +3,12 @@ class TestObjectPrefix
     @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml') unless defined? @@config_file
     @@integenv = ENV.fetch('INTEG_TEST_ENV', 'default') unless defined? @@integenv
     unless defined? @@config
-      @@config = Uc3Ssm::ConfigResolver.new({
+      @@config = Uc3Ssm::ConfigResolver.new(
         def_value: 'N/A' 
-      }).resolve_file_values({
+      ).resolve_file_values(
         file: @@config_file, 
         return_key: @@integenv
-      }) 
+      ) 
     end
 
     def self.localid_prefix

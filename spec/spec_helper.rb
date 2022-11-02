@@ -304,38 +304,16 @@ def create_web_session
 
   if ENV['CHROME_URL']
     Capybara.register_driver :selenium_chrome_headless do |app|
-      args = [
-        '--no-default-browser-check',
-        '--no-sandbox',
-        '--start-maximized',
-        '--headless',
-        '--verbose',
-        '--disable-popup-blocking',
-        '--disable-dev-shm-usage',
-        "--whitelisted-ips=''"
-      ]
-      caps = Selenium::WebDriver::Remote::Capabilities.chrome(
-        "chromeOptions" => {
-          "args" => args,
-          "prefs" => {
-            # Sometime between chrome 83 and 98, this directive stopped being honored
-            # Downloads are written to /home/seluser/Downloads
-            'download.default_directory' => '/tmp/downloads', 
-            'download.directory_upgrade' => true,
-            'download.prompt_for_download' => false,
-            'safebrowsing_for_trusted_sources_enabled' => false,
-            'safebrowsing.enabled' => false
-          }
-        }
-      )
-
+      opts = {
+        browser: :remote,
+        capabilities: Selenium::WebDriver::Remote::Capabilities.chrome,
+        url: ENV['CHROME_URL']
+      }
       Capybara::Selenium::Driver.new(
         app,
-        browser: :remote,
-        desired_capabilities: caps,
-        url: ENV['CHROME_URL']
+        **opts
       )
-   end
+    end
     @session = Capybara::Session.new(:selenium_chrome_headless)
   else
     @session = Capybara::Session.new(:selenium_chrome)
