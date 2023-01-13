@@ -383,12 +383,9 @@ def check_state_active(state)
     expect(data.fetch("invsv:zookeeperStatus","")).to eq("running")
     expect(data.fetch("invsv:dbStatus","")).to eq("running")
     expect(data.fetch("invsv:systemStatus","")).to eq("running")
-  elsif top == "oaisv:oAIServiceState"
-    expect(data.fetch("oaisv:baseURL","")).not_to eq("")
   elsif top == "repsvc:replicationServiceState"
     expect(data.fetch("repsvc:status","")).to eq("running")
   elsif top == "sto:storageServiceState"
-  # elsif sword state - sword requires authentication
   end
 end
 
@@ -400,7 +397,6 @@ def get_service(url)
   return "inventory" if url =~ %r[inventory]
   return "replic" if url =~ %r[replic]
   return "audit" if url =~ %r[audit]
-  return "oai" if url =~ %r[oai]
   return "sword" if url =~ %r[sword]
   return "ui" if url =~ %r[state\.json]
   return "ui" if url =~ %r[^merritt(-stage)?\.cdlib\.org]

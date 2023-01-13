@@ -91,7 +91,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     describe 'View state page - look for audit replic errors' do
       before(:each) do
         skip("The UI state endpoint does not yet provide audit and replic count information") unless @test_config.fetch("ui_audit_replic", true)
-        @session.visit '/state'
+        @session.visit '/state-audit-replic'
       end
  
       it "From the UI state endpoint page, verify that no recent AUDIT errors have occurred" do
