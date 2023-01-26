@@ -306,7 +306,7 @@ def create_web_session
     Capybara.register_driver :selenium_chrome_headless do |app|
       opts = {
         browser: :remote,
-        capabilities: Selenium::WebDriver::Remote::Capabilities.chrome,
+        capabilities: Selenium::WebDriver::Options.chrome,
         url: ENV['CHROME_URL']
       }
       Capybara::Selenium::Driver.new(
