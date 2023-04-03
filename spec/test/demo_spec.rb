@@ -189,18 +189,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Verify that the ATOM FEED for a collection accessible to the Guest Login can be browsed' do
+    it 'Verify that the ATOM FEED for a collection is not accessible to Guest User' do
       guest_collections.each do |coll|
         visit_collection(coll)
-        atomlink = @session.find("h1 a")
-        expect(atomlink).not_to be(nil) 
-        atom = @session.find("h1 a")[:href]
-        expect(atom).not_to be(nil) 
-        expect(atom).not_to eq("")
-        xml = xml_request(atom, true, true) 
-        expect(xml).not_to be(nil)
-        expect(xml.root).not_to be(nil)
-        expect(xml.root.xpath("//atom:entry", {atom:'http://www.w3.org/2005/Atom'}).length).to be > 0 if @test_config.fetch("expect_atom_content", false)
+        expect(@session).not_to have_selector "h1 a"
       end
     end
 
@@ -225,6 +217,21 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   describe 'Authenticated access' do
     before(:each) do
       authenticated_login
+    end
+
+    it 'Verify that the ATOM FEED for a collection can be browsed' do
+      non_guest_collections.each do |coll|
+        visit_collection(coll)
+        atomlink = @session.find("h1 a")
+        expect(atomlink).not_to be(nil) 
+        atom = @session.find("h1 a")[:href]
+        expect(atom).not_to be(nil) 
+        expect(atom).not_to eq("")
+        xml = xml_request(atom, true, true) 
+        expect(xml).not_to be(nil)
+        expect(xml.root).not_to be(nil)
+        expect(xml.root.xpath("//atom:entry", {atom:'http://www.w3.org/2005/Atom'}).length).to be > 0 if @test_config.fetch("expect_atom_content", false)
+      end
     end
 
     it 'Verify the CONTENT of a FILE for an object in a collection NOT acessible to the GUEST login' do
