@@ -3,7 +3,7 @@
 #   All rights reserved
 #*********************************************************************
 
-FROM ruby:3
+FROM ruby:2.7
 
 RUN apt-get update -y && \
     apt-get -y upgrade && \
@@ -21,5 +21,5 @@ COPY . .
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# CMD ["bundle", "exec", "rspec", "/spec/test/demo_spec.rb:224"]
+# CMD ["bundle", "exec", "rspec", "/spec/test/demo_spec.rb:33"]
 CMD ["bundle", "exec", "rspec", "/spec/test"]
