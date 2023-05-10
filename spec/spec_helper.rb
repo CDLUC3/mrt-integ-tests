@@ -303,18 +303,10 @@ def create_web_session
   Capybara.run_server = false # don't start Rack
 
   if ENV['CHROME_URL']
-    Capybara.register_driver :selenium_chrome_headless do |app|
-      opts = {
-        browser: :remote,
-        capabilities: Selenium::WebDriver::Options.chrome,
-        url: ENV['CHROME_URL']
-      }
-      Capybara::Selenium::Driver.new(
-        app,
-        **opts
-      )
+    Capybara.register_driver :remote do |app|
+      Capybara::Selenium::Driver.new(app, browser: :remote, options: Selenium::WebDriver::Options.chrome, url: ENV['CHROME_URL'])
     end
-    @session = Capybara::Session.new(:selenium_chrome_headless)
+    @session = Capybara::Session.new(:remote)
   else
     @session = Capybara::Session.new(:selenium_chrome)
   end
