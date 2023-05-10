@@ -167,10 +167,8 @@ stage: &stage
   check_audits: false
   guest_actions:
     collections:
-    - coll: cdl_dashdev
+    - coll: cdl_dryaddev
       <<: *AWS
-    - coll: ucb_ist_research_hub_doi
-      <<: *MINIO
     collections-no-access:
     - coll: ucla_digital_lib
   non_guest_actions:
