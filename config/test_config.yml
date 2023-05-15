@@ -103,8 +103,8 @@ docker: &docker
     collections:
     - coll: cdl_dryaddev
       <<: *MINIO_LOCAL
-    #collections-no-access:
-    #- coll: ucla_digital_lib
+    collections-no-access:
+    - coll: ucla_digital_lib
   non_guest_actions:
     login:
       user: merritt-test
