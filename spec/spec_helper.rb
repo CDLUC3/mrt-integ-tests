@@ -431,9 +431,9 @@ def text_request(url)
   text
 end
 
-def xml_request(url, redirect = true, guest_credentials = false)
+def xml_request(url, redirect = true)
   flags = redirect ? "-sL" : "-s"
-  creds = guest_credentials ? "-u anonymous:guest" : ""
+  creds = "-u #{non_guest_actions.fetch('login', {}).fetch('user', '')}:#{non_guest_actions.fetch('login', {}).fetch('password', '')}"
   xml = %x{ curl #{flags} #{creds} #{url} }
   begin
     Nokogiri::XML(xml)
@@ -441,8 +441,4 @@ def xml_request(url, redirect = true, guest_credentials = false)
     # return empty object to signal unparseable json
     Nokogiri::XML("")
   end
-end
-
-def xml_rel_request(url, redirect = true, guest_credentials = false) 
-  xml_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
 end
