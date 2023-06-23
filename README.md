@@ -10,7 +10,7 @@ This library is part of the [Merritt Preservation System](https://github.com/CDL
 
 ## Local Setup
 
-- Install ruby 2.7
+- Install ruby 3.0
 - Chrome installation is required
 - `bundle install`
 
