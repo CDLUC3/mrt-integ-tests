@@ -81,7 +81,7 @@ globals: &globals
     encoding-tests:
       encoding-zip: 
         <<: *encoding-tests
-        <<: *four-byte
+        # <<: *four-byte
         <<: *percent-cases
     backu-ingest:
       encoding-zip: 

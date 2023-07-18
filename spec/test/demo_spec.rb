@@ -206,7 +206,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    skip it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
+    it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
       guest_collections_no_access.each do |coll|
         visit_collection(coll)
         expect(@session.title).to eq("Unauthorized (401)")
