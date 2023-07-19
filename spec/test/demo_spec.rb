@@ -168,6 +168,17 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
+    it 'Verify that a permalink is traversable for an object' do
+      guest_collections.each do |coll|
+        visit_collection(coll)
+        next if get_object_count == 0
+        visit_first_object
+        expect(@session.text).to have_content("permanent link")
+        @session.find(:xpath, "//th[contains(.,'permanent link:')]/parent::tr/td/a").click
+        expect(@session.text).to have_content("ABOUT THE IDENTIFIER")
+      end
+    end
+
     it 'Verify that a VERSION PAGE for an object accessible to the Guest Login can be browsed' do
       guest_collections.each do |coll|
         visit_collection(coll)
