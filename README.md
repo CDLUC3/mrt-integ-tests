@@ -2,7 +2,32 @@
 
 This library is part of the [Merritt Preservation System](https://github.com/CDLUC3/mrt-doc).
 
-[![](https://github.com/CDLUC3/mrt-doc/raw/main/diagrams/integ-tests.mmd.svg)](https://cdluc3.github.io/mrt-doc/diagrams/integ-tests)
+```mermaid
+%%{init: {'theme': 'neutral', 'securityLevel': 'loose', 'themeVariables': {'fontFamily': 'arial'}}}%%
+graph TD
+  CAPY([Capybara Test Driver Container])
+  CHROME([Headless Chrome Container])
+  UI(Merritt UI)
+  click UI href "https://github.com/CDLUC3/mrt-dashboard" "source code"
+  STORE(Storage)
+  click STORE href "https://github.com/CDLUC3/mrt-store" "source code"
+  CONFIG[[Test Config Yaml]]
+  DOCK(Docker Compose)
+  click DOCK href "https://github.com/CDLUC3/merritt-docker" "source code"
+
+  subgraph flowchart
+    DOCK -.-> |docker run| CAPY
+    DOCK -.-> |docker run| CHROME
+    CONFIG --> CAPY
+    CAPY --> CHROME
+    CHROME --> |http| UI
+    CHROME --> |http| STORE
+  end
+  
+  style DOCK fill:cyan
+  style CHROME fill:cyan
+  style CAPY stroke:red,stroke-width:4px
+```
 
 ## Setup
 
