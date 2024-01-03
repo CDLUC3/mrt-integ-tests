@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'colorize'
 require 'capybara/dsl'
 require 'capybara/rspec'
 require 'uc3-ssm'
 require 'nokogiri'
+require 'selenium/webdriver'
 
 RSpec.configure do |config|
   config.color = true
@@ -107,7 +111,7 @@ def authenticated_login
   @session.find('#submit_login').click
 
   sleep 1
-  msg = @session.find('span.login-message').text
+  @session.find('span.login-message').text
 end
 
 def visit_collection(coll)
@@ -284,8 +288,9 @@ def perform_object_download(zipname)
   puts 'Zip file listing'
   puts listing
   begin
-    File.delete("#{zipname}")
+    File.delete(zipname.to_s)
   rescue Errno::ENOENT
+    # allow for cases where the zip cannot be deleted
   end
   listing
 end
@@ -305,7 +310,7 @@ def create_web_session
   if ENV['CHROME_URL']
     Capybara.register_driver :remote do |app|
       Capybara::Selenium::Driver.new(app, browser: :remote, options: Selenium::WebDriver::Options.chrome,
-        url: ENV['CHROME_URL'])
+          url: ENV['CHROME_URL'])
     end
     @session = Capybara::Session.new(:remote)
   else
@@ -334,10 +339,10 @@ def check_storage_state
   end
 end
 
-def check_service_state(url, redirect = false)
+def check_service_state(url, redirect: false)
   return if url.empty?
 
-  state = json_request(url, redirect)
+  state = json_request(url, redirect: redirect)
   expect(state.empty?).to be(false)
   state
 end
@@ -368,21 +373,21 @@ end
 def check_state_active(state)
   top = state.keys.first
   data = state.fetch(top, {})
-  if top == 'ing:ingestServiceState'
+  case top
+  when 'ing:ingestServiceState'
     expect(data.fetch('ing:submissionState', '')).to eq('thawed')
-  elsif top == 'sto:storageServiceState'
+  when 'sto:storageServiceState'
     expect(data.fetch('sto:nodeStates', {}).fetch('sto:nodeState', []).length).to be > 0
-  elsif top == 'fix:fixityServiceState'
+  when 'fix:fixityServiceState'
     state = data.fetch('fix:status', '')
     skip('Audit state unknown -- may have no work') if state == 'unknown'
     expect(state).to eq('running')
-  elsif top == 'invsv:invServiceState'
+  when 'invsv:invServiceState'
     expect(data.fetch('invsv:zookeeperStatus', '')).to eq('running')
     expect(data.fetch('invsv:dbStatus', '')).to eq('running')
     expect(data.fetch('invsv:systemStatus', '')).to eq('running')
-  elsif top == 'repsvc:replicationServiceState'
+  when 'repsvc:replicationServiceState'
     expect(data.fetch('repsvc:status', '')).to eq('running')
-  elsif top == 'sto:storageServiceState'
   end
 end
 
@@ -416,7 +421,7 @@ def has_build_info(url)
   true
 end
 
-def json_request(url, redirect = true, guest_credentials = false)
+def json_request(url, redirect: true, guest_credentials: false)
   flags = redirect ? '-sL' : '-s'
   creds = guest_credentials ? '-u anonymous:guest' : ''
   json = `curl #{flags} #{creds} #{url}`
@@ -428,19 +433,19 @@ def json_request(url, redirect = true, guest_credentials = false)
   end
 end
 
-def json_rel_request(url, redirect = true, guest_credentials = false)
-  json_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
+def json_rel_request(url, redirect: true, guest_credentials: false)
+  json_request("#{Capybara.app_host}/#{url}", redirect: redirect, guest_credentials: guest_credentials)
 end
 
 def text_request(url)
   flags = '-s -S -f'
   text = `curl #{flags} #{url}`
-  return '' if $?.exitstatus != 0
+  return '' if $CHILD_STATUS.exitstatus != 0
 
   text
 end
 
-def xml_request(url, redirect = true)
+def xml_request(url, redirect: true)
   flags = redirect ? '-sL' : '-s'
   creds = "-u #{non_guest_actions.fetch('login', {}).fetch('user',
     '')}:#{non_guest_actions.fetch('login', {}).fetch('password', '')}"

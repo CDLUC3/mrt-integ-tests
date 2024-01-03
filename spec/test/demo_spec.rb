@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
-require 'webdrivers/chromedriver'
+# require 'webdrivers/chromedriver'
 require 'cgi'
 require_relative '../lib/test_prefix'
 
@@ -42,21 +44,21 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     it 'Print the test files to be used for ingest and retrieval tests -- based on -e INGEST_FILES' do
       puts("\tIngest Files:")
       TestObjectPrefix.test_files.each do |fk, file|
-        puts("\t\t#{'%-15s' % fk}\t#{file}")
+        puts("\t\t#{format('%-15s', fk)}\t#{file}")
       end
       puts('  Version Files:')
       TestObjectPrefix.version_files.each do |fk, file|
-        puts("\t\t#{'%-15s' % fk}\t#{file}")
+        puts("\t\t#{format('%-15s', fk)}\t#{file}")
       end
       puts('  Encoding zip:')
       TestObjectPrefix.encoding_zip_files.each do |fk, file|
-        puts("\t\t#{'%-15s' % fk}\t#{file}")
+        puts("\t\t#{format('%-15s', fk)}\t#{file}")
       end
     end
   end
 
   describe 'Check storage service state' do
-    it 'Invoke the storage state command for each storage node -- this tests the accessibility of each cloud service used by Merritt' do
+    it 'Invoke the storage state command for each storage node' do
       check_storage_state
     end
   end
@@ -93,7 +95,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
 
       it 'From the UI state endpoint page, verify that no recent AUDIT errors have occurred' do
-        skip('Audit counts are not verified within this environment -- stage has known checksum errors') unless @test_config.fetch(
+        skip('Audit counts are not verified in STAGE') unless @test_config.fetch(
           'check_audits', true
         )
         expect(@session.find('table.state tbody tr.audits td.error').text.to_i).to eq(0)
@@ -113,7 +115,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     TestObjectPrefix.state_urls_lb.split(',').each do |url|
       it "Verify that the STATE endpoint is accessible and successful when invoked from a load balancer: #{url}" do
         skip('state unsupported') unless has_service_state(url)
-        check_service_state(url, true)
+        check_service_state(url, redirect: true)
       end
     end
   end
@@ -124,6 +126,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify that the Guest Login button succeeds in the Merritt UI' do
+      # action defined in before action
     end
 
     it 'Verify that COLLECTIONS accessible to the Guest Login can be browsed' do
@@ -149,14 +152,18 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         visit_first_object
 
         ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
-        json = json_rel_request("api/object_info/#{ERB::Util.url_encode(ark)}", false, true)
+        json = json_rel_request(
+          "api/object_info/#{ERB::Util.url_encode(ark)}",
+          redirect: false,
+          guest_credentials: true
+        )
         expect(json.fetch('ark', '')).to eq(ark)
         expect(json.fetch('version_number', 0)).to be > 0
         expect(json.fetch('total_files', 0)).to be > 0
       end
     end
 
-    it 'Verify that the JSON OBJECT_INFO page for an object accessible to the Guest Login CANNOT be retrieved IF the user is not logged in' do
+    it 'Verify that the JSON OBJECT_INFO page requires Guest Login' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
@@ -164,7 +171,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         visit_first_object
 
         ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
-        json = json_rel_request("api/object_info/#{ERB::Util.url_encode(ark)}", false, false)
+        json = json_rel_request(
+          "api/object_info/#{ERB::Util.url_encode(ark)}",
+          redirect: false,
+          guest_credentials: false
+        )
         expect(json.fetch('ark', '')).to eq('')
       end
     end
@@ -243,7 +254,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         atom = @session.find('h1 a')[:href]
         expect(atom).not_to be(nil)
         expect(atom).not_to eq('')
-        xml = xml_request(atom, true)
+        xml = xml_request(atom, redirect: true)
         expect(xml).not_to be(nil)
         expect(xml.root).not_to be(nil)
         next unless @test_config.fetch(
@@ -271,7 +282,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         unless TestObjectPrefix.run_ingest
           skip('PREFIX supplied - rather than ingesting new content, objects from a prior ingest batch will be browsed')
         end
-        skip('No non-guest collections supplied') if non_guest_collections.length == 0
+        skip('No non-guest collections supplied') if non_guest_collections.empty?
         coll = non_guest_collections.first
         visit_collection(coll)
         sleep 2
@@ -313,7 +324,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         it "Verify that a ZIP FILE named 'encoding.zip' containing multiple files can be ingested into an object" do
           zippath = "/tmp/uploads/#{TestObjectPrefix.encoding_zip}"
 
-          TestObjectPrefix.encoding_zip_files.each do |_fk, file|
+          TestObjectPrefix.encoding_zip_files.each_value do |file|
             path = create_filename(file)
             f = create_file(path)
             cmd = "zip -j #{zippath} '#{file}'"
@@ -334,7 +345,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       if TestObjectPrefix.do_encoding_test
 
         before(:each) do
-          skip('No non-guest collections supplied') if non_guest_collections.length == 0
+          skip('No non-guest collections supplied') if non_guest_collections.empty?
           coll = non_guest_collections.first
           visit_collection(coll)
           sleep 2
@@ -342,13 +353,13 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             TestObjectPrefix.encoding_label)
         end
 
-        TestObjectPrefix.encoding_zip_files.each do |_fk, file|
+        TestObjectPrefix.encoding_zip_files.each_value do |file|
           it "Verify that a FILENAME with the following CHARACTERS can be retrieved from the object: #{file}" do
             find_file_on_version_page(file)
           end
 
           # Skip until the Apache issue is resolved
-          it "Verify that a SINGLY ENCODED or DOUBLY ENCODED FILENAME with the following CHARACTERS can be retrieved from the object: #{file}" do
+          it "Verify that a SINGLY/DOUBLY ENCODED FILENAME can be retrieved from the object: #{file}" do
             # skip("Encoding issue in progress") unless @test_config.fetch("experimental_tests", false)
             # Get raw ark, unencoded
             ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
@@ -374,7 +385,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
         it "Verify that the OBJECT CAN BE DOWNLOADED and that it contains ALL the files within ENCODING.ZIP: #{@ark}" do
           listing = perform_object_download("#{@ark}.zip")
-          TestObjectPrefix.encoding_zip_files.each do |_fk, file|
+          TestObjectPrefix.encoding_zip_files.each_value do |file|
             skip('Listing could not be generated') if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(file.unicode_normalize)
           end
@@ -388,7 +399,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           before(:each) do
             @file = file
             @file_key = fk
-            skip('No non-guest collections supplied') if non_guest_collections.length == 0
+            skip('No non-guest collections supplied') if non_guest_collections.empty?
             coll = non_guest_collections.first
             visit_collection(coll)
             sleep 2
@@ -435,7 +446,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             )
             expect(@session.find('table.state tbody tr.replics td.error').text.to_i).to eq(0)
             expect(@session.find('table.state tbody tr.audits td.total').text.to_i).to be > 0
-            # expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
+            # if TestObjectPrefix.run_ingest
+            #   expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+            # end
           end
         end
       end
@@ -447,7 +460,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           before(:each) do
             @file = file
             @file_key = fk
-            skip('No non-guest collections supplied') if non_guest_collections.length == 0
+            skip('No non-guest collections supplied') if non_guest_collections.empty?
             coll = non_guest_collections.first
             visit_collection(coll)
             sleep 2
@@ -493,8 +506,12 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
             expect(@session.find('table.state tbody tr.audits td.error').text.to_i).to eq(0)
             expect(@session.find('table.state tbody tr.replics td.error').text.to_i).to eq(0)
-            # expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0 if @test_config.fetch("check_audits", true)
-            # expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0 if TestObjectPrefix.run_ingest
+            # if @test_config.fetch("check_audits", true)
+            #   expect(@session.find("table.state tbody tr.audits td.total").text.to_i).to be > 0
+            # end
+            # if TestObjectPrefix.run_ingest
+            #   expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
+            # end
           end
         end
       end

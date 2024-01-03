@@ -61,3 +61,6 @@ Layout/MultilineHashBraceLayout:
 AllCops:
   NewCops: enable
 
+# Uniuqe to this repo
+Style/CombinableLoops:
+  Enabled: false
