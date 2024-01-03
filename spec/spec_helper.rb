@@ -79,14 +79,14 @@ def login_password
   non_guest_actions.fetch('login', {}).fetch('password', '')
 end
 
-def encoding_variations(fk)
-    # return [key]
-    return [ key, "#{key}_z" ]
+def encoding_variations(_fk)
+  # return [key]
+  [key, "#{key}_z"]
 end
 
 def guest_login
   @session.visit '/'
-  @session.within "header" do
+  @session.within 'header' do
     @session.find_link('Login')
     @session.click_link('Login')
   end
@@ -96,8 +96,8 @@ end
 
 def authenticated_login
   @session.visit '/'
-  
-  @session.within "header" do
+
+  @session.within 'header' do
     @session.find_link('Login')
     @session.click_link('Login')
   end
@@ -107,7 +107,7 @@ def authenticated_login
   @session.find('#submit_login').click
 
   sleep 1
-  msg = @session.find("span.login-message").text
+  msg = @session.find('span.login-message').text
 end
 
 def visit_collection(coll)
@@ -122,26 +122,26 @@ end
 
 def visit_first_version
   # Ensure that the guest collection has download access
-  @session.click_link("Version 1")
+  @session.click_link('Version 1')
 end
 
 def visit_first_file
   text = get_first_user_file
   # the following does not work if there is a space in the filename
-  @session.within("table.properties:nth-of-type(2)") do
+  @session.within('table.properties:nth-of-type(2)') do
     @session.click_link(text)
   end
   expect(@session.body.length).not_to eq(0)
-  if @session.has_xpath?('h1')
-    @session.within('h1') do
-      puts(@session.text)
-      expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
-    end
+  return unless @session.has_xpath?('h1')
+
+  @session.within('h1') do
+    puts(@session.text)
+    expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
   end
 end
 
 def visit_text_file(coll)
-  @session.click_link("mrt-membership.txt")
+  @session.click_link('mrt-membership.txt')
   expect(@session.current_url).to match(coll['file_redirect_match'])
 end
 
@@ -150,8 +150,8 @@ def create_filename(n)
 end
 
 def create_file(path)
-  File.open(path, 'w') do |f| 
-    f.write("test") 
+  File.open(path, 'w') do |f|
+    f.write('test')
     f.close
   end
   File.join(path)
@@ -163,7 +163,7 @@ def upload_regular_file(key)
   path = create_filename(fname)
   f = create_file(path)
   add_file(f, fname, prefix, key)
-  sleep_label(sleep_time_upload, "to allow upload to complete")
+  sleep_label(sleep_time_upload, 'to allow upload to complete')
 end
 
 def upload_v1_file(key)
@@ -172,7 +172,7 @@ def upload_v1_file(key)
   path = create_filename(fname)
   f = create_file(path)
   add_file(f, fname, prefix, key)
-  sleep_label(sleep_time_upload * 3, "to allow upload to complete")
+  sleep_label(sleep_time_upload * 3, 'to allow upload to complete')
 end
 
 def update_v2_file(key)
@@ -181,11 +181,11 @@ def update_v2_file(key)
   path = create_filename(fname)
   f = create_file(path)
   add_file(f, fname, prefix, key)
-  sleep_label(sleep_time_upload, "to allow upload to complete")
+  sleep_label(sleep_time_upload, 'to allow upload to complete')
 end
 
 def sleep_label(stime, label)
-  puts( "\tSleep #{stime} (#{label})")
+  puts("\tSleep #{stime} (#{label})")
   sleep stime
 end
 
@@ -202,13 +202,13 @@ def add_file(f, fname, prefix, seq)
   title = make_title(localid, fname)
 
   @session.click_link('Add object')
-  @session.find("input#file")
+  @session.find('input#file')
   @session.attach_file('File', f)
   @session.fill_in('title', with: title)
   @session.fill_in('local_id', with: localid)
   @session.find_button('Submit').click
-  @session.within("section h1") do
-    expect(@session.text).to have_content("Submission Received")
+  @session.within('section h1') do
+    expect(@session.text).to have_content('Submission Received')
   end
   File.delete(f)
 end
@@ -219,16 +219,16 @@ def check_file_obj_page(fname, prefix, seq)
 
   @session.fill_in('terms', with: localid)
   @session.find("section.lookup input[name='commit']").click
-  @session.within("section h1") do
-    expect(@session.text).to have_content("Search Results")
+  @session.within('section h1') do
+    expect(@session.text).to have_content('Search Results')
   end
   expect(get_object_count).to eq(1)
   text = get_first_ark
   @session.click_link(text)
-  @session.within("section h2.object-title") do
+  @session.within('section h2.object-title') do
     expect(@session.text).to have_content(title)
   end
-  @session.find("h1 span.key").text.gsub(/[^A-Za-z0-9]+/, '_')
+  @session.find('h1 span.key').text.gsub(/[^A-Za-z0-9]+/, '_')
 end
 
 def find_file_on_version_page(file)
@@ -241,19 +241,19 @@ end
 
 def validate_file_page
   expect(@session.body.length).not_to eq(0)
-  expect(@session.title).not_to have_content("Action Controller: Exception caught")
-  if @session.has_css?('h1')
-    @session.within('h1') do
-      expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
-      expect(@session.text).not_to have_content("Rack::QueryParser::InvalidParameterError")
-      puts("h1 found on file page")
-      puts(@session.text)
-    end
+  expect(@session.title).not_to have_content('Action Controller: Exception caught')
+  return unless @session.has_css?('h1')
+
+  @session.within('h1') do
+    expect(@session.text).not_to have_content("The page you were looking for doesn't exist.")
+    expect(@session.text).not_to have_content('Rack::QueryParser::InvalidParameterError')
+    puts('h1 found on file page')
+    puts(@session.text)
   end
 end
 
 def perform_object_download(zipname)
-  Dir.chdir "/tmp/downloads"
+  Dir.chdir '/tmp/downloads'
   @session.find_button('Download object')
   @session.click_button('Download object')
 
@@ -270,18 +270,18 @@ def perform_object_download(zipname)
     expect(@session.text).to have_content('Object is ready for Download')
   end
 
-  sleep_label(5, "to allow download link to appear")
+  sleep_label(5, 'to allow download link to appear')
 
   @session.find('a.obj_download').click
 
   sleep_label(sleep_time_download, "to allow download of #{zipname} to complete")
 
-  puts "List contents of /tmp/downloads"
-  puts %x[ ls /tmp/downloads ]
+  puts 'List contents of /tmp/downloads'
+  puts `ls /tmp/downloads`
 
   cmd = "bsdtar tf #{zipname}|grep producer"
-  listing = %x[ #{cmd} ]
-  puts "Zip file listing"
+  listing = `#{cmd}`
+  puts 'Zip file listing'
   puts listing
   begin
     File.delete("#{zipname}")
@@ -292,7 +292,7 @@ end
 
 def test_files
   [
-    {txt: 'test_filex2.txt'}
+    { txt: 'test_filex2.txt' }
   ]
 end
 
@@ -304,7 +304,8 @@ def create_web_session
 
   if ENV['CHROME_URL']
     Capybara.register_driver :remote do |app|
-      Capybara::Selenium::Driver.new(app, browser: :remote, options: Selenium::WebDriver::Options.chrome, url: ENV['CHROME_URL'])
+      Capybara::Selenium::Driver.new(app, browser: :remote, options: Selenium::WebDriver::Options.chrome,
+        url: ENV['CHROME_URL'])
     end
     @session = Capybara::Session.new(:remote)
   else
@@ -321,34 +322,38 @@ def check_storage_state
   url = @test_config['storage-state']
   return if url.empty?
 
-  nodes = json_request(url).fetch("sto:storageServiceState", {})
-    .fetch("sto:nodeStates", {})
-    .fetch("sto:nodeState", [])
+  nodes = json_request(url).fetch('sto:storageServiceState', {})
+    .fetch('sto:nodeStates', {})
+    .fetch('sto:nodeState', [])
   expect(nodes.length).to be > 0
   nodes.each do |n|
     puts "\t#{n}"
-    nstate = json_request("#{n}?t=json").fetch("nod:nodeState", {}).fetch("nod:testOk", false)
+    nstate = json_request("#{n}?t=json").fetch('nod:nodeState', {}).fetch('nod:testOk', false)
     puts "\t  Node State OK: #{nstate}"
     expect(nstate).to be(true)
   end
-end 
+end
 
 def check_service_state(url, redirect = false)
   return if url.empty?
+
   state = json_request(url, redirect)
   expect(state.empty?).to be(false)
   state
-end 
+end
 
 def build_info_url(url)
   return url if get_service(url) == 'ui'
-  m = url.match(%r[(https?://[^\/]+\/([^\/]+\/)?).*$])
-  return "" unless m 
+
+  m = url.match(%r{(https?://[^\/]+/([^\/]+/)?).*$})
+  return '' unless m
+
   "#{m[1]}static/build.content.txt"
-end 
+end
 
 def check_build_info(url)
   return if url.empty?
+
   if get_service(url) == 'ui'
     text = json_request(url).fetch('version', '')
     expect(text.empty?).to be(false)
@@ -358,87 +363,92 @@ def check_build_info(url)
     expect(text.empty?).to be(false)
     text.split("\n").first
   end
-end 
+end
 
 def check_state_active(state)
   top = state.keys.first
   data = state.fetch(top, {})
-  if top == "ing:ingestServiceState"
-    expect(data.fetch("ing:submissionState","")).to eq("thawed")
-  elsif top == "sto:storageServiceState"
-    expect(data.fetch("sto:nodeStates",{}).fetch("sto:nodeState", []).length).to be > 0
-  elsif top == "fix:fixityServiceState"
-    state = data.fetch("fix:status","")
-    skip("Audit state unknown -- may have no work") if state == 'unknown'
-    expect(state).to eq("running")
-  elsif top == "invsv:invServiceState"
-    expect(data.fetch("invsv:zookeeperStatus","")).to eq("running")
-    expect(data.fetch("invsv:dbStatus","")).to eq("running")
-    expect(data.fetch("invsv:systemStatus","")).to eq("running")
-  elsif top == "repsvc:replicationServiceState"
-    expect(data.fetch("repsvc:status","")).to eq("running")
-  elsif top == "sto:storageServiceState"
+  if top == 'ing:ingestServiceState'
+    expect(data.fetch('ing:submissionState', '')).to eq('thawed')
+  elsif top == 'sto:storageServiceState'
+    expect(data.fetch('sto:nodeStates', {}).fetch('sto:nodeState', []).length).to be > 0
+  elsif top == 'fix:fixityServiceState'
+    state = data.fetch('fix:status', '')
+    skip('Audit state unknown -- may have no work') if state == 'unknown'
+    expect(state).to eq('running')
+  elsif top == 'invsv:invServiceState'
+    expect(data.fetch('invsv:zookeeperStatus', '')).to eq('running')
+    expect(data.fetch('invsv:dbStatus', '')).to eq('running')
+    expect(data.fetch('invsv:systemStatus', '')).to eq('running')
+  elsif top == 'repsvc:replicationServiceState'
+    expect(data.fetch('repsvc:status', '')).to eq('running')
+  elsif top == 'sto:storageServiceState'
   end
 end
 
 def get_service(url)
-  return "ingest" if url =~ %r[ingest]
-  return "store" if url =~ %r[store]
-  return "access" if url =~ %r[access]
-  return "inventory" if url =~ %r[mrtinv]
-  return "inventory" if url =~ %r[inventory]
-  return "replic" if url =~ %r[replic]
-  return "audit" if url =~ %r[audit]
-  return "sword" if url =~ %r[sword]
-  return "ui" if url =~ %r[state\.json]
-  return "ui" if url =~ %r[^merritt(-stage)?\.cdlib\.org]
-  return ""
+  return 'ingest' if url =~ /ingest/
+  return 'store' if url =~ /store/
+  return 'access' if url =~ /access/
+  return 'inventory' if url =~ /mrtinv/
+  return 'inventory' if url =~ /inventory/
+  return 'replic' if url =~ /replic/
+  return 'audit' if url =~ /audit/
+  return 'sword' if url =~ /sword/
+  return 'ui' if url =~ /state\.json/
+  return 'ui' if url =~ /^merritt(-stage)?\.cdlib\.org/
+
+  ''
 end
 
 def has_service_state(url)
   service = get_service(url)
-  return @test_config.fetch("ui_audit_replic", true) if service == "ui"
+  return @test_config.fetch('ui_audit_replic', true) if service == 'ui'
+
   true
 end
 
 def has_build_info(url)
   service = get_service(url)
-  return @test_config.fetch("replic_build_info", true) if service == "replic"
-  return @test_config.fetch("ui_audit_replic", true) if service == "ui"
+  return @test_config.fetch('replic_build_info', true) if service == 'replic'
+  return @test_config.fetch('ui_audit_replic', true) if service == 'ui'
+
   true
 end
 
 def json_request(url, redirect = true, guest_credentials = false)
-  flags = redirect ? "-sL" : "-s"
-  creds = guest_credentials ? "-u anonymous:guest" : ""
-  json = %x{ curl #{flags} #{creds} #{url} }
+  flags = redirect ? '-sL' : '-s'
+  creds = guest_credentials ? '-u anonymous:guest' : ''
+  json = `curl #{flags} #{creds} #{url}`
   begin
     JSON.parse(json)
-  rescue
+  rescue StandardError
     # return empty object to signal unparseable json
     {}
   end
 end
 
-def json_rel_request(url, redirect = true, guest_credentials = false) 
+def json_rel_request(url, redirect = true, guest_credentials = false)
   json_request("#{Capybara.app_host}/#{url}", redirect, guest_credentials)
 end
 
 def text_request(url)
-  flags = "-s -S -f"
-  text = %x{ curl #{flags} #{url} }
-  return "" if $?.exitstatus != 0
+  flags = '-s -S -f'
+  text = `curl #{flags} #{url}`
+  return '' if $?.exitstatus != 0
+
   text
 end
 
 def xml_request(url, redirect = true)
-  flags = redirect ? "-sL" : "-s"
-  creds = "-u #{non_guest_actions.fetch('login', {}).fetch('user', '')}:#{non_guest_actions.fetch('login', {}).fetch('password', '')}"
-  xml = %x{ curl #{flags} #{creds} #{url} }
+  flags = redirect ? '-sL' : '-s'
+  creds = "-u #{non_guest_actions.fetch('login', {}).fetch('user',
+    '')}:#{non_guest_actions.fetch('login', {}).fetch('password', '')}"
+  xml = `curl #{flags} #{creds} #{url}`
   begin
     Nokogiri::XML(xml)
-  rescue
+  rescue StandardError
     # return empty object to signal unparseable json
-    Nokogiri::XML("")
+    Nokogiri::XML('')
   end
 end
