@@ -310,7 +310,7 @@ def create_web_session
   if ENV['CHROME_URL']
     Capybara.register_driver :remote do |app|
       Capybara::Selenium::Driver.new(app, browser: :remote, options: Selenium::WebDriver::Options.chrome,
-          url: ENV['CHROME_URL'])
+        url: ENV['CHROME_URL'])
     end
     @session = Capybara::Session.new(:remote)
   else
