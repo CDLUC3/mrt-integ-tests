@@ -4,4 +4,3 @@ vendor/
 .bundle/
 testing.notes
 testing.notes.md
-Gemfile.lock
