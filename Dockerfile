@@ -11,7 +11,7 @@ RUN apt-get update -y && \
 
 RUN gem install bundler
 
-COPY Gemfile Gemfile
+COPY Gemfile* ./
 
 RUN bundle install
 
