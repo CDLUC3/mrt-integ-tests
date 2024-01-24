@@ -44,7 +44,7 @@ def get_first_ark
 end
 
 def get_first_user_file
-  @session.find(:xpath, "//table[@class='producer_files_properties']/tr[1]/th[1]//a").text
+  @session.find(:xpath, "//table[contains(@class, 'producer_files_properties')]//tr[1]/th[1]//a").text
 end
 
 def encoding_usecases
