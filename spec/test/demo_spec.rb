@@ -149,6 +149,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
 
         visit_first_object
@@ -161,6 +162,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
         visit_first_object
 
@@ -182,6 +184,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
 
         visit_first_object
@@ -218,6 +221,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
 
         visit_first_object
@@ -231,6 +235,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
 
         visit_first_object
@@ -254,6 +259,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+
         count += 1
 
         visit_first_object
@@ -302,6 +308,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       non_guest_collections.each do |coll|
         visit_collection(coll)
         next unless get_object_count > 0
+
         count += 1
 
         visit_first_object
@@ -316,6 +323,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       non_guest_collections.each do |coll|
         visit_collection(coll)
         next unless get_object_count > 0
+
         count += 1
 
         visit_first_object
@@ -329,8 +337,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
       expect(count).to be > 0
     end
-
-
 
     describe 'ingest files' do
       before(:each) do
@@ -542,12 +548,14 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
           end
 
-          it "Verify the presence of a TEST FILE on the VERSION 2 PAGE: #{file}.v2" do
+          it "Verify the presence of both versions of a TEST FILE on the VERSION 2 PAGE: #{file}.v2" do
+            check_file_obj_page(@file.to_s, TestObjectPrefix.localid_prefix, @file_key)
             check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end
 
-          it "Verify the RETRIEVAL OF VERSION 2 of A TEST FILE #{file}.v2 by URL construction" do
+          it 'Verify the RETRIEVAL OF both versions of a file in VERSION 2 of and object by URL construction' do
+            check_file_obj_page(@file.to_s, TestObjectPrefix.localid_prefix, @file_key)
             check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
           end
 
