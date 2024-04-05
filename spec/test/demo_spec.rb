@@ -145,19 +145,23 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify that OBJECTS accessible to the Guest Login can be browsed' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+        count += 1
 
         visit_first_object
       end
+      expect(count).to be > 0
     end
 
     it 'Verify that the JSON OBJECT_INFO page for an object accessible to the Guest Login can be retrieved' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
-
+        count += 1
         visit_first_object
 
         ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
@@ -170,16 +174,23 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         expect(json.fetch('version_number', 0)).to be > 0
         expect(json.fetch('total_files', 0)).to be > 0
       end
+      expect(count).to be > 0
     end
 
     it 'Verify that the JSON OBJECT_INFO page requires Guest Login' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+        count += 1
 
         visit_first_object
 
         ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
+        expect do
+          @session.find_link('JSON version')
+        end.to raise_error(Capybara::ElementNotFound, 'Unable to find link "JSON version"')
+
         json = json_rel_request(
           "api/object_info/#{ERB::Util.url_encode(ark)}",
           redirect: false,
@@ -187,6 +198,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         )
         expect(json.fetch('ark', '')).to eq('')
       end
+      expect(count).to be > 0
     end
 
     skip it 'Verify that a permalink is traversable for an object' do
@@ -202,19 +214,24 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify that a VERSION PAGE for an object accessible to the Guest Login can be browsed' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+        count += 1
 
         visit_first_object
         visit_first_version
       end
+      expect(count).to be > 0
     end
 
     it 'Verify that a FILE for an object accessible to the Guest Login REDIRECTS to a presigned file retrieval' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+        count += 1
 
         visit_first_object
         visit_first_version
@@ -222,6 +239,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         # the following will not succeed if the content type triggers a dowload
         expect(@session.current_url).to match(coll['file_redirect_match'])
       end
+      expect(count).to be > 0
     end
 
     it 'Verify that the ATOM FEED for a collection is not accessible to Guest User' do
@@ -232,14 +250,17 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify the CONTENT of a FILE for an object accessible to the Guest Login' do
+      count = 0
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
+        count += 1
 
         visit_first_object
         visit_first_version
         visit_text_file(coll)
       end
+      expect(count).to be > 0
     end
 
     it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
@@ -277,15 +298,39 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify the CONTENT of a FILE for an object in a collection NOT acessible to the GUEST login' do
+      count = 0
       non_guest_collections.each do |coll|
         visit_collection(coll)
         next unless get_object_count > 0
+        count += 1
 
         visit_first_object
         visit_first_version
         visit_text_file(coll)
       end
+      expect(count).to be > 0
     end
+
+    it "Verify the 'JSON version' links for authenticated users" do
+      count = 0
+      non_guest_collections.each do |coll|
+        visit_collection(coll)
+        next unless get_object_count > 0
+        count += 1
+
+        visit_first_object
+        ark = @session.find('h1 span.key').text.gsub(/ -.*$/, '')
+        @session.click_link('JSON version')
+        json = JSON.parse(@session.text)
+
+        expect(json.fetch('ark', '')).to eq(ark)
+        expect(json.fetch('version_number', 0)).to be > 0
+        expect(json.fetch('total_files', 0)).to be > 0
+      end
+      expect(count).to be > 0
+    end
+
+
 
     describe 'ingest files' do
       before(:each) do
