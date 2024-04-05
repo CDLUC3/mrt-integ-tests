@@ -31,6 +31,15 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
+  it 'Verify short urls' do
+    @session.visit '/docs'
+    expect(@session.current_url).to eq('https://github.com/CDLUC3/mrt-doc/blob/main/README.md')
+    @session.visit '/wiki'
+    expect(@session.current_url).to eq('https://github.com/CDLUC3/mrt-doc/wiki')
+    @session.visit '/presentations'
+    expect(@session.current_url).to eq('https://github.com/CDLUC3/mrt-doc/blob/main/presentations/README.md')
+  end
+
   describe 'Verify that a semantic version string is accessible in the Merritt UI footer' do
     it 'Print footer' do
       @session.visit '/'
