@@ -168,8 +168,8 @@ stage: &stage
   check_audits: false
   guest_actions:
     collections:
-    - coll: cdl_dryaddev
-      <<: *AWS
+    - coll: merritt_demo_pub
+      <<: *MINIO
     collections-no-access:
     - coll: ucla_digital_lib
   non_guest_actions:
