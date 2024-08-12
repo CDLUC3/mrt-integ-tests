@@ -16,8 +16,6 @@ phases:
 
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
 
-    - aws ecr create-repository --repository-name mrt-integ-tests || echo 'ignore if exists...'
-
   build:
     on-failure: ABORT
     commands:
