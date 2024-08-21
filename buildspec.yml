@@ -20,6 +20,8 @@ phases:
     - SSM_ROOT_PATH=/uc3/mrt/dev/
     - aws ssm get-parameters-by-path --path=$SSM_ROOT_PATH --recursive
     - aws ssm get-parameter --name /uc3/mrt/dev/integ-tests/for-stage/user
+    - env
+    - ls -lart $HOME/.aws
 
   build:
     on-failure: ABORT
