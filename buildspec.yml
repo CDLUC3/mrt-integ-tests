@@ -23,8 +23,12 @@ phases:
     commands:
     - |
       docker build --push --quiet \
-        -t ${ECR_REGISTRY}/${REPONAME}:dev \
+        -t ${ECR_REGISTRY}/${REPONAME} \
         .
+    - |
+      docker build --push --quiet \
+        -t ${ECR_REGISTRY}/mrt-it-chrome \
+        chrome-driver
     - docker-compose build
     - docker-compose up -d chrome
     - docker-compose run --rm -e INTEG_TEST_ENV=$INTEG_TEST_ENV -e INGEST_FILES=$INGEST_FILES mrt-integ-tests

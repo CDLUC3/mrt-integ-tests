@@ -3,7 +3,7 @@
 #   All rights reserved
 #*********************************************************************
 
-FROM selenium/standalone-chrome
+FROM docker.io/selenium/standalone-chrome
 
 ENV JAVA_OPTS=-Dwebdriver.chrome.whitelistedIps= -Dwebdriver.chrome.allowedIps=
 
