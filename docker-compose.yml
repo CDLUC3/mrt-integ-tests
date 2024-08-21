@@ -19,7 +19,7 @@ services:
       source: ./config/test_config.yml
       target: /config/test_config.yml
     - downloads:/tmp/downloads
-    - $HOME/.aws/credentials:/root/.aws/credentials:ro
+    - $HOME/.aws:/root/.aws:ro
     environment:
       #uncomment the following when running rspec with a non-headless chrome
       CHROME_URL: http://chrome:4444/wd/hub
