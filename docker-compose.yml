@@ -24,6 +24,7 @@ services:
       CHROME_URL: http://chrome:4444/wd/hub
       SSM_ROOT_PATH: ${SSM_ROOT_PATH:-/uc3/mrt/dev/}
       HOSTNAME: ${HOSTNAME}.cdlib.org
+      AWS_CONTAINER_CREDENTIALS_RELATIVE_URI: $AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
     stdin_open: true
     tty: true
     networks:
