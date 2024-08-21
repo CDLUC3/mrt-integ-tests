@@ -31,8 +31,8 @@ services:
     depends_on:
     - chrome
   chrome:
-    container_name: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mrt-it-chrome
-    image: standalone-chrome-download-folder
+    container_name: chrome
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mrt-it-chrome
     # build a docker image that will make the downloads folder accessible (permissions) as a volume mount
     build:
       context: chrome-driver

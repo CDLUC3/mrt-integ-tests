@@ -19,7 +19,7 @@ phases:
     - INGEST_FILES=none
 
   build:
-    on-failure: ABORT
+    on-failure: CONTINUE
     commands:
     - |
       docker build --push --quiet \
@@ -29,6 +29,10 @@ phases:
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/mrt-it-chrome \
         chrome-driver
+
+  post_build:
+    on-failure: ABORT
+    commands:
     - docker-compose build
     - docker-compose up -d chrome
     - docker-compose run --rm -e INTEG_TEST_ENV=$INTEG_TEST_ENV -e INGEST_FILES=$INGEST_FILES mrt-integ-tests
