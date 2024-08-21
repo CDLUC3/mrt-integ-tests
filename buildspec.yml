@@ -15,6 +15,8 @@ phases:
     - echo "Branchtag ${BRANCHTAG}; COMMITDATE=${COMMITDATE}; REPONAME=${REPONAME}; BRANCHNAME=${BRANCHNAME}"
 
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+    - INTEG_TEST_ENV=stage
+    - INGEST_FILES=none
 
   build:
     on-failure: ABORT
@@ -23,3 +25,6 @@ phases:
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/${REPONAME}:dev \
         .
+    - docker-compose build
+    - docker-compose up -d chrome
+    - docker-compose run --rm -e INTEG_TEST_ENV=$INTEG_TEST_ENV -e INGEST_FILES=$INGEST_FILES mrt-integ-tests

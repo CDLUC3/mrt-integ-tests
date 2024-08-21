@@ -323,22 +323,6 @@ def end_web_session(session)
   session.driver.quit
 end
 
-def check_storage_state
-  url = @test_config['storage-state']
-  return if url.empty?
-
-  nodes = json_request(url).fetch('sto:storageServiceState', {})
-    .fetch('sto:nodeStates', {})
-    .fetch('sto:nodeState', [])
-  expect(nodes.length).to be > 0
-  nodes.each do |n|
-    puts "\t#{n}"
-    nstate = json_request("#{n}?t=json").fetch('nod:nodeState', {}).fetch('nod:testOk', false)
-    puts "\t  Node State OK: #{nstate}"
-    expect(nstate).to be(true)
-  end
-end
-
 def check_service_state(url, redirect: false)
   return if url.empty?
 

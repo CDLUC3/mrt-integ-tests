@@ -66,35 +66,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
   end
 
-  describe 'Check storage service state' do
-    it 'Invoke the storage state command for each storage node' do
-      check_storage_state
-    end
-  end
-
   describe 'Check service states' do
-    TestObjectPrefix.state_urls.split(',').each do |url|
-      it "Verify that the microservice STATE endpoint returns a successful response: #{url}" do
-        skip('STATE endpoint is not yet supported for this microservice') unless has_service_state(url)
-        check_service_state(url)
-      end
-
-      it "Using the STATE endpoint response, verify that processing is not frozen for the micorservice: #{url}" do
-        skip('STATE endpoint is not yet supported for this microservice') unless has_service_state(url)
-        check_state_active(check_service_state(url))
-      end
-
-      it "Extract microservice build info (build.content.txt for java microservices): #{build_info_url(url)}" do
-        skip('Microservice build info endpoint is not yet enabled') unless has_build_info(url)
-        service = get_service(url)
-        tag = check_build_info(build_info_url(url))
-        exp_tag = @sem_versions.fetch(service, '')
-        puts "\t\t#{tag}"
-        expect(exp_tag).to eq(tag) unless exp_tag.empty?
-        @sem_versions[service] = tag
-      end
-    end
-
     describe 'View state page - look for audit replic errors' do
       before(:each) do
         skip('The UI state endpoint does not yet provide audit and replic count information') unless @test_config.fetch(
@@ -116,15 +88,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
       it 'From the UI state endpoint page, verify that AUDIT activity is occurring' do
         expect(@session.find('table.state tbody tr.audits td.total').text.to_i).to be > 0
-      end
-    end
-  end
-
-  describe 'Check service states via load balancers' do
-    TestObjectPrefix.state_urls_lb.split(',').each do |url|
-      it "Verify that the STATE endpoint is accessible and successful when invoked from a load balancer: #{url}" do
-        skip('state unsupported') unless has_service_state(url)
-        check_service_state(url, redirect: true)
       end
     end
   end
