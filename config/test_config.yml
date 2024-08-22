@@ -202,8 +202,8 @@ production: &production
   ui_audit_replic: true
   guest_actions:
     collections:
-    - coll: ucb_open_context
-      <<: *AWS
+    #- coll: ucb_open_context
+    #  <<: *AWS
     collections-no-access:
     - coll: merritt_demo
   non_guest_actions:
