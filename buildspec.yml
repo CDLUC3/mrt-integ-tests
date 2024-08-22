@@ -31,11 +31,14 @@ phases:
         -t ${ECR_REGISTRY}/mrt-it-chrome \
         chrome-driver || echo "dockerhub rate limiting may occur"
 
-    - docker-compose build
-    - docker-compose up -d chrome
     - |
-       docker-compose run --rm \
-         -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
-         -e INGEST_FILES=$INGEST_FILES \
-         -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
-         -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
+      if [ '$INTEG_TEST_ENV' != 'none' ]
+      then
+        docker-compose up -d chrome
+        docker-compose run --rm \
+          -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
+          -e INGEST_FILES=$INGEST_FILES \
+          -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
+          -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
+        docker-compose down
+      fi
