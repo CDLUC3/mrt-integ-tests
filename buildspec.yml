@@ -15,8 +15,6 @@ phases:
     - echo "Branchtag ${BRANCHTAG}; COMMITDATE=${COMMITDATE}; REPONAME=${REPONAME}; BRANCHNAME=${BRANCHNAME}"
 
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-    - INTEG_TEST_ENV=stage
-    - INGEST_FILES=none
     - SSM_ROOT_PATH=/uc3/mrt/dev/
 
   build:
