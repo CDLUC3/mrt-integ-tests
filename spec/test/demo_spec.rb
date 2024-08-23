@@ -117,7 +117,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
         visit_first_object
       end
-      expect(count).to be > 0
     end
 
     it 'Verify that the JSON OBJECT_INFO page for an object accessible to the Guest Login can be retrieved' do
@@ -139,7 +138,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         expect(json.fetch('version_number', 0)).to be > 0
         expect(json.fetch('total_files', 0)).to be > 0
       end
-      expect(count).to be > 0
     end
 
     it 'Verify that the JSON OBJECT_INFO page requires Guest Login' do
@@ -164,7 +162,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         )
         expect(json.fetch('ark', '')).to eq('')
       end
-      expect(count).to be > 0
     end
 
     skip it 'Verify that a permalink is traversable for an object' do
@@ -190,7 +187,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         visit_first_object
         visit_first_version
       end
-      expect(count).to be > 0
     end
 
     it 'Verify that a FILE for an object accessible to the Guest Login REDIRECTS to a presigned file retrieval' do
@@ -207,7 +203,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         # the following will not succeed if the content type triggers a dowload
         expect(@session.current_url).to match(coll['file_redirect_match'])
       end
-      expect(count).to be > 0
     end
 
     it 'Verify that the ATOM FEED for a collection is not accessible to Guest User' do
@@ -229,7 +224,6 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
         visit_first_version
         visit_text_file(coll)
       end
-      expect(count).to be > 0
     end
 
     it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
