@@ -2,7 +2,7 @@
 #   Copyright 2019 Regents of the University of California
 #   All rights reserved
 #*********************************************************************
-
+ARG ECR_REGISTRY
 FROM $ECR_REGISTRY/docker-hub/selenium/standalone-chrome
 
 ENV JAVA_OPTS=-Dwebdriver.chrome.whitelistedIps= -Dwebdriver.chrome.allowedIps=

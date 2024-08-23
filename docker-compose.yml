@@ -37,6 +37,8 @@ services:
     build:
       context: chrome-driver
       dockerfile: Dockerfile
+      args:
+        ECR_REGISTRY: ${ECR_REGISTRY}
     shm_size: '2gb'
     networks:
       mynet:
