@@ -39,4 +39,4 @@ phases:
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
           -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
       fi
-      - docker-compose down
+    - docker-compose down
