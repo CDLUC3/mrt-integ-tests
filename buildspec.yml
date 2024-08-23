@@ -30,7 +30,7 @@ phases:
         chrome-driver || echo "dockerhub rate limiting may occur"
 
     - |
-      if [ '$INTEG_TEST_ENV' != 'none' ]
+      if [ "$INTEG_TEST_ENV" != "none" ]
       then
         docker-compose up -d chrome
         docker-compose run --rm \
