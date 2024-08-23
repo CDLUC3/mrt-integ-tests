@@ -56,11 +56,17 @@ def guest_actions
 end
 
 def guest_collections
-  guest_actions.fetch('collections', [])
+  list = guest_actions.fetch('collections', [])
+  return [] if list.nil?
+
+  list
 end
 
 def guest_collections_no_access
-  guest_actions.fetch('collections-no-access', [])
+  list = guest_actions.fetch('collections-no-access', [])
+  return [] if list.nil?
+
+  list
 end
 
 def non_guest_actions
