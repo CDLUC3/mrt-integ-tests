@@ -31,26 +31,38 @@ graph TD
 
 ## Setup
 
-- Choose to run the application (1)locally with Ruby or (2)inside docker
+These tests can be run in the follow manner
+- from AWS Code Build - [Internal Documentation](https://github.com/CDLUC3/mrt-doc-private/blob/main/uc3-mrt-integ-tests.md)
+- using docker containers to run Ruby/Capybara and Headless Chrome
+- run locally using a desktop installation of Ruby and Chrome
 
-## Local Setup
+### Code Build Setup
+- This is the recommended approach for the Merritt Team.  See the internal documentation link above
+
+### Local Setup
 
 - Install ruby 3.0
 - Chrome installation is required
 - `bundle install`
 
-### Local Test Execution
+#### Local Test Execution
 
 - `rspec spec`
 
-## Docker Setup
+#### Running outside of docker
+- Comment out `CHROME_URL: http://chrome:4444/wd/hub`
+- `bundle install`
+- `INTEG_TEST_ENV=... bundle exec rspec`
+
+
+### Docker Setup
 
 ```
 docker-compose build
 docker-compose up -d chrome
 ```
 
-### Docker Test Execution
+#### Docker Test Execution
 
 | Domain | Scenario | Command |
 | ------ | -------- | ------- |
@@ -68,12 +80,8 @@ docker-compose up -d chrome
 | Development | No Ingest | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none mrt-integ-tests`|
 | Development | Preview Url | `docker-compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests`|
 
-### Cleanup
+#### Cleanup
 ```
 docker-compose down
 ```
 
-## Running outside of docker
-- Comment out `CHROME_URL: http://chrome:4444/wd/hub`
-- `bundle install`
-- `INTEG_TEST_ENV=... bundle exec rspec`
