@@ -36,8 +36,12 @@ These tests can be run in the follow manner
 - using docker containers to run Ruby/Capybara and Headless Chrome
 - run locally using a desktop installation of Ruby and Chrome
 
+----
+
 ### Code Build Setup
 - This is the recommended approach for the Merritt Team.  See the internal documentation link above
+
+---
 
 ### Local Setup
 
@@ -54,6 +58,7 @@ These tests can be run in the follow manner
 - `bundle install`
 - `INTEG_TEST_ENV=... bundle exec rspec`
 
+---
 
 ### Docker Setup
 
