@@ -10,7 +10,7 @@ volumes:
 services:
   mrt-integ-tests:
     container_name: mrt-integ-tests
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mrt-integ-tests
+    image: ${ECR_REGISTRY}/mrt-integ-tests
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,7 +32,7 @@ services:
     - chrome
   chrome:
     container_name: chrome
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/mrt-it-chrome
+    image: ${ECR_REGISTRY}/mrt-it-chrome
     # build a docker image that will make the downloads folder accessible (permissions) as a volume mount
     build:
       context: chrome-driver
