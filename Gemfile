@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+gem 'aws-sdk-ssm'
 gem 'base64'
 gem 'capybara'
 gem 'capybara-webmock'
