@@ -56,10 +56,13 @@ Layout/MultilineHashKeyLineBreaks:
 Layout/MultilineHashBraceLayout:
   EnforcedStyle: new_line
 
-
 AllCops:
   NewCops: enable
 
 # Uniuqe to this repo
 Style/CombinableLoops:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Layout/LineLength:
   Enabled: false
