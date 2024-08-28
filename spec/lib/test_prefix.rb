@@ -49,6 +49,16 @@ class TestObjectPrefix
     files
   end
 
+  def self.manifests
+    key = ENV.fetch('INGEST_FILES', 'default')
+    manifests = @@config.fetch('test-files', {})
+      .fetch(key, {})
+      .fetch('manifests', [])
+    return [] if manifests.nil?
+
+    manifests
+  end
+
   def self.do_encoding_test
     !encoding_zip_files.empty?
   end

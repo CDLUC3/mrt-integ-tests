@@ -66,6 +66,35 @@ globals: &globals
     none:
       encoding-zip:
       ingest-files:
+    load:
+      encoding-zip:
+      ingest-files:
+      manifests:
+      - coll: merritt_demo
+        count: 10
+        label: 'manufactured_load_A'
+        url: 'https://merritt.cdlib.org/robots.txt'
+        ext: '.txt'
+      - coll: cdl_wasabi
+        count: 10
+        label: 'manufactured_load_B'
+        url: 'https://merritt.cdlib.org/robots.txt'
+        ext: '.txt'
+      - coll: merritt_demo
+        count: 100
+        label: 'manufactured_load_C'
+        url: 'https://merritt.cdlib.org/robots.txt'
+        ext: '.txt'
+      - coll: cdl_wasabi
+        count: 10
+        label: 'manufactured_load_D'
+        url: 'https://merritt.cdlib.org/robots.txt'
+        ext: '.txt'
+      - coll: merritt_demo
+        count: 100
+        label: 'manufactured_load_E'
+        url: 'https://merritt.cdlib.org/robots.txt'
+        ext: '.txt'
     default:
       encoding-zip: 
         <<: *encoding-tests-basic
