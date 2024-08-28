@@ -301,9 +301,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     describe 'ingest files' do
       before(:each) do
-        unless TestObjectPrefix.run_ingest
-          skip('PREFIX supplied - rather than ingesting new content, objects from a prior ingest batch will be browsed')
-        end
+        skip('PREFIX supplied - rather than ingesting new content, objects from a prior ingest batch will be browsed') unless TestObjectPrefix.run_ingest
         skip('No non-guest collections supplied') if non_guest_collections.empty?
         coll = non_guest_collections.first
         visit_collection(coll)
@@ -365,7 +363,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
     TestObjectPrefix.manifests.each do |m|
       describe "Ingest a manfiest of #{m.fetch('count', 0)} files into #{m.fetch('coll', 'na')}" do
-        it "Run Ingest" do
+        it 'Run Ingest' do
           @session.visit "/m/#{m.fetch('coll', 'na')}"
           sleep 2
           fname = '/tmp/manifest_gen.txt'
@@ -376,9 +374,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             f.write("#%prefix | nfo: | http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#\n")
             f.write("#%fields | nfo:fileUrl | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified | nfo:fileName | mrt:primaryIdentifier | mrt:localIdentifier | mrt:creator | mrt:title | mrt:date\n")
 
-            for i in 1..m.fetch('count', 0) do
-              p = "#{m.fetch('label', 'label')}_#{sprintf("%03d", i)}#{m.fetch('ext','')}"
-              f.write("#{m.fetch('url', 'https://merritt.cdlib.org/robots.txt')}| | | | | #{p} | | | autotest | Merritt Automated Test: #{p} |\n")
+            (1..m.fetch('count', 0)).each do |i|
+              p = "#{m.fetch('label', 'label')}_#{format('%03d', i)}#{m.fetch('ext', '')}"
+              f.write("#{m.fetch('url',
+                'https://merritt.cdlib.org/robots.txt')}| | | | | #{p} | | | autotest | Merritt Automated Test: #{p} |\n")
             end
             f.write("#%eof\n")
             f.close
@@ -391,9 +390,9 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           @session.fill_in('title', with: m.fetch('label', 'na'))
           @session.find_button('Submit').click
           @session.within('section h1') do
-          expect(@session.text).to have_content('Submission Received')
+            expect(@session.text).to have_content('Submission Received')
+          end
         end
-      end
       end
     end
 
