@@ -16,10 +16,23 @@ phases:
 
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
     - SSM_ROOT_PATH=/uc3/mrt/dev/
+    - DATAPATH=`aws ssm get-parameter --name /uc3/mrt/dev/integ-tests/data-path --query "Parameter.Value" --output text`
+    - DATAURL="https://merritt.uc3dev.cdlib.org/${DATAPATH}"
 
   build:
     on-failure: ABORT
     commands:
+    - |
+      if ! [[ `aws s3 ls s3://${S3CFBUCKET}/${DATAPATH}` ]]
+      then
+        mkdir /tmp/datapath
+        ruby makefile.rb data.1k  1_000
+        ruby makefile.rb data.1m  1_000_000
+        ruby makefile.rb data.50m 50_000_000
+        ruby makefile.rb data.1g  1_000_000_000
+        aws s3 cp /tmp/datapath/* s3://${S3CFBUCKET}/${DATAPATH}
+      fi
+
     - |
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/${REPONAME} \

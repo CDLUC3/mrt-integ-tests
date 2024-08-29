@@ -70,30 +70,30 @@ globals: &globals
       encoding-zip:
       ingest-files:
       manifests:
-      - coll: merritt_demo
-        count: 10
+      - coll: merritt_benchmark
+        count: 100
         label: 'manufactured_load_A'
-        url: 'https://merritt.cdlib.org/robots.txt'
+        url: "{!ENV: DATAURL}/data.1k"
         ext: '.txt'
       - coll: cdl_wasabi
         count: 10
         label: 'manufactured_load_B'
-        url: 'https://merritt.cdlib.org/robots.txt'
+        url: "{!ENV: DATAURL}/data.1m"
         ext: '.txt'
       - coll: merritt_demo
-        count: 100
+        count: 10
         label: 'manufactured_load_C'
-        url: 'https://merritt.cdlib.org/robots.txt'
+        url: "{!ENV: DATAURL}/data.50m"
         ext: '.txt'
       - coll: cdl_wasabi
         count: 10
         label: 'manufactured_load_D'
-        url: 'https://merritt.cdlib.org/robots.txt'
+        url: "{!ENV: DATAURL}/data.1g"
         ext: '.txt'
-      - coll: merritt_demo
+      - coll: merritt_benchmark
         count: 100
         label: 'manufactured_load_E'
-        url: 'https://merritt.cdlib.org/robots.txt'
+        url: "{!ENV: DATAURL}/data.1m"
         ext: '.txt'
     default:
       encoding-zip: 
