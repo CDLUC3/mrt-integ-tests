@@ -377,12 +377,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             (1..m.fetch('count', 0)).each do |i|
               p = "#{m.fetch('label', 'label')}_#{format('%03d', i)}#{m.fetch('ext', '')}"
               f.write("#{m.fetch('url',
-                'https://merritt.cdlib.org/robots.txt')}| | | | | #{p} | | | autotest | Merritt Automated Test: #{p} |\n")
+                'https://merritt.cdlib.org/robots.txt')} | | | | | #{p} | | | autotest | Merritt Automated Test: #{p} |\n")
             end
             f.write("#%eof\n")
             f.close
           end
-          puts `cat #{fname}`
           @session.find_link('Add object')
 
           @session.click_link('Add object')
