@@ -1,7 +1,5 @@
+# frozen_string_literal: true
+
 dir = '/tmp/datapath'
-%x[mkdir -p #{dir}]
-if ARGV.length >= 2
-  File.open("#{dir}/#{ARGV[0]}", 'w') do |f|
-    f.write(' ' * ARGV[1].to_i)
-  end
-end
+`mkdir -p #{dir}`
+File.write("#{dir}/#{ARGV[0]}", ' ' * ARGV[1].to_i) if ARGV.length >= 2
