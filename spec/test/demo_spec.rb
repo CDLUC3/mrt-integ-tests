@@ -382,6 +382,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             f.write("#%eof\n")
             f.close
           end
+          puts `cat #{fname}`
           @session.find_link('Add object')
 
           @session.click_link('Add object')
