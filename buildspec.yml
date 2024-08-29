@@ -25,12 +25,11 @@ phases:
     - |
       if ! [[ `aws s3 ls s3://${S3CFBUCKET}/${DATAPATH}` ]]
       then
-        mkdir /tmp/datapath
         ruby makefile.rb data.1k  1_000
         ruby makefile.rb data.1m  1_000_000
         ruby makefile.rb data.50m 50_000_000
         ruby makefile.rb data.1g  1_000_000_000
-        aws s3 cp /tmp/datapath/* s3://${S3CFBUCKET}/${DATAPATH}
+        aws s3 cp /tmp/datapath/data* s3://${S3CFBUCKET}/${DATAPATH}/
       fi
 
     - |
