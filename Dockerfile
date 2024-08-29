@@ -3,7 +3,7 @@
 #   All rights reserved
 #*********************************************************************
 
-FROM public.ecr.aws/docker/library/ruby:3
+FROM public.ecr.aws/docker/library/ruby:3.2
 
 RUN apt-get update -y && \
     apt-get -y upgrade && \
