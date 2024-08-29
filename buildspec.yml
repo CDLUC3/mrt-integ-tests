@@ -49,6 +49,7 @@ phases:
       if [ "$INTEG_TEST_ENV" != "none" ]
       then
         docker-compose run --rm \
+          -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
           -e INGEST_FILES=$INGEST_FILES \
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
