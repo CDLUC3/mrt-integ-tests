@@ -76,12 +76,12 @@ globals: &globals
         url: "{!ENV: DATAURL}/data.1k"
         ext: '.txt'
       - coll: cdl_wasabi
-        count: 10
+        count: 25
         label: 'manufactured_load_B'
         url: "{!ENV: DATAURL}/data.1m"
         ext: '.txt'
       - coll: merritt_demo
-        count: 10
+        count: 25
         label: 'manufactured_load_C'
         url: "{!ENV: DATAURL}/data.50m"
         ext: '.txt'
@@ -94,6 +94,11 @@ globals: &globals
         count: 100
         label: 'manufactured_load_E'
         url: "{!ENV: DATAURL}/data.1m"
+        ext: '.txt'
+      - coll: merritt_benchmark
+        count: 5
+        label: 'manufactured_load_F'
+        url: "{!ENV: DATAURL}/data.5g"
         ext: '.txt'
     default:
       encoding-zip: 
