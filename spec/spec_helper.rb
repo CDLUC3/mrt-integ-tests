@@ -96,6 +96,7 @@ end
 
 def guest_login
   @session.visit '/'
+  sleep 1
   @session.within 'header' do
     @session.find_link('Login')
     @session.click_link('Login')
@@ -106,6 +107,7 @@ end
 
 def authenticated_login
   @session.visit '/'
+  sleep 1
 
   @session.within 'header' do
     @session.find_link('Login')
