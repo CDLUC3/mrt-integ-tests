@@ -376,8 +376,13 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
             (1..m.fetch('count', 0)).each do |i|
               p = "#{m.fetch('label', 'label')}_#{format('%03d', i)}#{m.fetch('ext', '')}"
+              digest = "#{m.fetch('md5', '')}" || ""
+              cs = ""
+              cs = "md5" if ! digest.empty?
+              lid = "#{m.fetch('localid', '')}" || ""
+
               f.write("#{m.fetch('url',
-                'https://merritt.cdlib.org/robots.txt')} | | | | | #{p} | | | autotest | Merritt Automated Test: #{p} |\n")
+                'https://merritt.cdlib.org/robots.txt')} | #{cs} | #{digest} | | | #{p} | | #{lid} | autotest | Merritt Automated Test: #{p} |\n")
             end
             f.write("#%eof\n")
             f.close
