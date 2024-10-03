@@ -57,7 +57,7 @@ globals: &globals
     quest_quest: 'File%??x.md'
   sleep-times:
     ingest: 80   # run full ingest (ingest, store, inventory)
-    assemble: 45 # object assembly ready
+    assemble: 60 # object assembly ready - increased from 30 to 60 for CodeBuild runs
     download: 30 # assembly zip download
     upload: 10 #allow upload to complete
   # each of the keys listed below will contain a set of files to load
