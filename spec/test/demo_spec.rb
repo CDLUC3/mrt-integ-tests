@@ -409,7 +409,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
           coll = non_guest_collections.first
           visit_collection(coll)
           sleep 2
-          @ark = check_file_obj_page(TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix,
+          @ark = check_file_obj_page_title(TestObjectPrefix.encoding_zip, TestObjectPrefix.localid_prefix,
             TestObjectPrefix.encoding_label)
         end
 
@@ -467,34 +467,34 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
           it "Verify browsing an OBJECT recently ingested with local id: #{local_id(TestObjectPrefix.localid_prefix,
             fk)}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
           end
 
           it "Verify that a SPECIFIC FILE can be found on an OBJECT PAGE: #{file}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
             @session.find_link(@file)
             @session.click_link(@file)
             validate_file_page
           end
 
           it "Verify that a SPECIFIC FILE can be found on a VERSION PAGE: #{file}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end
 
           it "Verify that a SPECIFIC FILE can be retrieved by URL construction: #{file}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
           end
 
           it "Verify the OBJECT DOWNLOAD for a recently ingested object: #{fk}" do
-            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            ark = check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
             listing = perform_object_download("#{ark}.zip")
             skip('Listing could not be generated') if listing.unicode_normalize.empty?
             expect(listing.unicode_normalize).to have_text(@file.unicode_normalize)
           end
 
           it "Verify AUDIT AND REPLIC stats for a recently ingested object: #{fk}" do
-            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub('ark_', 'ark:/').gsub(
+            ark = check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key).gsub('ark_', 'ark:/').gsub(
               '_', '/'
             )
             encark = ERB::Util.url_encode(ark)
@@ -528,38 +528,42 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
 
           it "Verify browse of a RECENTLY INGESTED OBJECT with local id: #{local_id(TestObjectPrefix.localid_prefix,
             fk)}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
           end
 
           it "Verify the presence of a TEST FILE on the OBJECT PAGE: #{file}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
             @session.find_link(@file)
+            expect(@session.find_link(@file).text).to eq(@file)
             @session.click_link(@file)
             validate_file_page
           end
 
+          it "Verify the presence of a TEST FILE on the OBJECT PAGE: #{file}.v2" do
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
+            @session.find_link("#{@file}.v2")
+            expect(@session.find_link("#{@file}.v2").text).to eq("#{@file}.v2")
+            @session.click_link("#{@file}.v2")
+            validate_file_page
+          end
+
           it "Verify the presence of a TEST FILE on the VERSION 1 PAGE: #{file}" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key)
             find_file_on_version_page(@file)
           end
 
-          it "Verify the RETRIEVAL OF VERSION 1 of A TEST FILE #{file} by URL construction" do
-            check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key)
+          it "Verify the presence of both versions of a TEST FILE on the VERSION 2 PAGE: #{file}" do
+            check_file_obj_page_title("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
+            find_file_on_version_page(@file, version: 2)
           end
 
           it "Verify the presence of both versions of a TEST FILE on the VERSION 2 PAGE: #{file}.v2" do
-            check_file_obj_page(@file.to_s, TestObjectPrefix.localid_prefix, @file_key)
-            check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
-            find_file_on_version_page(@file)
-          end
-
-          it 'Verify the RETRIEVAL OF both versions of a file in VERSION 2 of and object by URL construction' do
-            check_file_obj_page(@file.to_s, TestObjectPrefix.localid_prefix, @file_key)
-            check_file_obj_page("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
+            check_file_obj_page_title("#{@file}.v2", TestObjectPrefix.localid_prefix, @file_key)
+            find_file_on_version_page("#{@file}.v2", version: 2)
           end
 
           it "Verify AUDIT AND REPLIC stats for a recently ingested and updated object #{fk}" do
-            ark = check_file_obj_page(@file, TestObjectPrefix.localid_prefix, @file_key).gsub('ark_', 'ark:/').gsub(
+            ark = check_file_obj_page_title(@file, TestObjectPrefix.localid_prefix, @file_key).gsub('ark_', 'ark:/').gsub(
               '_', '/'
             )
             encark = ERB::Util.url_encode(ark)

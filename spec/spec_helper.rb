@@ -225,7 +225,7 @@ def add_file(f, fname, prefix, seq)
   File.delete(f)
 end
 
-def check_file_obj_page(fname, prefix, seq)
+def check_file_obj_page_title(fname, prefix, seq)
   localid = local_id(prefix, seq)
   title = make_title(localid, fname)
 
@@ -243,10 +243,11 @@ def check_file_obj_page(fname, prefix, seq)
   @session.find('h1 span.key').text.gsub(/[^A-Za-z0-9]+/, '_')
 end
 
-def find_file_on_version_page(file)
-  @session.find_link('Version 1')
-  @session.click_link('Version 1')
+def find_file_on_version_page(file, version: 1)
+  @session.find_link("Version #{version}")
+  @session.click_link("Version #{version}")
   @session.find_link(file)
+  expect(@session.find_link(file).text).to eq(file)
   @session.click_link(file)
   validate_file_page
 end
@@ -269,7 +270,7 @@ def perform_object_download(zipname)
   @session.find_button('Download object')
   @session.click_button('Download object')
 
-  sleep 2
+  sleep 4
 
   @session.find('div.ui-dialog')
   @session.within('.ui-dialog-title') do
