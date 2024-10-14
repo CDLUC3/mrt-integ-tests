@@ -184,7 +184,7 @@ def upload_v1_file(key)
   path = create_filename(fname)
   f = create_file(path)
   add_file(f, fname, prefix, key)
-  sleep_label(sleep_time_upload * 3, 'to allow upload to complete')
+  sleep_label(sleep_time_upload * 5, 'to allow upload to complete')
 end
 
 def update_v2_file(key)
