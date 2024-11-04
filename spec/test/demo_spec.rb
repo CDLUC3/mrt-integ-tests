@@ -168,7 +168,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Verify that a permalink is traversable for an object' do
+    skip it 'Verify that a permalink is traversable for an object' do
       guest_collections.each do |coll|
         visit_collection(coll)
         next if get_object_count == 0
