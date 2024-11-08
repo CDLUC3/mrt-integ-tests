@@ -85,7 +85,7 @@ globals: &globals
       manifests:
       - &test_1KB_100
         coll: merritt_benchmark
-        count: 10000
+        count: 100
         label: 'manufactured_load_A'
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
