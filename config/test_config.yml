@@ -77,7 +77,7 @@ globals: &globals
         label: 'manufactured_load_I'
         localid: localid_I5
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '436c3aa0e0225c185e7338d5983279f3'
+        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
     load:
       encoding-zip:
