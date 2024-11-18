@@ -73,10 +73,10 @@ globals: &globals
       manifests:
       - &localid_5
         coll: merritt_benchmark
-        count: 5
+        count: 250
         label: 'manufactured_load_I'
         localid: localid_I5
-        url: "{!ENV: DATAURL}/data.1m"
+        url: "{!ENV: DATAURL}/data.1k"
         md5: '436c3aa0e0225c185e7338d5983279f3'
         ext: '.txt'
     load:
