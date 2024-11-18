@@ -71,10 +71,37 @@ globals: &globals
       encoding-zip:
       ingest-files:
       manifests:
-      - &localid_5
-        coll: merritt_benchmark
-        count: 250
-        label: 'manufactured_load_I'
+      - coll: merritt_benchmark
+        count: 100
+        label: 'manufactured_load_ver_a'
+        localid: localid_I5
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        ext: '.txt'
+      - coll: merritt_benchmark
+        count: 100
+        label: 'manufactured_load_ver_b'
+        localid: localid_I5
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        ext: '.txt'
+      - coll: merritt_benchmark
+        count: 100
+        label: 'manufactured_load_ver_c'
+        localid: localid_I5
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        ext: '.txt'
+      - coll: merritt_benchmark
+        count: 100
+        label: 'manufactured_load_ver_d'
+        localid: localid_I5
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        ext: '.txt'
+      - coll: merritt_benchmark
+        count: 100
+        label: 'manufactured_load_ver_e'
         localid: localid_I5
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
