@@ -365,6 +365,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       describe "Ingest a manfiest of #{m.fetch('count', 0)} files into #{m.fetch('coll', 'na')}" do
         it 'Run Ingest' do
           (1..TestObjectPrefix.manifest_repeat).each do |rpt|
+            puts "#{rpt} of #{TestObjectPrefix.manifest_repeat}"
             @session.visit "/m/#{m.fetch('coll', 'na')}"
             sleep 2
             fname = '/tmp/manifest_gen.txt'
