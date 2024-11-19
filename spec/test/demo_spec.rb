@@ -395,6 +395,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             @session.attach_file('File', File.join(fname))
             @session.fill_in('title', with: m.fetch('label', 'na'))
             @session.find_button('Submit').click
+            @session.find('section h1')
             @session.within('section h1') do
               expect(@session.text).to have_content('Submission Received')
             end

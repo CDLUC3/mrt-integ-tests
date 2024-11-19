@@ -219,6 +219,7 @@ def add_file(f, fname, prefix, seq)
   @session.fill_in('title', with: title)
   @session.fill_in('local_id', with: localid)
   @session.find_button('Submit').click
+  @session.find('section h1')
   @session.within('section h1') do
     expect(@session.text).to have_content('Submission Received')
   end

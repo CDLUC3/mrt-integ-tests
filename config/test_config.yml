@@ -70,7 +70,7 @@ globals: &globals
     localid:
       encoding-zip:
       ingest-files:
-      manifest-repeat: 10
+      manifest-repeat: 20
       manifests:
       - coll: merritt_benchmark
         count: 1
