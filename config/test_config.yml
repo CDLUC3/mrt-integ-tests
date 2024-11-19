@@ -70,51 +70,52 @@ globals: &globals
     localid:
       encoding-zip:
       ingest-files:
+      manifest-repeat: 10
       manifests:
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_a'
         localid: localid_ver_a
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_b'
         localid: localid_ver_b
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_c'
         localid: localid_ver_c
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_d'
         localid: localid_ver_d
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_e'
         localid: localid_ver_e
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_f'
         localid: localid_ver_f
         url: "{!ENV: DATAURL}/data.1k"
         md5: '17ed9c0ac6d4687e38b6cd98467556f3'
         ext: '.txt'
       - coll: merritt_benchmark
-        count: 100
+        count: 1
         label: 'manufactured_load_ver_g'
         localid: localid_ver_g
         url: "{!ENV: DATAURL}/data.1k"

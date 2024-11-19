@@ -59,6 +59,14 @@ class TestObjectPrefix
     manifests
   end
 
+  def self.manifest_repeat
+    key = ENV.fetch('INGEST_FILES', 'default')
+    @@config.fetch('test-files', {})
+      .fetch(key, {})
+      .fetch('manifest-repeat', 1)
+  end
+
+
   def self.do_encoding_test
     !encoding_zip_files.empty?
   end
