@@ -321,8 +321,24 @@ production: &production
   ui_audit_replic: true
   guest_actions:
     collections:
-    #- coll: ucb_open_context
-    #  <<: *AWS
+    collections-no-access:
+    - coll: merritt_demo
+  non_guest_actions:
+    login:
+      user: "{!SSM: integ-tests/for-prod/user}"
+      password: "{!SSM: integ-tests/for-prod/password}"
+    collections:
+    - coll: merritt_demo
+      <<: *AWS
+      submit: true
+preview:
+  <<: *globals
+  url: "{!ENV: PREVIEW_URL !DEFAULT: https://uc3-mrt-preview-prd.cdlib.org}"
+  expect_atom_content: true
+  replic_build_info: true
+  ui_audit_replic: true
+  guest_actions:
+    collections:
     collections-no-access:
     - coll: merritt_demo
   non_guest_actions:
