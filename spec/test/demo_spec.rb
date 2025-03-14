@@ -375,14 +375,14 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               f.write("#%prefix | mrt: | http://merritt.cdlib.org/terms#\n")
               f.write("#%prefix | nfo: | http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#\n")
               f.write("#%fields | nfo:fileUrl | nfo:hashAlgorithm | nfo:hashValue | nfo:fileSize | nfo:fileLastModified | nfo:fileName | mrt:primaryIdentifier | mrt:localIdentifier | mrt:creator | mrt:title | mrt:date\n")
-  
+
               (1..m.fetch('count', 0)).each do |i|
                 p = "#{m.fetch('label', 'label')}_#{format('%03d', i)}#{m.fetch('ext', '')}"
-                digest = "#{m.fetch('md5', '')}" || ""
-                cs = ""
-                cs = "md5" if ! digest.empty?
-                lid = "#{m.fetch('localid', '')}" || ""
-  
+                digest = m.fetch('md5', '').to_s || ''
+                cs = ''
+                cs = 'md5' unless digest.empty?
+                lid = m.fetch('localid', '').to_s || ''
+
                 f.write("#{m.fetch('url',
                   'https://merritt.cdlib.org/robots.txt')} | #{cs} | #{digest} | | | #{p} | | #{lid} | autotest | Merritt Automated Test: #{p} |\n")
               end
@@ -390,7 +390,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
               f.close
             end
             @session.find_link('Add object')
-  
+
             @session.click_link('Add object')
             @session.find('input#file')
             @session.attach_file('File', File.join(fname))

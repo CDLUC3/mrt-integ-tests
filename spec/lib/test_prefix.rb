@@ -66,7 +66,6 @@ class TestObjectPrefix
       .fetch('manifest-repeat', 1)
   end
 
-
   def self.do_encoding_test
     !encoding_zip_files.empty?
   end
