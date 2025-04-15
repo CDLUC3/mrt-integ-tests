@@ -3,7 +3,7 @@
 #   All rights reserved
 #*********************************************************************
 ARG ECR_REGISTRY
-FROM $ECR_REGISTRY/docker-hub/selenium/standalone-chrome
+FROM ${ECR_REGISTRY}/docker-hub/selenium/standalone-chrome
 
 ENV JAVA_OPTS=-Dwebdriver.chrome.whitelistedIps= -Dwebdriver.chrome.allowedIps=
 
