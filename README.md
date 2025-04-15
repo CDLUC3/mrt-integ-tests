@@ -31,6 +31,9 @@ graph TD
 
 ## Setup
 
+> [!NOTE]
+> This Docker Stack will not run on an arm-based Mac.
+
 These tests can be run in the follow manner
 - from AWS Code Build - [Internal Documentation](https://github.com/CDLUC3/mrt-doc-private/blob/main/uc3-mrt-integ-tests.md)
 - using docker containers to run Ruby/Capybara and Headless Chrome
