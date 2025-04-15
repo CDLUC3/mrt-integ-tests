@@ -41,7 +41,7 @@ phases:
    
     - docker-compose up -d chrome
     - |
-      if [ "$INTEG_TEST_ENV" != "ecs" ]
+      if [ "$INTEG_TEST_ENV" == "ecs" ]
       then
         ui=$(aws servicediscovery discover-instances \
           --service-name ui --namespace-name merritt | \
