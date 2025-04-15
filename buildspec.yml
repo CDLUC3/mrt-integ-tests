@@ -41,7 +41,19 @@ phases:
    
     - docker-compose up -d chrome
     - |
-      if [ "$INTEG_TEST_ENV" != "none" ]
+      if [ "$INTEG_TEST_ENV" != "ecs" ]
+      then
+        ui=$(aws servicediscovery discover-instances \
+          --service-name ui --namespace-name merritt | \
+          jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
+        docker-compose run --rm \
+          -e DATAURL=$DATAURL \
+          -e INTEG_TEST_ENV=development \
+          -e PREVIEW_URL=http://${ui}:8086
+          -e INGEST_FILES=$INGEST_FILES \
+          -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
+          -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
+      elif [ "$INTEG_TEST_ENV" != "none" ]
       then
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
