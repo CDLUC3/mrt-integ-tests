@@ -36,6 +36,7 @@ phases:
     - |
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/mrt-it-chrome \
+        --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
         chrome-driver || echo "dockerhub rate limiting may occur"
    
     - docker-compose up -d chrome
