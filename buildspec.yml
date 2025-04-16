@@ -39,18 +39,10 @@ phases:
           --service-name ui --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "UI IP: $ui"
-        echo "--------------- Shell --"
-        curl http://$ui:8086/state.json
-        route
-        echo "--------------- Docker --"
-        docker-compose run mrt-integ-tests echo "** mrt-integ-tests **"
-        docker-compose run mrt-integ-tests curl http://$ui:8086/state.json
-        docker-compose run chrome echo "** chrome **"
-        docker-compose run chrome curl http://$ui:8086/state.json
-        docker-compose run chrome route
-        echo "---------------"
         docker-compose up -d chrome
         echo "Chrome Started"
+        sleep 2
+        docker-compose logs
         docker-compose run --rm \
           -e INTEG_TEST_ENV=development \
           -e PREVIEW_URL=http://${ui}:8086 \
