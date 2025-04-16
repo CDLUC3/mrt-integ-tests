@@ -35,7 +35,7 @@ phases:
         ui=$(aws servicediscovery discover-instances \
           --service-name ui --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
-        docker-compose up -d chrome --build
+        docker-compose up -d chrome
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=development \
@@ -46,7 +46,7 @@ phases:
         docker-compose down
       elif [ "$INTEG_TEST_ENV" != "none" ]
       then
-        docker-compose up -d chrome --build
+        docker-compose up -d chrome
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
@@ -61,5 +61,5 @@ phases:
         docker build --push --quiet \
           -t ${ECR_REGISTRY}/mrt-it-chrome \
           --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
-          chrome-driver || echo "dockerhub rate limiting may occur"
+          chrome-driver
       fi
