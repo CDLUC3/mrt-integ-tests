@@ -33,14 +33,16 @@ phases:
       if [ "$INTEG_TEST_ENV" == "ecs" ]
       then
         echo "Running integration tests against ECS"
+        echo "Pulling images"
+        docker-compose pull
         ui=$(aws servicediscovery discover-instances \
           --service-name ui --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "UI IP: $ui"
+        curl -v http://$ui:8086
         docker-compose up -d chrome
         echo "Chrome Started"
         docker-compose run --rm \
-          -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=development \
           -e PREVIEW_URL=http://${ui}:8086 \
           -e INGEST_FILES=$INGEST_FILES \
