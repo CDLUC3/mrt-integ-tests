@@ -42,7 +42,7 @@ phases:
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=development \
-          -e PREVIEW_URL=http://${ui}:8086
+          -e PREVIEW_URL=http://${ui}:8086 \
           -e INGEST_FILES=$INGEST_FILES \
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
           -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
