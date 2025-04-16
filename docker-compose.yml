@@ -39,6 +39,8 @@ services:
       dockerfile: Dockerfile
       args:
         ECR_REGISTRY: ${ECR_REGISTRY}
+    environment:
+      SE_ENABLE_TRACING: true
     shm_size: '2gb'
     networks:
       mynet:
