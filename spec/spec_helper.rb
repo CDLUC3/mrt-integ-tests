@@ -320,7 +320,6 @@ def create_web_session
   if ENV['CHROME_URL']
     Capybara.register_driver :remote do |app|
       options = Selenium::WebDriver::Options.chrome
-      options.add_argument('--tracing true')
 
       Capybara::Selenium::Driver.new(app, browser: :remote, options: options,
         url: ENV['CHROME_URL'])

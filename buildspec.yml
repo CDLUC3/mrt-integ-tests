@@ -41,13 +41,12 @@ phases:
         echo "UI IP: $ui"
         docker-compose up -d chrome
         echo "Chrome Started"
-        docker-compose run -d --rm \
+        docker-compose run --rm \
           -e INTEG_TEST_ENV=development \
           -e PREVIEW_URL=http://${ui}:8086 \
           -e INGEST_FILES=$INGEST_FILES \
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
           -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
-        sleep 10
         docker-compose logs chrome
         echo "Tests complete"
         docker-compose down

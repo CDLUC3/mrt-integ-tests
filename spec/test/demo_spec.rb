@@ -32,6 +32,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
   end
 
   it 'Verify short urls' do
+    skip('ignore internet requests in vpc')
     @session.visit '/docs'
     expect(@session.current_url).to eq('https://github.com/CDLUC3/mrt-doc/blob/main/README.md')
     @session.visit '/wiki'
