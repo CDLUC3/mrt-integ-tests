@@ -315,7 +315,6 @@ def create_web_session
   @test_config = TestObjectPrefix.get_yaml_config
 
   Capybara.app_host = @test_config['url']
-  puts "Capybara.app_host = #{@test_config['url']}"
   Capybara.run_server = false # don't start Rack
 
   if ENV['CHROME_URL']
