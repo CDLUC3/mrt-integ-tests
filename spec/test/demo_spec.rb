@@ -24,6 +24,10 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end_web_session(@session)
   end
 
+  it 'Verify application status page' do
+    @session.visit '/state.json'
+  end
+
   it 'Verify that the Merritt UI home page is accessible' do
     @session.visit '/'
     @session.within('section.intro h1') do
