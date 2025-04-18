@@ -40,11 +40,11 @@ phases:
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "UI IP: $ui"
 
-        inventory=$(aws servicediscovery discover-instances \
-          --service-name inventory --namespace-name merritt | \
+        admintool=$(aws servicediscovery discover-instances \
+          --service-name admintool --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
-        echo "Inventory IP: $inventory"
-        curl -X GET http://$inventory:8080/inventory/service/start?t=json
+        echo "Admintool IP: $admintool"
+        curl http://$admintool:8080/stack-init
 
         docker-compose up -d chrome
         docker-compose run --rm \
