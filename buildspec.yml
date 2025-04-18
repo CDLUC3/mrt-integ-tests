@@ -33,37 +33,36 @@ phases:
       if [ "$INTEG_TEST_ENV" == "ecs" ]
       then
         echo "Running integration tests against ECS"
-        echo "Pulling images"
         docker-compose pull
+
         ui=$(aws servicediscovery discover-instances \
           --service-name ui --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "UI IP: $ui"
+
+        inventory=$(aws servicediscovery discover-instances \
+          --service-name inventory --namespace-name merritt | \
+          jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
+        curl -X GET http://$inventory:8080/inventory/servic/start?t=json
+
         docker-compose up -d chrome
-        echo "Chrome Started"
         docker-compose run --rm \
           -e INTEG_TEST_ENV=development \
           -e PREVIEW_URL=http://${ui}:8086 \
           -e INGEST_FILES=$INGEST_FILES \
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
           -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
-        echo "Tests complete"
-        docker-compose down
-        echo "Stack Down"
       elif [ "$INTEG_TEST_ENV" != "none" ]
       then
         echo "Running integration tests against public URL"
+
         docker-compose up -d chrome
-        echo "Chrome Started"
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
           -e INGEST_FILES=$INGEST_FILES \
           -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
           -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
-        echo "Tests complete"
-        docker-compose down
-        echo "Stack Down"
       else
         docker build --push --quiet \
           -t ${ECR_REGISTRY}/${REPONAME} \
@@ -73,3 +72,5 @@ phases:
           --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
           chrome-driver
       fi
+    - |
+      docker-compose down
