@@ -43,7 +43,8 @@ phases:
         inventory=$(aws servicediscovery discover-instances \
           --service-name inventory --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
-        curl -X GET http://$inventory:8080/inventory/servic/start?t=json
+        echo "Inventory IP: $inventory"
+        curl -X GET http://$inventory:8080/inventory/service/start?t=json
 
         docker-compose up -d chrome
         docker-compose run --rm \
