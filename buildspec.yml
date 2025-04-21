@@ -33,7 +33,7 @@ phases:
       if [ "$INTEG_TEST_ENV" == "ecs" ]
       then
         echo "Running integration tests against ECS"
-        docker-compose pull
+        docker-compose pull --quiet
 
         ui=$(aws servicediscovery discover-instances \
           --service-name ui --namespace-name merritt | \
