@@ -258,8 +258,12 @@ local: &local
 development: &development
   <<: *globals
   experimental_tests: true
-  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
+  url: "{!ENV: PREVIEW_URL !DEFAULT: http://ui:8086}"
   # The storage state test fails when talking to a minio container vs a live service
+  guest_actions:
+    collections:
+    collections-no-access:
+    - coll: merritt_demo
   << : *docker
 development-devdb:
   <<: *globals
