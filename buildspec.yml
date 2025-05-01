@@ -44,7 +44,7 @@ phases:
           --service-name admintool --namespace-name merritt | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "Admintool IP: $admintool"
-        curl http://$admintool:9292/stack-init
+        curl -X POST http://$admintool:9292/stack-init
 
         docker-compose up -d chrome
         docker-compose run --rm \
