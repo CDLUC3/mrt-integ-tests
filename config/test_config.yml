@@ -258,6 +258,7 @@ local: &local
 development: &development
   <<: *globals
   experimental_tests: true
+  check_audits: false
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://ui:8086}"
   # The storage state test fails when talking to a minio container vs a live service
   guest_actions:
@@ -272,7 +273,6 @@ development: &development
     - coll: merritt_demo
       <<: *AWS
       submit: true
-  << : *docker
 development-devdb:
   <<: *globals
   experimental_tests: true
