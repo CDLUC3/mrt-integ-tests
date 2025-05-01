@@ -231,9 +231,7 @@ def check_file_obj_page_title(fname, prefix, seq)
   title = make_title(localid, fname)
 
   @session.fill_in('terms', with: localid)
-  puts("Searching for #{localid}")
   @session.find("section.lookup input[name='commit']").click
-  sleep 1
   @session.within('section h1') do
     expect(@session.text).to have_content('Search Results')
   end

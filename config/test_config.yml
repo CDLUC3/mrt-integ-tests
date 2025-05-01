@@ -259,12 +259,16 @@ development: &development
   <<: *globals
   experimental_tests: true
   check_audits: false
+  sleep-times:
+    ingest: 120   # run full ingest (ingest, store, inventory)
+    assemble: 60 # object assembly ready
+    download: 30 # assembly zip download
+    upload: 10 # assembly zip download
   url: "{!ENV: PREVIEW_URL !DEFAULT: http://ui:8086}"
   # The storage state test fails when talking to a minio container vs a live service
   guest_actions:
     collections:
     collections-no-access:
-    - coll: escholarship
   non_guest_actions:
     login:
       user: merritt-test
