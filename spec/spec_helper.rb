@@ -36,6 +36,12 @@ def sleep_time_upload
 end
 
 def get_object_count
+  x =  @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
+  puts("th: #{x}")
+  x =  @session.all(:xpath, "//table[@class='main']/tbody/tr").count
+  puts("tr: #{x}")
+  x =  @session.all(:xpath, "//table[@class='main']/tbody").count
+  puts("tbody: #{x}")
   @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
 end
 

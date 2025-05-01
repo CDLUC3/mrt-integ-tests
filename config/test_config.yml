@@ -264,7 +264,7 @@ development: &development
   guest_actions:
     collections:
     collections-no-access:
-    - coll: merritt_demo
+    - coll: escholarship
   non_guest_actions:
     login:
       user: merritt-test
