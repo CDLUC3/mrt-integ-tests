@@ -36,12 +36,6 @@ def sleep_time_upload
 end
 
 def get_object_count
-  x =  @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
-  puts("th: #{x}")
-  x =  @session.all(:xpath, "//table[@class='main']/tbody/tr").count
-  puts("tr: #{x}")
-  x =  @session.all(:xpath, "//table[@class='main']/tbody").count
-  puts("tbody: #{x}")
   @session.all(:xpath, "//table[@class='main']/tbody/tr/th[@class='ark-header']").count
 end
 
@@ -237,7 +231,9 @@ def check_file_obj_page_title(fname, prefix, seq)
   title = make_title(localid, fname)
 
   @session.fill_in('terms', with: localid)
+  puts("Searching for #{localid}")
   @session.find("section.lookup input[name='commit']").click
+  sleep 1
   @session.within('section h1') do
     expect(@session.text).to have_content('Search Results')
   end
