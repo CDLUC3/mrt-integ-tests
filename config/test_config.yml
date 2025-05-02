@@ -258,7 +258,8 @@ local: &local
 development: &development
   <<: *globals
   experimental_tests: true
-  check_audits: false
+  # check_audits: false
+  ui_audit_replic: false
   sleep-times:
     ingest: 120   # run full ingest (ingest, store, inventory)
     assemble: 60 # object assembly ready
