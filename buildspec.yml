@@ -47,6 +47,7 @@ phases:
         curl -X POST http://$admintool:9292/stack-init
 
         docker-compose up -d chrome
+        sleep 2
         docker-compose run --rm \
           -e INTEG_TEST_ENV=development \
           -e PREVIEW_URL=http://${ui}:8086 \
@@ -58,6 +59,7 @@ phases:
         echo "Running integration tests against public URL"
 
         docker-compose up -d chrome
+        sleep 2
         docker-compose run --rm \
           -e DATAURL=$DATAURL \
           -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
