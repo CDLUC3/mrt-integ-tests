@@ -511,11 +511,11 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             skip('ui_audit_replic endpoint not supported') unless @test_config.fetch('ui_audit_replic', true)
             @session.visit "/state/#{encark}/audit_replic"
 
-            expect(@session.find('table.state tbody tr.audits td.error').text.to_i).to eq(0) if @test_config.fetch(
+            expect(@session.find('table.state tbody tr.audits td.error').text.to_i).to eq(0)
+            expect(@session.find('table.state tbody tr.replics td.error').text.to_i).to eq(0)
+            expect(@session.find('table.state tbody tr.audits td.total').text.to_i).to be > 0 if @test_config.fetch(
               'check_audits', true
             )
-            expect(@session.find('table.state tbody tr.replics td.error').text.to_i).to eq(0)
-            expect(@session.find('table.state tbody tr.audits td.total').text.to_i).to be > 0
             # if TestObjectPrefix.run_ingest
             #   expect(@session.find("table.state tbody tr.replics td.total").text.to_i).to be > 0
             # end
