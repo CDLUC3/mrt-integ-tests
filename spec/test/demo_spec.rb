@@ -340,6 +340,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       TestObjectPrefix.version_files.each do |fk, file|
         describe "Create VERSION 2 of an object using the following PREFIX as part of its local_id: #{fk}" do
           it "Verify that VERSION 2 can be ingested for the following file: #{file}" do
+            sleep 5
             update_v2_file(fk)
           end
         end
