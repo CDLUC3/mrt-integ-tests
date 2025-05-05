@@ -58,6 +58,7 @@ phases:
       then
         echo "Running integration tests against public URL"
 
+        docker-compose pull --quiet
         docker-compose up -d chrome
         sleep 2
         docker-compose run --rm \
