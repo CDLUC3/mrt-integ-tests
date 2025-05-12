@@ -1,6 +1,5 @@
 vendor/
 .byebug_history
 .DS_Store
-.bundle/
 testing.notes
 testing.notes.md
