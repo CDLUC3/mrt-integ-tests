@@ -88,6 +88,20 @@ docker compose up -d chrome
 | Development | No Ingest | `docker compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none mrt-integ-tests`|
 | Development | Preview Url | `docker compose run --rm -e INTEG_TEST_ENV=development -e INGEST_FILES=none -e PREVIEW_URL='https://...' mrt-integ-tests`|
 
+## Load test data
+
+${ingest_queue_dir}/mrt-integ-tests/bin/create.sh
+
+This will create files of a predictable size used in the load test config.
+```
+dd if=/dev/urandom of=data.10g bs=64M count=160 iflag=fullblock
+dd if=/dev/urandom of=data.5g bs=64M count=80 iflag=fullblock
+dd if=/dev/urandom of=data.1g bs=64M count=16 iflag=fullblock
+dd if=/dev/urandom of=data.50m bs=1M count=50 iflag=fullblock
+dd if=/dev/urandom of=data.1m bs=1M count=1 iflag=fullblock
+dd if=/dev/urandom of=data.1k bs=1K count=1 iflag=fullblock
+```
+
 #### Cleanup
 ```
 docker compose down
