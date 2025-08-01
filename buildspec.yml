@@ -36,12 +36,12 @@ phases:
         docker-compose pull --quiet
 
         ui=$(aws servicediscovery discover-instances \
-          --service-name ui --namespace-name merritt | \
+          --service-name ui --namespace-name merritt-ecs-dev | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "UI IP: $ui"
 
         admintool=$(aws servicediscovery discover-instances \
-          --service-name admintool --namespace-name merritt | \
+          --service-name admintool --namespace-name merritt-ecs-dev | \
           jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
         echo "Admintool IP: $admintool"
         curl -X POST http://$admintool:9292/stack-init
