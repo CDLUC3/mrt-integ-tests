@@ -346,7 +346,7 @@ end
 def build_info_url(url)
   return url if get_service(url) == 'ui'
 
-  m = url.match(%r{(https?://[^\/]+/([^\/]+/)?).*$})
+  m = url.match(%r{(https?://[^/]+/([^/]+/)?).*$})
   return '' unless m
 
   "#{m[1]}static/build.content.txt"
