@@ -3,4 +3,4 @@ docker-compose.yml
 vendor/
 lib/
 .byebug_history
-config/test_config.yml
+# config/test_config.yml
