@@ -9,6 +9,8 @@ export statfile="/tmp/end2end.txt"
 
 mkdir -p /tmp/downloads
 
+touch /tmp/downloads/tbtest1 /tmp/tbtest2
+
 task_init
 
 bundle exec rspec /spec/test --no-color > $statfile 2>&1 || task_fail
