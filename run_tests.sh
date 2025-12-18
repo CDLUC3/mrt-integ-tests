@@ -9,7 +9,7 @@ export statfile="/tmp/end2end.txt"
 
 mkdir -p /tmp/downloads
 
-touch /tmp/downloads/tbtest1 /tmp/tbtest2
+touch /tmp/downloads/chrome_dowloads_here.txt
 
 task_init
 
