@@ -4,7 +4,7 @@
 
 source ./ecs-helpers.sh
 
-export label="Run End to End Tests: ${MERRITT_ECS}"
+export label="Run End to End Tests (${INGEST_FILES})"
 export statfile="/tmp/end2end.txt"
 
 task_init
