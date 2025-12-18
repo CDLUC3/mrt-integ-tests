@@ -21,5 +21,10 @@ COPY . .
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+
 # CMD ["bundle", "exec", "rspec", "/spec/test/demo_spec.rb:33"]
 CMD ["bundle", "exec", "rspec", "/spec/test"]

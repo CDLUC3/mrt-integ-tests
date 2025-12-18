@@ -2,4 +2,13 @@
 
 # This script will launch tests when running as an ECS Task
 
-bundle exec rspec /spec/test --no-color
+source ./ecs-helpers.sh
+
+export label="Run End to End Tests: ${MERRITT_ECS}"
+export statfile="/tmp/end2end.txt"
+
+task_init
+
+bundle exec rspec /spec/test --no-color > $statfile 2>&1 || task_fail
+
+task_complete
