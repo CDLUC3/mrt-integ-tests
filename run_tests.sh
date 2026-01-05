@@ -14,7 +14,7 @@ touch /tmp/downloads/chrome_dowloads_here.txt
 task_init
 
 # Return Code ignores tee 
-set -o pipefall
+set -o pipefail
 bundle exec rspec /spec/test --no-color 2>&1 | tee $statfile || task_fail
 # Restore RC
 set +o pipefail
