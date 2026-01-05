@@ -30,51 +30,10 @@ phases:
     commands:
 
     - |
-      if [ "$INTEG_TEST_ENV" == "ecs" ]
-      then
-        echo "Running integration tests against ECS"
-        docker-compose pull --quiet
-
-        ui=$(aws servicediscovery discover-instances \
-          --service-name ui --namespace-name merritt-ecs-dev | \
-          jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
-        echo "UI IP: $ui"
-
-        admintool=$(aws servicediscovery discover-instances \
-          --service-name admintool --namespace-name merritt-ecs-dev | \
-          jq -r ".Instances[0].Attributes.AWS_INSTANCE_IPV4")
-        echo "Admintool IP: $admintool"
-        curl -X POST http://$admintool:9292/stack-init
-
-        docker-compose up -d chrome
-        sleep 2
-        docker-compose run --rm \
-          -e INTEG_TEST_ENV=development \
-          -e PREVIEW_URL=http://${ui}:8086 \
-          -e INGEST_FILES=$INGEST_FILES \
-          -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
-          -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
-      elif [ "$INTEG_TEST_ENV" != "none" ]
-      then
-        echo "Running integration tests against public URL"
-
-        docker-compose pull --quiet
-        docker-compose up -d chrome
-        sleep 2
-        docker-compose run --rm \
-          -e DATAURL=$DATAURL \
-          -e INTEG_TEST_ENV=$INTEG_TEST_ENV \
-          -e INGEST_FILES=$INGEST_FILES \
-          -e AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI \
-          -e SSM_ROOT_PATH=$SSM_ROOT_PATH mrt-integ-tests
-      else
-        docker build --push --quiet \
-          -t ${ECR_REGISTRY}/${REPONAME} \
-          .
-        docker build --push --quiet \
-          -t ${ECR_REGISTRY}/mrt-it-chrome \
-          --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
-          chrome-driver
-      fi
-    - |
-      docker-compose down
+      docker build --push --quiet \
+        -t ${ECR_REGISTRY}/${REPONAME} \
+        .
+      docker build --push --quiet \
+        -t ${ECR_REGISTRY}/mrt-it-chrome \
+        --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
+        chrome-driver
