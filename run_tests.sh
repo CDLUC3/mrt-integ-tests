@@ -15,7 +15,7 @@ task_init
 
 # Return Code ignores tee 
 set -o pipefail
-bundle exec rspec /spec/test --no-color 2>&1 | tee $statfile || task_fail
+bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || task_fail
 # Restore RC
 set +o pipefail
 
