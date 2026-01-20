@@ -6,7 +6,7 @@
 FROM public.ecr.aws/docker/library/ruby:3.2
 
 RUN apt-get update -y && \
-    apt-get install -y libarchive-tools zip && \
+    apt-get install -y libarchive-tools zip jq yq && \
     apt-get -y upgrade
 
 RUN gem install bundler
