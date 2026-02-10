@@ -19,4 +19,4 @@ bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || task_fail
 # Restore RC
 set +o pipefail
 
-task_complete
+task_complete Y
