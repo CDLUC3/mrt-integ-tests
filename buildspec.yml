@@ -30,6 +30,11 @@ phases:
     commands:
 
     - |
+      docker pull ${ECR_REGISTRY}/docker-hub/selenium/standalone-chrome --quiet
+
+      # I do not think we are using this, but I am keeping the pull through image up to date
+      docker pull ${ECR_REGISTRY}/docker-hub/selenium/standalone-chromium --quiet
+
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/${REPONAME} \
         .
