@@ -21,11 +21,21 @@ bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || FAIL=1
 # Restore RC
 set +o pipefail
 
-egrep "^(Finished in|[0-9]+ examples,)" $statfile > $statfile.tmp
 echo "" >> $statfile.tmp
 cat $statfile >> $statfile.tmp
 
 mv $statfile.tmp $statfile
+
+file="end2end/end2end-$(date +%Y%m%d-%H%M%S).txt"
+aws s3 cp $statfile "s3://${S3REPORT_BUCKET}/reports/${rptfile}"
+
+mv $statfile $statfile.tmp
+
+egrep "^(Finished in|[0-9]+ examples,)" $statfile.tmp > $statfile
+echo "" >> $statfile
+echo "https://${baseurl}/saved-reports/retrieve?report=reports%2F${rptfile}" >> $statfile
+echo "" >> $statfile
+cat $statfile.tmp >> $statfile
 
 if [ $FAIL -eq 1 ]
 then
