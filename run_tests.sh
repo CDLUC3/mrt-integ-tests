@@ -13,7 +13,6 @@ touch /tmp/downloads/chrome_dowloads_here.txt
 
 task_init
 
-echo "<pre>" > $statfile
 FAIL=0
 
 # Return Code ignores tee 
@@ -22,10 +21,9 @@ bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || FAIL=1
 # Restore RC
 set +o pipefail
 
-echo "</pre>" >> $statfile
-
 header=$(egrep "^(Finished in|\d+ examples,)" $statfile)
-sed -i '' "1i\\$header" $statfile
+body=$(cat $statfile)
+echo "$header$body" > $statfile
 
 if [ $FAIL -eq 1 ]
 then
