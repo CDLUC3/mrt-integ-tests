@@ -13,7 +13,7 @@ RSpec.configure do |config|
   config.tty = true
   config.formatter = :documentation
   config.include Capybara::DSL
-  config.full_backtrace = false
+  config.backtrace_exclusion_patterns << /gems/
 end
 
 def get_config(key)
