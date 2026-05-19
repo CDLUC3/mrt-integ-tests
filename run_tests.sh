@@ -21,9 +21,9 @@ bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || FAIL=1
 # Restore RC
 set +o pipefail
 
-header=$(egrep "^(Finished in|\d+ examples,)" $statfile)
+header=$(egrep "^(Finished in|[\d]+ examples,)" $statfile)
 body=$(cat $statfile)
-echo "$header$body" > $statfile
+echo "$header\n$body\n\n" > $statfile
 
 if [ $FAIL -eq 1 ]
 then
