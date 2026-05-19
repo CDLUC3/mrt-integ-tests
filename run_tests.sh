@@ -14,13 +14,22 @@ touch /tmp/downloads/chrome_dowloads_here.txt
 task_init
 
 echo "<pre>" > $statfile
+FAIL=0
 
 # Return Code ignores tee 
 set -o pipefail
-bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || task_fail
+bundle exec rspec /spec/test --no-color 2>&1 | tee -a $statfile || FAIL=1
 # Restore RC
 set +o pipefail
 
 echo "</pre>" >> $statfile
 
-task_complete Y
+header=$(egrep "^(Finished in|\d+ examples,)" $statfile)
+sed -i '' "1i\\$header" $statfile
+
+if [ $FAIL -eq 1 ]
+then
+  task_fail
+else
+  task_complete Y
+fi
