@@ -14,7 +14,6 @@ RSpec.configure do |config|
   config.formatter = :documentation
   config.include Capybara::DSL
   config.full_backtrace = false
-  config.filter_rails_from_backtrace!
 end
 
 def get_config(key)
