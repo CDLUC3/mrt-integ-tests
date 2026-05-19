@@ -35,7 +35,7 @@ egrep "^(Finished in|[0-9]+ examples,)" $statfile.tmp > $statfile
 echo "" >> $statfile
 echo "To see a formatted version of the report, copy and paste the following URL into a browser:" >> $statfile
 echo "" >> $statfile
-echo "https://${baseurl}saved-reports/retrieve?report=reports%2F${rptfile}" >> $statfile
+echo "${baseurl}saved-reports/retrieve?report=reports%2F${rptfile}" >> $statfile
 echo "" >> $statfile
 cat $statfile.tmp >> $statfile
 
