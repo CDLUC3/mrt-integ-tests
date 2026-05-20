@@ -34,7 +34,7 @@ echo "${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfil
 echo "" >> $statfile
 cat $statfile.tmp >> $statfile
 
-export SLACK_BOT_TOKEN=$(aws ssm get-parameter --name "${SSM_ROOT_PATH}/slackbot" --with-decryption --query "Parameter.Value" --output text)
+export SLACK_BOT_TOKEN=$(aws ssm get-parameter --name "${SLACK_BOT_SSM}" --with-decryption --query "Parameter.Value" --output text)
 ruby slack_message.rb $statfile
 
 if [ $FAIL -eq 1 ]
