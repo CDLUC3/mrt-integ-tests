@@ -269,7 +269,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
       end
     end
 
-    it 'Verify the CONTENT of a FILE for an object in a collection NOT acessible to the GUEST login' do
+    it 'Verify the CONTENT of a FILE for an object in a collection NOT accessible to the GUEST login' do
       count = 0
       non_guest_collections.each do |coll|
         visit_collection(coll)
