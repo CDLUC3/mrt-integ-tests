@@ -156,6 +156,7 @@ end
 
 def visit_text_file(coll)
   @session.click_link('mrt-membership.txt')
+  sleep 1
   expect(@session.current_url).to match(coll['file_redirect_match'])
 end
 
