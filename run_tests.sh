@@ -26,9 +26,9 @@ aws s3 cp $statfile "s3://${S3REPORT_BUCKET}/end2end/${rptfile}"
 
 if [ $FAIL -eq 1 ]
 then
-  echo "FAIL: #{label} for #{MERRITT_ECS} $(duration)" > $statfile.slack
+  echo "FAIL: ${label} for ${MERRITT_ECS} $(duration)" > $statfile.slack
 else
-  echo "COMPLETE: #{label} for #{MERRITT_ECS} $(duration)" > $statfile.slack
+  echo "COMPLETE: ${label} for ${MERRITT_ECS} $(duration)" > $statfile.slack
 fi
 echo "" >> $statfile.slack
 egrep "^(Finished in|[0-9]+ examples,)" $statfile >> $statfile.slack
