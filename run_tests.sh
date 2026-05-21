@@ -26,7 +26,7 @@ aws s3 cp $statfile "s3://${S3REPORT_BUCKET}/end2end/${rptfile}"
 
 egrep "^(Finished in|[0-9]+ examples,)" $statfile > $statfile.slack
 echo "" >> $statfile.slack
-egrep "\(FAILED -" $statfile > $statfile.slack
+egrep "\(FAILED -" $statfile >> $statfile.slack
 echo "" >> $statfile.slack
 echo "${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfile.slack
 
