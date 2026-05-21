@@ -25,7 +25,7 @@ task_init() {
 }
 
 task_complete() {
-  local send_sms=${1:-N}
+  local send_sms=${SLACK_ONSUCCESS:-N}
 
   TZ="America/Los_Angeles" date "+ ==> %Y-%m-%d %H:%M:%S: COMPLETE: $label for $MERRITT_ECS $(duration)" | tee -a $statfile
   echo $(make_status "COMPLETE" "$(duration)")
@@ -51,7 +51,7 @@ task_complete() {
 }
 
 task_fail() {
-  local send_sms=${1:-Y}
+  local send_sms=${SLACK_ONFAIL:-Y}
 
   TZ="America/Los_Angeles" date "+ ==> %Y-%m-%d %H:%M:%S: FAIL: $label for $MERRITT_ECS $(duration)" | tee -a $statfile
   echo $(make_status "FAIL" "$(duration)")
