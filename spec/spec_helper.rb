@@ -115,7 +115,7 @@ def authenticated_login
     @session.click_link('Login')
   end
 
-  sleep 1
+  sleep 2
   @session.fill_in('login', with: login_user)
   @session.fill_in('password', with: login_password)
   @session.find('#submit_login').click
