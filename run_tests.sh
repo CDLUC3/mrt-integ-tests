@@ -32,9 +32,11 @@ echo "To see a formatted version of the report, copy and paste the following URL
 echo "" >> $statfile
 echo "${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfile
 echo "" >> $statfile
-echo "\`\`\`" >> $statfile
+echo "" >> $statfile
+echo '```' >> $statfile
 cat $statfile.tmp >> $statfile
-echo "\`\`\`" >> $statfile
+echo "" >> $statfile
+echo '```' >> $statfile
 
 export SLACK_BOT_TOKEN=$(aws ssm get-parameter --name "${SLACK_BOT_SSM}" --with-decryption --query "Parameter.Value" --output text)
 ruby slack_message.rb $statfile
