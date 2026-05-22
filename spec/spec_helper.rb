@@ -115,8 +115,10 @@ def authenticated_login
     @session.click_link('Login')
   end
 
-  @session.fill_in('login', with: login_user)
-  @session.fill_in('password', with: login_password)
+  @session.within 'pwlogin' do
+    @session.fill_in('login', with: login_user)
+    @session.fill_in('password', with: login_password)
+  end
   @session.find('#submit_login').click
 
   sleep 1
