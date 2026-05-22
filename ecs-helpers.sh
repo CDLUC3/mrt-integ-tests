@@ -43,6 +43,7 @@ task_complete() {
         cat $statfile.slack >> $statfile.message
       fi
       echo "" >> $statfile.message
+      echo "" >> $statfile.message
       ruby slack_message.rb $statfile.message
     else
       aws sns publish --topic-arn "$SNS_ARN" --subject "$subject" \
