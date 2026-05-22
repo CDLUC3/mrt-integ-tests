@@ -305,9 +305,9 @@ stage: &stage
     - coll: merritt_demo
       <<: *MINIO
       submit: true
-    - coll: cdl_wasabi
-      <<: *WASABI
-      submit: true
+    # - coll: cdl_wasabi
+    #   <<: *WASABI
+    #   submit: true
 stage-wasabi: &stage
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
