@@ -24,7 +24,10 @@ set +o pipefail
 rptfile="$(date +%Y%m%d-%H%M%S).txt"
 aws s3 cp $statfile "s3://${S3REPORT_BUCKET}/end2end/${rptfile}"
 
+echo '```' >> $statfile.slack
 egrep "^(Finished in|[0-9]+ examples,)" $statfile > $statfile.slack
+echo '```' >> $statfile.slack
+
 echo "" >> $statfile.slack
 if [ $FAIL -eq 1 ]
 then
