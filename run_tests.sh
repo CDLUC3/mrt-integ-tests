@@ -35,7 +35,7 @@ then
   # echo "" >> $statfile.slack
 fi
 echo "" >> $statfile.slack
-echo "- ${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfile.slack
+echo "  - ${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfile.slack
 
 if [ $FAIL -eq 1 ]
 then
