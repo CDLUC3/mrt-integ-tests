@@ -28,14 +28,12 @@ echo '```' > $statfile.slack
 egrep "^(Finished in|[0-9]+ examples,)" $statfile >> $statfile.slack
 echo '```' >> $statfile.slack
 
-echo "" >> $statfile.slack
 if [ $FAIL -eq 1 ]
 then
-  # echo "" >> $statfile.slack
+  echo "" >> $statfile.slack
   echo '```' >> $statfile.slack
   egrep "\(FAILED -" $statfile | head -5 >> $statfile.slack
   echo '```' >> $statfile.slack
-  # echo "" >> $statfile.slack
 fi
 echo "" >> $statfile.slack
 echo "- ${baseurl}ops/s3-reports/retrieve?report=end2end%2F${rptfile}" >> $statfile.slack
