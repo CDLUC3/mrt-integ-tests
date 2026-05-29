@@ -406,6 +406,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
             @session.within('section h1') do
               expect(@session.text).to have_content('Submission Received')
             end
+            sleep 2
           end
         end
       end
