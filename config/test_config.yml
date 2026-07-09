@@ -233,22 +233,6 @@ docker: &docker
     - coll: merritt_demo
       <<: *MINIO_LOCAL
       submit: true
-docker-devbucket: &docker-devbucket
-  <<: *globals
-  guest_actions:
-    collections:
-    - coll: cdl_dryaddev
-      <<: *MINIO_LOCAL
-    #collections-no-access:
-    #- coll: ucla_digital_lib
-  non_guest_actions:
-    login:
-      user: merritt-test
-      password: password
-    collections:
-    - coll: merritt_demo
-      <<: *AWS
-      submit: true
 local: &local
   <<: *globals
   experimental_tests: true
@@ -278,11 +262,6 @@ development: &development
     - coll: merritt_demo
       <<: *AWS
       submit: true
-development-devdb:
-  <<: *globals
-  experimental_tests: true
-  url: "{!ENV: PREVIEW_URL !DEFAULT: http://uc3-mrtdocker01x2-dev.cdlib.org:8086}"
-  << : *docker-devbucket
 stage: &stage
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
@@ -308,50 +287,9 @@ stage: &stage
     # - coll: cdl_wasabi
     #   <<: *WASABI
     #   submit: true
-stage-wasabi: &stage
-  <<: *globals
-  url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt-stage.cdlib.org}"
-  # Enable single encoding tests with stage ALB
-  experimental_tests: true
-  expect_atom_content: true
-  check_audits: false
-  guest_actions:
-    collections:
-    - coll: cdl_dashdev
-      <<: *AWS
-    - coll: ucb_ist_research_hub_doi
-      <<: *MINIO
-    collections-no-access:
-    - coll: ucla_digital_lib
-  non_guest_actions:
-    login:
-      user: "{!SSM: integ-tests/for-stage/user}"
-      password: "{!SSM: integ-tests/for-stage/password}"
-    collections:
-    - coll: cdl_wasabi
-      <<: *WASABI
-      submit: true
 production: &production
   <<: *globals
   url: "{!ENV: PREVIEW_URL !DEFAULT: https://merritt.cdlib.org}"
-  expect_atom_content: true
-  replic_build_info: true
-  ui_audit_replic: true
-  guest_actions:
-    collections:
-    collections-no-access:
-    - coll: merritt_demo
-  non_guest_actions:
-    login:
-      user: "{!SSM: integ-tests/for-prod/user}"
-      password: "{!SSM: integ-tests/for-prod/password}"
-    collections:
-    - coll: merritt_demo
-      <<: *AWS
-      submit: true
-preview:
-  <<: *globals
-  url: "{!ENV: PREVIEW_URL !DEFAULT: https://uc3-mrt-preview-prd.cdlib.org}"
   expect_atom_content: true
   replic_build_info: true
   ui_audit_replic: true
