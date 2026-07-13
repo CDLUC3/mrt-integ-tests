@@ -97,7 +97,7 @@ end
 
 def guest_login
   @session.visit '/'
-  sleep 1
+  sleep 2
   @session.within 'header' do
     @session.find_link('Login')
     @session.click_link('Login')
