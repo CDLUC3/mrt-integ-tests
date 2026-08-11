@@ -77,49 +77,49 @@ globals: &globals
         label: 'manufactured_load_ver_a'
         localid: localid_ver_a
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_b'
         localid: localid_ver_b
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_c'
         localid: localid_ver_c
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_d'
         localid: localid_ver_d
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_e'
         localid: localid_ver_e
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_f'
         localid: localid_ver_f
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - coll: merritt_benchmark
         count: 1
         label: 'manufactured_load_ver_g'
         localid: localid_ver_g
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
     load:
       encoding-zip:
@@ -130,35 +130,35 @@ globals: &globals
         count: 100
         label: 'manufactured_load_A'
         url: "{!ENV: DATAURL}/data.1k"
-        md5: '17ed9c0ac6d4687e38b6cd98467556f3'
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
       - &test_1MB_100
         coll: merritt_benchmark
         count: 100
         label: 'manufactured_load_E'
         url: "{!ENV: DATAURL}/data.1m"
-        md5: '436c3aa0e0225c185e7338d5983279f3'
+        md5: '7dea0d437276704bb672cfb529c10064'
         ext: '.txt'
       - &test_1MB_25
         coll: cdl_wasabi
         count: 25
         label: 'manufactured_load_B'
         url: "{!ENV: DATAURL}/data.1m"
-        md5: '436c3aa0e0225c185e7338d5983279f3'
+        md5: '7dea0d437276704bb672cfb529c10064'
         ext: '.txt'
       - &test_50MB_25
         coll: merritt_demo
         count: 25
         label: 'manufactured_load_C'
         url: "{!ENV: DATAURL}/data.50m"
-        md5: '4100968a18051d5af99c804502a62deb'
+        md5: '84550651e24ba9a1013525c5c1d7ddaf'
         ext: '.txt'
       - &test_1GB_10
         coll: cdl_wasabi
         count: 10
         label: 'manufactured_load_D'
         url: "{!ENV: DATAURL}/data.1g"
-        md5: 'fb20ed9c9998a068de73f421d881762f'
+        md5: 'f53e587ff2ef99b12f55048dab4b15ae'
         ext: '.txt'
     load-large:
       encoding-zip:
@@ -174,7 +174,7 @@ globals: &globals
         count: 2
         label: 'manufactured_load_G'
         url: "{!ENV: DATAURL}/data.5g"
-        md5: '231bd4a486732216bada94fad0d93ec0'
+        md5: '99e8fd1461d8a1f244581906c011f9cb'
         what: '5GB Batch Manifest'
         ext: '.txt'
       - &test_10GB_1
@@ -182,7 +182,7 @@ globals: &globals
         count: 1
         label: 'manufactured_load_H'
         url: "{!ENV: DATAURL}/data.10g"
-        md5: 'a63f496d6b76f318d8f357f0fbe8726e'
+        md5: '20c3431adfbfb1ac4eca34c07e749189'
         what: '10GB Batch Manifest'
         ext: '.txt'
     default:
