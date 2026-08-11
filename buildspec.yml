@@ -22,8 +22,6 @@ phases:
     - echo "Branchtag ${BRANCHTAG}; COMMITDATE=${COMMITDATE}; REPONAME=${REPONAME}; BRANCHNAME=${BRANCHNAME}"
 
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REGISTRY}
-    - SSM_ROOT_PATH=/uc3/mrt/dev/
-    - DATAURL=`aws ssm get-parameter --name /uc3/mrt/dev/integ-tests/data-path --query "Parameter.Value" --output text`
 
   build:
     on-failure: ABORT
