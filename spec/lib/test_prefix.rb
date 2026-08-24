@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TestObjectPrefix
-  @@localid_prefix = ENV.fetch('PREFIX', Time.new.strftime('%Y_%m_%d_%H%M')) unless defined? @@localid_prefix
+  @@localid_prefix = ENV.fetch('PREFIX', Time.now.strftime('%Y_%m_%d_%H%M')) unless defined? @@localid_prefix
   @@config_file = File.join(Dir.getwd, 'config', 'test_config.yml') unless defined? @@config_file
   @@integenv = ENV.fetch('INTEG_TEST_ENV', 'default') unless defined? @@integenv
   unless defined? @@config
