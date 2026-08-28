@@ -33,9 +33,17 @@ phases:
       # I do not think we are using this, but I am keeping the pull through image up to date
       docker pull ${ECR_REGISTRY}/docker-hub/selenium/standalone-chromium --quiet
 
-      docker build --push --quiet \
-        -t ${ECR_REGISTRY}/${REPONAME} \
-        .
+      if [[ "$BRANCHTAG" == "main" ]]
+      then
+        docker build --push --quiet \
+          -t ${ECR_REGISTRY}/${REPONAME} \
+          .
+      else
+        docker build --push --quiet \
+          -t ${ECR_REGISTRY}/${REPONAME}:${BRANCHTAG} \
+          .
+      fi
+
       docker build --push --quiet \
         -t ${ECR_REGISTRY}/mrt-it-chrome \
         --build-arg ECR_REGISTRY=${ECR_REGISTRY} \
