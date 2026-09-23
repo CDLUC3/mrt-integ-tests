@@ -39,6 +39,7 @@ phases:
           -t ${ECR_REGISTRY}/${REPONAME} \
           .
       else
+        # This allows the integration tests to be modified in conjunction with a UI release.
         docker build --push --quiet \
           -t ${ECR_REGISTRY}/${REPONAME}:${BRANCHTAG} \
           .
