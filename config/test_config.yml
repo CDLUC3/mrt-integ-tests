@@ -169,18 +169,6 @@ globals: &globals
       - *test_1MB_25
       - *test_50MB_25
       - *test_1GB_10
-      - coll: merritt_demo
-        count: 800
-        label: 'manufactured_load_I'
-        url: "{!ENV: DATAURL}/data.1k"
-        md5: 'cd91d1539be45c7c15d071638453e380'
-        ext: '.txt'
-      - coll: cdl_wasabi
-        count: 800
-        label: 'manufactured_load_J'
-        url: "{!ENV: DATAURL}/data.1m"
-        md5: '7dea0d437276704bb672cfb529c10064'
-        ext: '.txt'
       - &test_5GB_2
         coll: merritt_benchmark
         count: 2
@@ -196,6 +184,30 @@ globals: &globals
         url: "{!ENV: DATAURL}/data.10g"
         md5: '20c3431adfbfb1ac4eca34c07e749189'
         what: '10GB Batch Manifest'
+        ext: '.txt'
+      - coll: merritt_demo
+        count: 800
+        label: 'manufactured_load_I'
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: 'cd91d1539be45c7c15d071638453e380'
+        ext: '.txt'
+      - coll: cdl_wasabi
+        count: 800
+        label: 'manufactured_load_J'
+        url: "{!ENV: DATAURL}/data.1m"
+        md5: '7dea0d437276704bb672cfb529c10064'
+        ext: '.txt'
+      - coll: merritt_demo
+        count: 1500
+        label: 'manufactured_load_K'
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: 'cd91d1539be45c7c15d071638453e380'
+        ext: '.txt'
+      - coll: cdl_wasabi
+        count: 1500
+        label: 'manufactured_load_L'
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
     default:
       encoding-zip: 
