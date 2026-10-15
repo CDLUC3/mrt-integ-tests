@@ -132,23 +132,9 @@ globals: &globals
         url: "{!ENV: DATAURL}/data.1k"
         md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
-      - &test_1KB_2500
-        coll: demo_merritt
-        count: 2500
-        label: 'manufactured_load_A'
-        url: "{!ENV: DATAURL}/data.1k"
-        md5: 'cd91d1539be45c7c15d071638453e380'
-        ext: '.txt'
       - &test_1MB_100
         coll: merritt_benchmark
         count: 100
-        label: 'manufactured_load_E'
-        url: "{!ENV: DATAURL}/data.1m"
-        md5: '7dea0d437276704bb672cfb529c10064'
-        ext: '.txt'
-      - &test_1MB_2500
-        coll: cdl_dryaddev
-        count: 2500
         label: 'manufactured_load_E'
         url: "{!ENV: DATAURL}/data.1m"
         md5: '7dea0d437276704bb672cfb529c10064'
@@ -180,11 +166,23 @@ globals: &globals
       manifests:
       - *test_1KB_100
       - *test_1MB_100
-      - *test_1KB_2500
-      - *test_1MB_2500
       - *test_1MB_25
       - *test_50MB_25
       - *test_1GB_10
+      - &test_1KB_2500
+        coll: demo_merritt
+        count: 2500
+        label: 'manufactured_load_A2500'
+        url: "{!ENV: DATAURL}/data.1k"
+        md5: 'cd91d1539be45c7c15d071638453e380'
+        ext: '.txt'
+      - &test_1MB_2500
+        coll: cdl_dryaddev
+        count: 2500
+        label: 'manufactured_load_E2500'
+        url: "{!ENV: DATAURL}/data.1m"
+        md5: '7dea0d437276704bb672cfb529c10064'
+        ext: '.txt'
       - &test_5GB_2
         coll: merritt_benchmark
         count: 2
