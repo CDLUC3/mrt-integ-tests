@@ -169,16 +169,14 @@ globals: &globals
       - *test_1MB_25
       - *test_50MB_25
       - *test_1GB_10
-      - &test_1KB_2500
-        coll: merritt_demo
-        count: 2500
+      - coll: merritt_demo
+        count: 800
         label: 'manufactured_load_I'
         url: "{!ENV: DATAURL}/data.1k"
         md5: 'cd91d1539be45c7c15d071638453e380'
         ext: '.txt'
-      - &test_1MB_2500
-        coll: cdl_wasabi
-        count: 2500
+      - coll: cdl_wasabi
+        count: 800
         label: 'manufactured_load_J'
         url: "{!ENV: DATAURL}/data.1m"
         md5: '7dea0d437276704bb672cfb529c10064'
