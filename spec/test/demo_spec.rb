@@ -236,6 +236,7 @@ RSpec.describe 'basic_merrit_ui_tests', type: :feature do
     end
 
     it 'Verify that the GUEST login user cannot browse collections that are not authorized to the Guest login' do
+      visit('/home/choose_collection')
       guest_collections_no_access.each do |coll|
         # visit_collection(guest_collections.first)
         visit_collection(coll)
