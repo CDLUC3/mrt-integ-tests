@@ -3,7 +3,7 @@
 #   All rights reserved
 #*********************************************************************
 
-FROM public.ecr.aws/docker/library/ruby:3
+FROM public.ecr.aws/docker/library/ruby:3.4
 
 RUN apt-get update -y && \
     apt-get install -y libarchive-tools zip jq yq && \
